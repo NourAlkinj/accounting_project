@@ -685,7 +685,8 @@ Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], functi
   Route::get('show', [DatabaseController::class, 'show']);
   Route::post('switchDatabase', [DatabaseController::class, 'switchDatabase']);
   Route::get('restore/{databaseName}', [DatabaseController::class, 'restore']);
-  Route::get('backup/{databaseName}', [DatabaseController::class, 'backup']);
+//   Route::get('backup/{databaseName}', [DatabaseController::class, 'backup']);
+
 
   Route::get('run_migration', [DatabaseController::class, 'runMigration']);
   Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
@@ -693,7 +694,9 @@ Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], functi
 
 
   Route::get('backup_database', [DatabaseController::class, 'backupDatabase']);
-  Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
+   Route::get('get_current_database_information', [DatabaseController::class, 'getCurrentDatabaseInformation']);
+
+Route::get('settings-database', [DatabaseController::class, 'settingsDatabase']);
 
 });
 

@@ -65,6 +65,13 @@ case
   this_task_is_in_use;
 case
   save;
+case
+    already_exist;
+case
+    command_runs_successfully;
+case
+    some_thing_is_wrong;
+
 
 
 
@@ -102,7 +109,10 @@ class CommonWords implements Words
       'ParityCondition' => 'Parity Can not be 0.',
       'category_not_found' => 'Category Not Found',
       'bill_not_found' => 'Bill is not Found.',
-      'this_task_is_in_use' => 'This Task Is In Use.'
+      'this_task_is_in_use' => 'This Task Is In Use.',
+      'already_exist' => 'Database Already Exist',
+      'command_runs_successfully' => 'Command Run Successfully',
+      'some_thing_is_wrong' => 'Something Is Wrong !',
     ];
   }
 
@@ -137,7 +147,10 @@ class CommonWords implements Words
       'ParityCondition' => 'التعادل لايمكن أن يكون صفر.',
       'category_not_found' => 'الصنف  غير موجود ',
       'bill_not_found' => ' الفاتورة غير موجودة.',
-      'this_task_is_in_use' => 'هذه المهمة مستخدمة.'
+      'this_task_is_in_use' => 'هذه المهمة مستخدمة.',
+      'already_exist' => 'قاعدة البيانات موجودة سابقا' ,
+      'command_runs_successfully' => 'تم تنفيذ الأمر بنجاح',
+      'some_thing_is_wrong' => 'حدث خطأ ما '
 
     ];
   }
