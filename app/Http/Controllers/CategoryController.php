@@ -6,8 +6,10 @@ use App\Events\CategoriesUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\BillRecord;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\JournalEntryRecord;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use Lang\Locales\CommonWords;
@@ -118,6 +120,11 @@ class CategoryController extends Controller
             return response()->json(['errors' => $errors], 404);
 
         }
+
+        if($this->isUseCategory($id)) {
+            $errors = ['store' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        return response()->json(['errors' => $errors], 400);
+      }
       $category->delete();
       $this->callActivityMethod('categories', 'delete', $parameters);
       event(new CategoriesUpdated([...Category::with('items.units.barcodes')->get()]));
@@ -153,6 +160,42 @@ class CategoryController extends Controller
   {
     return $this->getAllCodesAndNames(Category::class);
   }
+
+    public function isUseCategory($category_id)
+    {
+        //category related to bill record
+        $billRecord = BillRecord::where(function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);})->first();
+        if ($billRecord != null)
+            return true;
+//      return ['billRecordId' => $billRecord->id, 'table' => 'bill_records'];
+
+        //category related to category
+        $category = Category::where(function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);})->first();
+        if ($category != null)
+            return true;
+//      return ['categoryId' => $category->id, 'table' => 'categories'];
+
+        //category related to item
+        $item = Item::where(function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);})->first();
+        if ($item != null)
+            return true;
+//      return ['itemId' => $item->id, 'table' => 'items'];
+
+        //category related to journal entry record
+        $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($category_id) {
+            $query->where('category_id', $category_id);})->first();
+        if ($journalEntryRecord != null)
+            return true;
+//      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
+
+//    return ['id' => null, 'table' => null];
+        return false;
+
+    }
+
 
 
 }
