@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -36,22 +37,19 @@ class DatabaseController extends Controller
 //            $databases[] = $databaseName;
 //            $user->databases = $databases;
 //            $user->save();
-            DB::connection('settings')->table('connections')->insert([
-                'database_information' => $databaseName,
-            ]);
+//            DB::connection('settings')->table('connections')->insert([
+//                'database_information' => $databaseName,
+//            ]);
             return [
                 'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)
         ];
       } catch (CustomException $exc) {
             return response()->json(
-                [
-                    'errors' => ['message' => [$exc->message]],
-                ],
+                ['errors' => ['message' => [$exc->message]],],
                 $exc->code
             );
         }
     }
-
 
     public function settingsDatabase()
     {
@@ -63,14 +61,13 @@ class DatabaseController extends Controller
           CREATE TABLE IF NOT EXISTS connections (
           id INT AUTO_INCREMENT PRIMARY KEY,
  
-          database_information VARCHAR(255),
+          database_information JSON,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)');
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)
       ];
     }
-
 
     public function show()
     {
@@ -116,6 +113,11 @@ class DatabaseController extends Controller
         } else {
             echo env('DB_DATABASE');
         }
+        $currentConnectionInformation = new Collection(DB::connection('mysql')->getConfig());
+//        return  var_dump($currentConnectionInformation)  ;
+        DB::connection('settings')->table('connections')->insert([
+            'database_information' => $currentConnectionInformation,
+        ]);
         return $connection;
     }
 
@@ -127,20 +129,6 @@ class DatabaseController extends Controller
         $command = "C:\xampp\mysql\bin\mysqldump -u username -p password $databaseName < $backupPath";
         exec($command);
     }
-
-    //  function backup($databaseName)
-    //  {
-    //    $backupPath = "C:\Users\asus\Desktop\Work\Palmyra API";
-    ////        $backupPath = storage_path('app\backup') ;
-    //
-    //    // $backupPath = storage_path('backup');
-    //    if (!File::exists($backupPath)) {
-    //      File::makeDirectory($backupPath);
-    //    }
-    //    $command = "C:\xampp\mysql\bin\mysqldump -u root  $databaseName > $backupPath";
-    //    exec($command);
-    //    return "Done";
-    //  }
 
     public function runMigration()
     {
@@ -172,18 +160,15 @@ class DatabaseController extends Controller
     public function backupDatabase(Request $request)
     {
         $lang = app('request')->header('lang');
-
-        $backupPath = $request->input('backup_path')
-
+        $backupPath = $request->input('backup_path');
         $backupLocation = $backupPath ? $backupPath : 'default_backup_path';
-
+        $backupLocation = str_replace('\\', '\\\\', $backupLocation);
 //        exec('C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > backupe.sql 2> error.log');
-    exec("C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > $backupLocation\backup.sql 2> error.log");
+        exec("C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > $backupLocation\backup.sql 2> error.log");
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
       ];
     }
-
 
     function getCurrentDatabaseInformation()
     {
