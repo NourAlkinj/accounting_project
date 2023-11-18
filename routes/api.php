@@ -693,7 +693,7 @@ Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], functi
 
 
   Route::get('backup_database', [DatabaseController::class, 'backupDatabase']);
-  Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
+  // Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
 
 });
 

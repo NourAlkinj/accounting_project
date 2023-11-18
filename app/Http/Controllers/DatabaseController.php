@@ -37,19 +37,21 @@ class DatabaseController extends Controller
 
   public function switchDatabase(Request $request)
   {
-//    dd(config()->get('database.connections.mysql'));
+  //  dd(config()->get('database.connections.mysql'));
     $newDatabaseName = $request->new_database_name;
 
     DB::disconnect();
     Config::set('database.mysql.database', $request->new_database_name);
 //    Config::set('database.default',$request->new_database_name);
     DB::reconnect();
-
+    
+    // dd(Config::get('database.mysql.database', $request->new_database_name));
     DB::purge('mysql');
     $user = auth('sanctum')->user();
     $databases[] = $newDatabaseName;
     $user->databases = $databases;
     $user->save();
+
 
     DB::purge('mysql');
 
