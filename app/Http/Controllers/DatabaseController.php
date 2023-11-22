@@ -120,7 +120,6 @@ class DatabaseController extends Controller
       ];
     }
 
-
     public function runMigration()
     {
         $lang = app('request')->header('lang');
@@ -152,51 +151,19 @@ class DatabaseController extends Controller
     {
         $lang = app('request')->header('lang');
 
-
-        $lang = $request->header('lang');
         $databaseName = $request->input('database_name');
-//        $backupPath = $request->input('backup_path');
-        $backupPath = storage_path('app');
-
-        $outputPath = $backupPath . '/backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
-
-
-//        $command = "mysqldump -u {username} -p{password} {$databaseName} > {$outputPath}";
-        $command = "mysqldump -u " . env('DB_USERNAME') . " -p" . env('DB_PASSWORD') . " -h " . env('DB_HOST') . " " . $databaseName . " > {$outputPath}";
-
-
-        exec($command, $output, $resultCode);
-
-        if ($resultCode !== 0) {
-            return response()->json(['error' => 'Backup process failed'], 500);
+        if ($databaseName){
+          $this->switchDatabase($databaseName);
         }
+        $backupPath = $request->input('backup_path');
 
 
-        /// php artisan backup:run --only-files
-        /// php artisan backup:run --only-db
-        /// php artisan backup:run --only-to-disk=name-of-your-disk
-//        $databaseName = $request->input('database_name');
-//
-//        if ($databaseName){
-//            $databaseNamee =   $this->switchDatabase($databaseName);
-//        }
-//       return  Artisan::call('backup:run', ['--only-db' => $databaseNamee]);
+        $outputPath = $backupPath . '\backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
 
-//
-//        $databaseName = [];
-//        $databaseName[] = $request->input('database_name');
-//
-//
-//        $job = (new BackupJob())->onlyDbName([$databaseName]);
-//
-//        $job->run();
-
-//         Artisan::call('backup:run --only-db --disable-notifications') ;
+          exec("mysqldump -u ". env('DB_USERNAME') . " ".$databaseName." > {$outputPath}"); // true
 
 
-//        Artisan::call('backup:run --disable-notifications') ;
-//        $output = Artisan::output();
-//        dd($output);
+
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::backup_database->name, $lang)
       ];
