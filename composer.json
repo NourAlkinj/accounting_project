@@ -19,6 +19,7 @@
         "pusher/pusher-php-server": "^7.2",
         "rap2hpoutre/laravel-log-viewer": "^2.3",
         "sajya/server": "^5.3",
+        "spatie/laravel-backup": "*",
         "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {
