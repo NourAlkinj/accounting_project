@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'OPTIONS'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:3000', 'https://tauri.localhost'],
+    'allowed_origins' => ['http://localhost:8080','http://localhost:5173', 'http://localhost:3000', 'https://tauri.localhost'],
 
     'allowed_origins_patterns' => [],
 

@@ -164,9 +164,10 @@ class DatabaseController extends Controller
         $backupLocation = $backupPath ? $backupPath : 'default_backup_path';
         $backupLocation = str_replace('\\', '\\\\', $backupLocation);
 //        exec('C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > backupe.sql 2> error.log');
-        exec("C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > $backupLocation\backup.sql 2> error.log");
+        exec("C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > $backupLocation/backup.sql 2> error.log");
         return [
-            'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
+            'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang),
+            'path' => "$backupLocation/backup.sql"
       ];
     }
 
