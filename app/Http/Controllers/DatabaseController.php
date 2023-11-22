@@ -54,7 +54,7 @@ class DatabaseController extends Controller
         DB::statement('
           CREATE TABLE IF NOT EXISTS connections (
           id INT AUTO_INCREMENT PRIMARY KEY,
- 
+
           database_information JSON,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)');
@@ -73,7 +73,13 @@ class DatabaseController extends Controller
 
     public function switchDatabase($newDatabaseName)
     {
-        $lang = app('request')->header('lang');
+      $lang = app('request')->header('lang');
+      if ($newDatabaseName == env('DB_DATABASE') ){
+        return [
+          'message' => $this->commonMessage->t(CommonWordsEnum::already_in_database->name, $lang) .''.$newDatabaseName
+      ];
+      }
+
         DB::disconnect();
         Config::set('database.mysql.database', $newDatabaseName);
         DB::reconnect();

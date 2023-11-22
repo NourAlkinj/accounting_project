@@ -77,6 +77,8 @@ case
     restore_database;
 case
     switch_database;
+case
+  already_in_database;
 
 
 }
@@ -120,6 +122,7 @@ class CommonWords implements Words
             'backup_database' => 'Backup Is Ready.',
             'restore_database' => 'Restore Completed.',
             'switch_database' => 'Switching is Done.',
+            'already_in_database' => 'You Are Already Use Database',
 
         ];
     }
@@ -162,6 +165,7 @@ class CommonWords implements Words
             'backup_database' => 'تم إنشاء النسخة الاحتياطية بنجاح.',
             'restore_database' => 'تمت الاستعادة بنجاح.!',
             'switch_database' => 'تم التحويل إلى الداتابيز الجديدة بنجاح.',
+            'already_in_database' => 'أنت بالفعل تستخدم قاعدة البيانات',
 
         ];
     }
