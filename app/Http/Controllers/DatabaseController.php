@@ -171,6 +171,7 @@ class DatabaseController extends Controller
 
     public function restore(Request $request)
     {
+        $lang = app('request')->header('lang');
         $fileName = $request->input('file_name');
         Artisan::call('backup:restore', [
             '--filename' => $fileName,
