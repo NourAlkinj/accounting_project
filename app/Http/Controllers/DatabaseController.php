@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Lang\Locales\CommonWords;
 use Lang\Locales\CommonWordsEnum;
 use Lang\Translate;
+use PDO;
 
 class DatabaseController extends Controller
 {
@@ -32,14 +33,7 @@ class DatabaseController extends Controller
       }
         try {
             DB::statement("CREATE DATABASE IF NOT EXISTS $databaseName");
-//            $user = auth('sanctum')->user();
-//            $databases = $user->databases ?? [];
-//            $databases[] = $databaseName;
-//            $user->databases = $databases;
-//            $user->save();
-//            DB::connection('settings')->table('connections')->insert([
-//                'database_information' => $databaseName,
-//            ]);
+
             return [
                 'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)
         ];
@@ -77,29 +71,27 @@ class DatabaseController extends Controller
 //        return response()->json(['databases' => $userDatabases]);
     }
 
-    public function switchDatabase(Request $request)
+    public function switchDatabase($newDatabaseName)
     {
-        //    dd(config()->get('database.connections.mysql'));
-        $newDatabaseName = $request->new_database_name;
+        $lang = app('request')->header('lang');
         DB::disconnect();
-        Config::set('database.mysql.database', $request->new_database_name);
-        //    Config::set('database.default',$request->new_database_name);
+        Config::set('database.mysql.database', $newDatabaseName);
         DB::reconnect();
-        DB::purge('mysql');
-//        $user = auth('sanctum')->user();
-//        $databases[] = $newDatabaseName;
-//        $user->databases = $databases;
-//        $user->save();
-        DB::purge('mysql');
+        // Default Settings
         Config::set('database.connections.' . $newDatabaseName . '.driver', 'mysql');
         Config::set('database.connections.' . $newDatabaseName . '.host', 'localhost');
         Config::set('database.connections.' . $newDatabaseName . '.username', 'root');
         Config::set('database.connections.' . $newDatabaseName . '.password', '');
+        Config::set('database.connections.' . $newDatabaseName . '.collation', 'utf8_general_ci');
+        Config::set('database.connections.' . $newDatabaseName . '.charset', 'utf8');
+        Config::set('database.connections.' . $newDatabaseName . '.dump', [
+            'dump_binary_path' => 'C:\\xampp\\mysql\\bin',
+            'use_single_transaction',
+            'timeout' => 60 * 5,
+        ]);
         Config::set('database.connections.' . $newDatabaseName . '.database', $newDatabaseName);
         Config::set('database.default', $newDatabaseName);
         DB::reconnect($newDatabaseName);
-        DB::connection($newDatabaseName);
-        $connection = DB::connection()->getDatabaseName();
         $envDatabaseName = env('DB_DATABASE');
         if ($envDatabaseName !== $newDatabaseName) {
             $envPath = base_path('.env');
@@ -114,21 +106,14 @@ class DatabaseController extends Controller
             echo env('DB_DATABASE');
         }
         $currentConnectionInformation = new Collection(DB::connection('mysql')->getConfig());
-//        return  var_dump($currentConnectionInformation)  ;
         DB::connection('settings')->table('connections')->insert([
             'database_information' => $currentConnectionInformation,
         ]);
-        return $connection;
+        return [
+            'message' => $this->commonMessage->t(CommonWordsEnum::switch_database->name, $lang)
+      ];
     }
 
-    public function restore($databaseName, $backupPath)
-    {
-        DB::statement("DROP DATABASE IF EXISTS $databaseName");
-        DB::statement("CREATE DATABASE $databaseName");
-        DB::statement("USE $databaseName");
-        $command = "C:\xampp\mysql\bin\mysqldump -u username -p password $databaseName < $backupPath";
-        exec($command);
-    }
 
     public function runMigration()
     {
@@ -160,13 +145,65 @@ class DatabaseController extends Controller
     public function backupDatabase(Request $request)
     {
         $lang = app('request')->header('lang');
-        $backupPath = $request->input('backup_path');
-        $backupLocation = $backupPath ? $backupPath : 'default_backup_path';
-        $backupLocation = str_replace('\\', '\\\\', $backupLocation);
-//        exec('C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > backupe.sql 2> error.log');
-        exec("C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > $backupLocation\backup.sql 2> error.log");
+
+
+        $lang = $request->header('lang');
+        $databaseName = $request->input('database_name');
+//        $backupPath = $request->input('backup_path');
+        $backupPath = storage_path('app');
+
+        $outputPath = $backupPath . '/backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
+
+
+//        $command = "mysqldump -u {username} -p{password} {$databaseName} > {$outputPath}";
+        $command = "mysqldump -u " . env('DB_USERNAME') . " -p" . env('DB_PASSWORD') . " -h " . env('DB_HOST') . " " . $databaseName . " > {$outputPath}";
+
+
+        exec($command, $output, $resultCode);
+
+        if ($resultCode !== 0) {
+            return response()->json(['error' => 'Backup process failed'], 500);
+        }
+
+
+        /// php artisan backup:run --only-files
+        /// php artisan backup:run --only-db
+        /// php artisan backup:run --only-to-disk=name-of-your-disk
+//        $databaseName = $request->input('database_name');
+//
+//        if ($databaseName){
+//            $databaseNamee =   $this->switchDatabase($databaseName);
+//        }
+//       return  Artisan::call('backup:run', ['--only-db' => $databaseNamee]);
+
+//
+//        $databaseName = [];
+//        $databaseName[] = $request->input('database_name');
+//
+//
+//        $job = (new BackupJob())->onlyDbName([$databaseName]);
+//
+//        $job->run();
+
+//         Artisan::call('backup:run --only-db --disable-notifications') ;
+
+
+//        Artisan::call('backup:run --disable-notifications') ;
+//        $output = Artisan::output();
+//        dd($output);
         return [
-            'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
+            'message' => $this->commonMessage->t(CommonWordsEnum::backup_database->name, $lang)
+      ];
+    }
+
+    public function restore(Request $request)
+    {
+        $fileName = $request->input('file_name');
+        Artisan::call('backup:restore', [
+            '--filename' => $fileName,
+        ]);
+        return [
+            'message' => $this->commonMessage->t(CommonWordsEnum::restore_database->name, $lang)
       ];
     }
 

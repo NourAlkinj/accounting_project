@@ -683,7 +683,8 @@ Route::group(['namespace' => 'ReportTemplate', 'prefix' => 'reportTemplate', 'au
 Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], function () {
     Route::get('create/{databaseName}', [DatabaseController::class, 'create']);
     Route::get('show', [DatabaseController::class, 'show']);
-    Route::post('switchDatabase', [DatabaseController::class, 'switchDatabase']);
+//    Route::post('switchDatabase/{name}', [DatabaseController::class, 'switchDatabase']);
+    Route::get('switchDatabase/{name}', [DatabaseController::class, 'switchDatabase']);
     Route::get('restore/{databaseName}/{backupPath}', [DatabaseController::class, 'restore']);
     Route::get('run_migration', [DatabaseController::class, 'runMigration']);
     Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
