@@ -23,30 +23,30 @@ class CurrencySeeder extends Seeder
 //            'foreign_part_name' => 'Yen',
 //            'is_currency_reminder_active' =>true
 //        ]);
-        ///////////////////////////////////////////////test///////////////
+///////////////////////////////////////////////test///////////////
       $Currency1 = Currency::create([
-        'name' => 'ليرة',
-        'foreign_name' => 'ssss',
-        'code' => 'SP',
-        'parity' => 1,
-        'is_default' => true,
-        'equivalent' => 1
-      ]);
-      $Currency2 = Currency::create([
         'name' => 'دولار',
         'foreign_name' => 'dolar',
         'code' => '$',
+        'parity' => 1,
+        'equivalent' => 1,
+        'is_default' => true
+      ]);
+      $Currency2 = Currency::create([
+        'name' => 'ليرة',
+        'foreign_name' => 'ssss',
+        'code' => 'SP',
         'parity' => 13000,
-        'is_default' => false,
-        'equivalent' => 1
+        'equivalent' => 0.00007692307692307693,
+        'is_default' => false
       ]);
       $Currency3 = Currency::create([
         'name' => 'درهم',
         'foreign_name' => 'UUU',
         'code' => 'UAE',
         'parity' => 10000,
-        'is_default' => false,
-        'equivalent' => 1
+        'equivalent' => 0.0001,
+        'is_default' => false
       ]);
     }
 }
