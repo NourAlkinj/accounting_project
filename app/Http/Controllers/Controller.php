@@ -21,26 +21,7 @@ class Controller extends BaseController
 {
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests, CommonTrait  , ImageTrait, AttachmentTrait;
 
-  public function saveImages(Request $request)
-  {
 
-    $this->saveImage($request, 'photo', 'Commons', 'upload_image', null, null);
-
-  }
-
-  public function uploadAttachmentss(Request $request)
-  {
-
-    return $this->uploadAttachment($request, 'attachment', $request->type, $request->type,null);
-
-  }
-
-  public function uploadManyAttachments(Request $request)
-  {
-
-    return response($this->uploadManyAttachment($request , 'attachments', $request->type, $request->type , null), 200);
-
-  }
 
 
 

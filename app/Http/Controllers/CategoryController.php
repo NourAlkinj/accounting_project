@@ -30,17 +30,17 @@ class CategoryController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $categoryWithItems = Category::whereNull('category_id')->with('children', 'items.units.barcodes')->get();;
-    $this->callActivityMethod('categories', 'index', $parameters);
+
     return response()->json($categoryWithItems, 200);
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
+
     $categories = Category::with('items.units.barcodes')->get();
-    $this->callActivityMethod('categories', 'all', $parameters);
+
     return response()->json($categories, 200);
   }
 
@@ -51,8 +51,15 @@ class CategoryController extends Controller
 
 
       $category = Category::create($request->all());
-      $parameters = ['request' => $request, 'id' => $category->id];
-      $this->callActivityMethod('categories', 'store', $parameters);
+
+
+      $result = $this->activityParameters($lang, 'store', 'category', $category,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
+
+
       event(new CategoriesUpdated([...Category::with('items.units.barcodes')->get()]));
       return response()->json([
 
@@ -74,9 +81,9 @@ class CategoryController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $category = Category::find($id);
-    $this->callActivityMethod('categories', 'show', $parameters);
+
     return response()->json($category, 200);
   }
 
@@ -85,12 +92,16 @@ class CategoryController extends Controller
   {
     $lang = $request->header('lang');
     $old_data = Category::find($id)->toJson();
-    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
     $category = Category::find($id);
 
     try {
       $category->update($request->all());
-      $this->callActivityMethod('categories', 'update', $parameters);
+      $result = $this->activityParameters($lang, 'update', 'category', $category,   'pc_name', $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
       event(new CategoriesUpdated([...Category::with('items.units.barcodes')->get()]));
 
       return response()->json([
@@ -113,7 +124,7 @@ class CategoryController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $category = Category::find($id);
       if ($this->numOfSubChilds(Category::class, Item::class, $id, 'category_id') > 0) {
         $errors =  ['message' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
@@ -126,7 +137,13 @@ class CategoryController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
       $category->delete();
-      $this->callActivityMethod('categories', 'delete', $parameters);
+
+      $result = $this->activityParameters($lang, 'delete', 'category', $category,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
+
       event(new CategoriesUpdated([...Category::with('items.units.barcodes')->get()]));
       return response()->json(['message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)], 200);
     } catch (CustomException $exc) {

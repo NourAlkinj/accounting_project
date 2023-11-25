@@ -51,20 +51,18 @@ class AccountController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $normalAccountTree = Account::whereNull('account_id')->where('is_normal', true)->with('normalAccountsTree')->select('id', 'name', 'code', 'account_id', 'is_client', 'final_account_id', 'currency_id')->get();
     $finalAccountsTree = Account::whereNull('result_account_id')->where('is_final', true)->with('finalAccountsTree')->select('id', 'name', 'code', 'result_account_id', 'is_client', 'final_account_id', 'currency_id')->get();
     $assemblyAccounts = Account::where('is_assembly', true)->select('id', 'name', 'code', 'assembly_normal_ids', 'is_client', 'final_account_id', 'currency_id')->get();
     $distributiveAccounts = Account::where('is_distributive', true)->select('id', 'name', 'code', 'distributive_normal_ids', 'is_client', 'final_account_id', 'currency_id')->get();
-    $this->callActivityMethod('accounts', 'mainTree', $parameters);
-    $dataTree = ['normalAccountTree' => $normalAccountTree, 'finalAccountsTree' => $finalAccountsTree, 'assemblyAccounts' => $assemblyAccounts, 'distributiveAccounts' => $distributiveAccounts];
+     $dataTree = ['normalAccountTree' => $normalAccountTree, 'finalAccountsTree' => $finalAccountsTree, 'assemblyAccounts' => $assemblyAccounts, 'distributiveAccounts' => $distributiveAccounts];
     return response()->json($dataTree, 200);
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('accounts', 'index', $parameters);
+
     $accounts = Account::all();
     return $accounts;
   }
@@ -74,14 +72,17 @@ class AccountController extends Controller
     $lang = $request->header('lang') ;
     $clientRequest = $request->get('client_exist');
     $account = Account::create($request->all());
-    $parameters = ['request' => $request, 'id' => $account->id];
+
     $this->validateCardType($account->id, Account::class, $request);
     if ($clientRequest == true) {
       $this->updateValueInDB($account->id, Account::class, 'is_client', true);
       $client = (new ClientController)->store($request, $account->id);
     }
+    $result = $this->activityParameters($lang, 'store', 'account', $account,  'pc_name' , null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('store', $table, $parameters);
 
-    $this->callActivityMethod('accounts', 'store', $parameters);
     event(new AccountsUpdated([...Account::all()]));
     event(new LeafNormalAccountsUpdated([...$this->getAllLeafNormal()]));
     return response()->json([
@@ -100,9 +101,9 @@ class AccountController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $account = Account::find($id);
-    $this->callActivityMethod('accounts', 'show', $parameters);
+
     return response()->json($account, 200);
   }
 
@@ -115,7 +116,7 @@ class AccountController extends Controller
     $old_data_account = Account::find($id)->toJson();
     $client = Client::where('account_id', $id)->first();
 
-    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data_account];
+//    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data_account];
     $account = Account::find($id);
     $account->update($request->all());
 
@@ -127,7 +128,15 @@ class AccountController extends Controller
       $resultStoreClient = (new ClientController)->store($request, $id);
     }
 
-    $this->callActivityMethod('accounts', 'update', $parameters);
+
+
+    $result = $this->activityParameters($lang, 'update', 'account', $account , 'pc_name' , $old_data_account);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('update', $table, $parameters);
+
+//    $this->callActivityMethod('accounts', 'update', $parameters);
+
     event(new AccountsUpdated([...Account::all()]));
     event(new LeafNormalAccountsUpdated([...$this->getAllLeafNormal()]));
     return response()->json([
@@ -185,7 +194,13 @@ class AccountController extends Controller
       }
 
     $account->delete();
-    $this->callActivityMethod('accounts', 'delete', $parameters);
+
+    $result = $this->activityParameters($lang, 'delete', 'account', $account , 'pc_name' , null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('delete', $table, $parameters);
+
+//    $this->callActivityMethod('accounts', 'delete', $parameters);
     $data= $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
     event(new AccountsUpdated([...Account::all()]));
     event(new LeafNormalAccountsUpdated([...$this->getAllLeafNormal()]));

@@ -32,23 +32,18 @@ class BranchController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
-    $BranchesAndUsersTree = Branch::whereNull('branch_id')->with('children', 'users')->get(); // for tree
-    $this->callActivityMethod('branches', 'Main Tree', $parameters);
+    $BranchesAndUsersTree = Branch::whereNull('branch_id')->with('children', 'users')->get();
     return $BranchesAndUsersTree;
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('branches', 'index', $parameters);
     $branches = Branch::with('users')->get();
     return $branches;
   }
 
   public function store(StoreBranchRequest $request)
   {
-
     $lang = $request->header('lang');
     DB::beginTransaction();
     try {
@@ -59,8 +54,14 @@ class BranchController extends Controller
         $this->updateValueInDB($branch->id, Branch::class, 'is_root', true);
       }
 
-      $parameters = ['request' => $request, 'id' => $branch->id];
-      $this->callActivityMethod('branches', 'store', $parameters);
+
+
+      $result = $this->activityParameters($lang, 'store', 'branch', $branch,     'pc_name' , null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
+
 
       event(new BranchesUpdated([...Branch::with('users')->get()]));
       $lang = $request->header('lang');
@@ -89,10 +90,8 @@ class BranchController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
     $branch = Branch::find($id);
     if ($branch) {
-      $this->callActivityMethod('branches', 'show', $parameters);
       return $branch;
     }
   }
@@ -114,7 +113,12 @@ class BranchController extends Controller
       if ($request->is_active) {
         $this->callActivateChildren($id);
       }
-      $this->callActivityMethod('branches', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'branch', $branch,     'pc_name' , $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
       event(new BranchesUpdated([...Branch::with('users')->get()]));
 
       DB::commit();
@@ -158,7 +162,13 @@ class BranchController extends Controller
     DB::beginTransaction();
     try {
       $branch->delete();
-      $this->callActivityMethod('branches', 'delete', $parameters);
+
+      $result = $this->activityParameters($lang, 'delete', 'branch', $branch,     'pc_name' , null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
+
       event(new BranchesUpdated([...Branch::with('users')->get()]));
       DB::commit();
       return response()->json([

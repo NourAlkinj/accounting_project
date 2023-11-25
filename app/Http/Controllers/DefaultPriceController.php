@@ -13,9 +13,9 @@ class DefaultPriceController extends Controller
 
     public function index()
     {
-        $parameters = ['id' => null];
+
         $allDefaultPrices = $this->commonQuery('default_prices', 1, 1);
-        $this->callActivityMethod('default_prices', 'index', $parameters);
+
         return response()->json($allDefaultPrices, 200);
     }
 

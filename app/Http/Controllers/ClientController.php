@@ -12,77 +12,95 @@ use App\Models\JournalEntryRecord;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use Lang\Locales\CommonWords;
-use Lang\Translate;
 use Lang\Locales\CommonWordsEnum;
+use Lang\Translate;
 
 class ClientController extends Controller
 {
-    use ActivityLog, CommonTrait;
-  public  $commonMessage;
+  use ActivityLog, CommonTrait;
+
+  public $commonMessage;
 
   function __construct()
   {
     $this->commonMessage = new Translate(new CommonWords());
   }
 
-    public function index()//done
-    {
-        $parameters = ['id' => null];
-        $allClients = Client::all();
-        $this->callActivityMethod('clients', 'index', $parameters);
-        return response()->json($allClients, 200);
-    }
+  public function index()//done
+  {
 
-    public function store( $request,$account_id)//done
-    {
-        $client = Client::create($request->all());
-        $this->updateValueInDB($client->id,Client::class, 'account_id',$account_id);
-        $parameters = ['request' => $request, 'id' => $client->id];
-        $this->callActivityMethod('clients', 'store', $parameters);
-    }
+    $allClients = Client::all();
 
-    public function show($accountId)//done
-    {
-        $client=Client::where('account_id', $accountId)->first();
-        $parameters = ['id' => $client->id];
-        $client= Client::find($client->id);
-        $this->callActivityMethod('clients', 'show', $parameters);
-        return response()->json( $client, 200);
-    }
+    return response()->json($allClients, 200);
+  }
+
+  public function store($request, $account_id)//done
+  {
+    $lang = app('request')->header('lang');
+    $client = Client::create($request->all());
+    $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
+
+    $result = $this->activityParameters($lang, 'store', 'category', $client,   'pc_name', null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('store', $table, $parameters);
 
 
-    public function update($request ,$id,$account_id)//done
-    {
-        $old_data = Client::find($id)->toJson();
-        $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
-        $client = Client::find($id);
-        $client->update($request->all());
-       $this->updateValueInDB($client->id,Client::class, 'account_id',$account_id);
-       $this->callActivityMethod('clients', 'update', $parameters);
-    }
+//      $this->callActivityMethod('clients', 'store', $parameters);
+  }
 
-    public function delete($accountId)//done
-    {
-      $lang  =   app('request')->header('lang');;
-      $client=Client::where('account_id', $accountId)->first();
-        $parameters = ['id' => $client->id];
+  public function show($accountId)//done
+  {
+    $client = Client::where('account_id', $accountId)->first();
 
-      if($this->isUseClient($client->id)) {
-        $errors = ['client' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+    $client = Client::find($client->id);
+
+    return response()->json($client, 200);
+  }
+
+
+  public function update($request, $id, $account_id)//done
+  {
+    $lang = app('request')->header('lang');
+    $old_data = Client::find($id)->toJson();
+//    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+    $client = Client::find($id);
+    $client->update($request->all());
+    $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
+
+    $result = $this->activityParameters($lang, 'update', 'client', $client,   'pc_name', $old_data);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('update', $table, $parameters);
+
+  }
+
+  public function delete($accountId)//done
+  {
+    $lang = app('request')->header('lang');;
+    $client = Client::where('account_id', $accountId)->first();
+
+    if ($this->isUseClient($client->id)) {
+      $errors = ['client' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);
       }
 
-        $client->delete();
-        $this->updateValueInDB($accountId,Account::class,'is_client',false);
-        $this->callActivityMethod('clients', 'delete', $parameters);
-        $data= $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
+    $client->delete();
+    $this->updateValueInDB($accountId, Account::class, 'is_client', false);
+
+    $result = $this->activityParameters($lang, 'delete', 'client', $client,   'pc_name', null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('delete', $table, $parameters);
+
+
+    $data = $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
         return response()->json(['message' => $data], 200);
     }
 
   public function all()
   {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('clients', 'allClients', $parameters);
+
     $clients = Client::all();
     return $clients;
   }
@@ -117,7 +135,6 @@ class ClientController extends Controller
 //    return ['id' => null, 'table' => null];
     return false;
   }
-
 
 
 }

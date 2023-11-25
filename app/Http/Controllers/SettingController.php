@@ -61,9 +61,9 @@ class SettingController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $setting = Setting::find($id);
-    $this->callActivityMethod('settings', 'show', $parameters);
+
     return response()->json($setting, 200);
   }
 
@@ -93,8 +93,8 @@ class SettingController extends Controller
       );
 
 
-      $parameters = ['request' => $request, 'id' => $setting->id];
-      $this->callActivityMethod('settings', 'store', $parameters);
+
+
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
 
@@ -114,12 +114,12 @@ class SettingController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $setting = Setting::find($id);
       $setting->delete();
-      $this->callActivityMethod('settings', 'delete', $parameters);
+
       return response()->json(['message' =>
-//      __('common.delete')
+
         $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
     ], 200);
   } catch (CustomException $exc) {
@@ -150,8 +150,7 @@ class SettingController extends Controller
           'user_id' => $user->id
         ]
       );
-      $parameters = ['request' => $request, 'id' => $setting->id];
-      $this->callActivityMethod('app_settings', 'save', $parameters);
+
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
         'id' => $setting->id,
@@ -182,8 +181,7 @@ class SettingController extends Controller
           'user_id' => $user->id
         ]
       );
-      $parameters = ['request' => $request, 'id' => $setting->id];
-      $this->callActivityMethod('report_settings', 'save', $parameters);
+
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
         'id' => $setting->id,

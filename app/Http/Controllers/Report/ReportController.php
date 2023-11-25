@@ -351,6 +351,7 @@ class ReportController extends Controller
     return $items;
   }
 
+
   public function getCostAccordingCostType($costType, $item_id, $unit_number, $currency_id)
   {
     if ($costType == 'min') {
@@ -526,6 +527,45 @@ class ReportController extends Controller
   }
 
 
+
+
+
+
+
+
+
+
+
+
+//------------------------- Activity Log -----------------------------//
+
+  public function activityLog(Request $request)
+  {
+
+    $price_between_from = $request->price_between ? $request->price_between['from'] : null;
+    $price_between_to = $request->price_between ? $request->price_between['to'] : null;
+
+    $results = [];
+    $item_report = new ReportBuilder(
+      new activityLogFilter(
+        $request->user_id,
+        $request->branch_id,
+
+        ),
+      [],
+      [
+
+        $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => false] : [],
+        $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => false] : [],
+      ]
+    );
+
+
+
+
+  }
+
+//------------------------- Activity Log End-----------------------------//
 }
 
 

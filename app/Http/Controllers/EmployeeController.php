@@ -30,18 +30,17 @@ class EmployeeController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $employees = Employee::all();
-    $this->callActivityMethod('employees', 'index', $parameters);
-    return response()->json($employees, 200);
+     return response()->json($employees, 200);
   }
 
 
   public function all()
   {
-    $parameters = ['id' => null];
+
     $employees = Employee::all();
-    $this->callActivityMethod('employees', 'allEmployees', $parameters);
+
     return response()->json($employees, 200);
   }
 
@@ -56,8 +55,11 @@ class EmployeeController extends Controller
       }
 
       $employee = Employee::create($request->all());
-      $parameters = ['request' => $request, 'id' => $employee->id];
-      $this->callActivityMethod('employees', 'store', $parameters);
+      $result = $this->activityParameters($lang, 'store', 'employee', $employee,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
       event(new EmployeesUpdated([...Employee::all()]));
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
@@ -78,9 +80,9 @@ class EmployeeController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $employee = Employee::find($id);
-    $this->callActivityMethod('employees', 'show', $parameters);
+
     return response()->json($employee, 200);
   }
 
@@ -90,7 +92,7 @@ class EmployeeController extends Controller
     try {
       $lang = $request->header('lang');
       $old_data = Employee::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
       $employee = Employee::find($id);
 
       if ($request['department_id'] == null || !Department::find($request['department_id'])) {
@@ -98,7 +100,11 @@ class EmployeeController extends Controller
       }
 
       $employee->update($request->all());
-      $this->callActivityMethod('employees', 'update', $parameters);
+      $result = $this->activityParameters($lang, 'update', 'employee', $employee,   'pc_name', $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
       event(new EmployeesUpdated([...Employee::all()]));
       $data = $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang);
 
@@ -121,10 +127,13 @@ class EmployeeController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $employee = Employee::find($id);
       $employee->delete();
-      $this->callActivityMethod('employees', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'employee', $employee,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
       event(new EmployeesUpdated([...Employee::all()]));
 
       return response()->json(['message' =>

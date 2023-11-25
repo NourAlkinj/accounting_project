@@ -379,12 +379,7 @@ trait  UserTrait
   }
 
 
-//  public function getUserIp(Request $request)
-//  {
-//    return $user_ip_address = $request->ip();
-//    // or :  $user_ip_address = \Request::ip();
-//
-//  }
+
 
 //  public function userDevice()
 //  {

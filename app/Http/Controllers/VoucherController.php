@@ -16,7 +16,7 @@ use Lang\Translate;
 
 class VoucherController extends Controller
 {
-  use CommonTrait, ActivityLog, VoucherRecordTrait , generateJournalEntryTrait;
+  use CommonTrait, ActivityLog, VoucherRecordTrait, generateJournalEntryTrait;
 
   public $commonMessage;
 
@@ -27,18 +27,17 @@ class VoucherController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $pagination = Voucher::with('branch', 'currency')->with('voucherTemplate')->select('id', 'branch_id', 'date', 'currency_id')->get();
-    $this->callActivityMethod('vouchers', 'Get All Vouchers ', $parameters);
     $data = ['pagination' => $pagination,];
     return response()->json([$data], 200);
   }
 
   public function vouchersAccordingToTemplate($id)
   {
-    $parameters = ['id' => null];
+
     $pagination = Voucher::with('branch', 'currency', 'account')->where('voucher_template_id', '=', $id)->select('id', 'branch_id', 'date', 'currency_id', 'account_id')->get();
-    $this->callActivityMethod('vouchers', 'Get All Vouchers According to Template', $parameters);
+
     $data = ['pagination' => $pagination,];
     return response()->json([$data], 200);
   }
@@ -47,31 +46,35 @@ class VoucherController extends Controller
   {
     try {
       $lang = $request->header('lang');
-      $voucher = Voucher::create([
-        'date' => $request['date'],
-        'time' => $request['time'],
-        'receipt_number' => $request['receipt_number'],
-        'currency_id' => $request['currency_id'],
-        'account_id' => $request['account_id'],
-        'parity' => $request['parity'],
-        'security_level' => $request['security_level'],
-        'debit_total' => $request['debit_total'],
-        'credit_total' => $request['credit_total'],
-        'branch_id' => $request['branch_id'],
-        'notes' => $request['notes'],
-        'account_final_cash' => $request['account_final_cash'],
-        'account_current_cash' => $request['account_current_cash'],
-        'voucher_template_id' => $request['voucher_template_id'],
-      ]);
+      $voucher = Voucher::create($request->all()
+//        [
+//        'date' => $request['date'],
+//        'time' => $request['time'],
+//        'receipt_number' => $request['receipt_number'],
+//        'currency_id' => $request['currency_id'],
+//        'account_id' => $request['account_id'],
+//        'parity' => $request['parity'],
+//        'security_level' => $request['security_level'],
+//        'debit_total' => $request['debit_total'],
+//        'credit_total' => $request['credit_total'],
+//        'branch_id' => $request['branch_id'],
+//        'notes' => $request['notes'],
+//        'account_final_cash' => $request['account_final_cash'],
+//        'account_current_cash' => $request['account_current_cash'],
+//        'voucher_template_id' => $request['voucher_template_id'],
+//      ]
+      );
       $this->saveVoucherRecord($request, $voucher->id);
 
 //      $this->generateJournalEntry($request, $voucher->id, $voucher->voucher_template_id);
       $this->generateJournalEntryFromVoucher($request, $voucher->id, $voucher->voucher_template_id);
 
-      $parameters = ['request' => $request, 'id' => $voucher->id];
-      $this->callActivityMethod('vouchers', 'store', $parameters);
+      $result = $this->activityParameters($lang, 'store', 'voucher', $voucher,  'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
       return response()->json([
-//      'message' => __('common.store'), 'type' => 'Success',
+
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
 
       'id' => $voucher->id,
@@ -89,10 +92,10 @@ class VoucherController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $voucher = Voucher::with('records')->find($id);
     if ($voucher) {
-      $this->callActivityMethod('vouchers', 'show', $parameters);
+
       return $voucher;
     }
   }
@@ -103,27 +106,30 @@ class VoucherController extends Controller
     try {
       $lang = $request->header('lang');
       $old_data = Voucher::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
-      $voucher = Voucher::find($id);
-      $voucher->update([
-        'date' => $request['date'],
-        'time' => $request['time'],
-        'receipt_number' => $request['receipt_number'],
-        'currency_id' => $request['currency_id'],
-        'parity' => $request['parity'],
-        'security_level' => $request['security_level'],
-        'debit_total' => $request['debit_total'],
-        'credit_total' => $request['credit_total'],
-        'branch_id' => $request['branch_id'],
-        'notes' => $request['notes'],
-        'voucher_template_id' => $request['voucher_template_id'],
-      ]);
-      $this->saveVoucherRecord($request, $voucher->id);
-      $this->callActivityMethod('vouchers', 'update', $parameters);
-      return response()->json([
-//      'message' => __('common.update'), 'type' => 'Success',
-        'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
 
+      $voucher = Voucher::find($id);
+      $voucher->update($request->all()
+//        [
+//        'date' => $request['date'],
+//        'time' => $request['time'],
+//        'receipt_number' => $request['receipt_number'],
+//        'currency_id' => $request['currency_id'],
+//        'parity' => $request['parity'],
+//        'security_level' => $request['security_level'],
+//        'debit_total' => $request['debit_total'],
+//        'credit_total' => $request['credit_total'],
+//        'branch_id' => $request['branch_id'],
+//        'notes' => $request['notes'],
+//        'voucher_template_id' => $request['voucher_template_id'],
+//      ]
+      );
+      $this->saveVoucherRecord($request, $voucher->id);
+      $result = $this->activityParameters($lang, 'update', 'voucher', $voucher,  'pc_name', $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+      return response()->json([
+        'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
       'id' => $voucher->id,
 
     ], 200);
@@ -141,7 +147,7 @@ class VoucherController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $voucher = Voucher::find($id);
       $voucher_Records = $voucher->records;
       foreach ($voucher_Records as $voucher_Record) {
@@ -152,11 +158,12 @@ class VoucherController extends Controller
         return response()->json(['errors' => $errors], 404);
       }
       $voucher->delete();
-      $this->callActivityMethod('vouchers', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'voucher', $voucher,  'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
       return response()->json(['message' =>
-//      __('common.delete')
         $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
-
       ], 200);
   } catch (CustomException $exc) {
       return response()->json(
@@ -172,7 +179,6 @@ class VoucherController extends Controller
   public function forceDelete($id)
   {
     $lang = app('request')->header('lang');
-    $parameters = ['id' => $id];
     $voucher = Voucher::find($id);
     $voucher_Records = $voucher->records;
     foreach ($voucher_Records as $voucher_Record) {
@@ -180,14 +186,15 @@ class VoucherController extends Controller
     }
     if (!$voucher) {
       $errors = ['message' => [
-//        __("voucher.voucher_not_found")
         $this->commonMessage->t(CommonWordsEnum::voucher_not_found->name, $lang),
-
       ]];
       return response()->json(['errors' => $errors], 404);
     }
     $voucher->forceDelete();
-    $this->callActivityMethod('vouchers', 'delete', $parameters);
+    $result = $this->activityParameters($lang, 'forceDelete', 'voucher', $voucher,  'pc_name', null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('forceDelete', $table, $parameters);
     return response()->json(['message' =>
       $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
       , 'type' => 'Success',], 200);
@@ -201,6 +208,10 @@ class VoucherController extends Controller
     if ($voucher && $voucher_Records) {
       $voucher->restore();
       $voucher_Records->restore();
+      $result = $this->activityParameters($lang, 'restore', 'voucher', $voucher,  'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('restore', $table, $parameters);
       return response()->json(['message' => __('common.restore')], 200);
     } else {
       return response()->json(['message' => __('common.error_restore')], 404);
