@@ -467,7 +467,7 @@ Route::group(['namespace' => 'Report', 'prefix' => 'report'], function () {
 
   Route::get('accounts-balances-report', [ReportController::class, 'accountsBalancesReport'])->name('report.accountsBalancesReport');
 
-
+  Route::get('activity-log', [ReportController::class, 'activityLog']) ;
 });
 
 
@@ -698,7 +698,7 @@ Route::post('uploadManyAttachments', [AttachmentController::class, 'uploadManyAt
 Route::post('change-items-price', [ReportController::class, 'changeItemsPrice']);
 
 Route::get('get-user-ip', [Controller::class, 'getUserIp']) ;
-Route::get('activity-log', [ReportController::class, 'activityLog']) ;
+
 
 
 Route::group(['namespace' => 'notifications', 'prefix' => 'notifications'], function () {
