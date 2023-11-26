@@ -27,19 +27,11 @@ class activityLogFilter {
       return $res;
     }
 
-
-
     public function date_range_filter($res): array {
       $res = array_filter($res, function($record) {
-        return $record['date'] > $this->created_between['from'] &&  $record['date'] < $this->created_between['to'];
+        return $record['created_at'] > $this->created_between['from'] &&  $record['created_at'] < $this->created_between['to'];
       });
       return $res;
     }
-
-
-
-
-
-
 
 }

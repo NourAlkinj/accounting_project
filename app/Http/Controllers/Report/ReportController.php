@@ -116,54 +116,54 @@ class ReportController extends Controller
       );
 
       foreach ($account_report->result as $record) {
-        $record =[
-                'id'=>$record['id'] ,
-                'index'=> $record['index'],
-                'date'=>$record['date'],
-                'account_id'=>$record['account_id'],
-                'main_account_name'=>  Account::find($record['account_id']) ? Account::find($record['account_id'])->name : null,
-                'credit'=> $record['credit'],
-                'debit'=> $record['debit'],
-                'relative_debit'=> $record['relative_debit'],
-                'relative_credit'=> $record['relative_credit'],
-                'notes'=> $record['notes'],
-                 'cost_center_id'=> $record['cost_center_id'],
-                 'cost_center_name'=> CostCenter::find($record['cost_center_id'])? CostCenter::find($record['cost_center_id'])->name : null,
-          'currency_id'=> $record['currency_id'],
-          'currency_name'=>  Currency::find($record['currency_id']) ? Currency::find($record['currency_id'])->name : null,
-                'parity'=> $record['parity'],
-                'today_parity'=> $record['today_parity'],
-                'equivalent'=> $record['equivalent'],
-          'contra_account_id'=> $record['contra_account_id'],
-          'contra_account_name'=>Account::find($record['contra_account_id']) ? Account::find($record['contra_account_id'])->name : null,
-                'journal_entry_id'=> $record['journal_entry_id'],
-                'current_balance'=> $record['current_balance'],
-                'final_balance'=> $record['final_balance'],
-                'is_post_to_account'=> $record['is_post_to_account'],
-                'post_to_account_date'=> $record['post_to_account_date'],
-                'relative_final_balance'=> $record['relative_final_balance'],
-                'relative_current_balance'=> $record['relative_current_balance'],
-                'source_name'=> $record['source_name'],
-                'source_template_id'=> $record['source_template_id'],
-                'source_id'=> $record['source_id'],
-                'branch_id'=> $record['branch_id'],
-                'branch_name'=> Branch::find($record['branch_id'])? Branch::find($record['branch_id'])->name : null,
-                'user_id'=> $record['user_id'],
-                'user_name'=> User::find($record['user_id']) ? User::find($record['user_id'])->name : null,
-                'client_id'=> $record['client_id'],
-                'client_name'=> Client::find($record['client_id']) ? Client::find($record['client_id'])->name : null,
-                'item_id'=> $record['item_id'],
-                'item_name'=>  Item::find($record['item_id']) ? Item::find($record['item_id'])->name : null,
-                'employee_id'=> $record['employee_id'],
-                'employee_name'=> Employee::find($record['employee_id']) ? Employee::find($record['employee_id'])->name : null,
-                'asset_id'=> $record['asset_id'],
-                'asset_name'=> Asset::find($record['asset_id'])? Asset::find($record['asset_id'])->name : null,
-                'category_id'=> $record['category_id'],
-                'category_name'=> Category::find($record['category_id']) ? Category::find($record['category_id'])->name : null,
-                'deleted_at'=> $record['deleted_at'],
-                'created_at'=> $record['created_at'],
-                'updated_at'=> $record['updated_at'],
-          ];
+        $record = [
+          'id' => $record['id'],
+          'index' => $record['index'],
+          'date' => $record['date'],
+          'account_id' => $record['account_id'],
+          'main_account_name' => Account::find($record['account_id']) ? Account::find($record['account_id'])->name : null,
+          'credit' => $record['credit'],
+          'debit' => $record['debit'],
+          'relative_debit' => $record['relative_debit'],
+          'relative_credit' => $record['relative_credit'],
+          'notes' => $record['notes'],
+          'cost_center_id' => $record['cost_center_id'],
+          'cost_center_name' => CostCenter::find($record['cost_center_id']) ? CostCenter::find($record['cost_center_id'])->name : null,
+          'currency_id' => $record['currency_id'],
+          'currency_name' => Currency::find($record['currency_id']) ? Currency::find($record['currency_id'])->name : null,
+          'parity' => $record['parity'],
+          'today_parity' => $record['today_parity'],
+          'equivalent' => $record['equivalent'],
+          'contra_account_id' => $record['contra_account_id'],
+          'contra_account_name' => Account::find($record['contra_account_id']) ? Account::find($record['contra_account_id'])->name : null,
+          'journal_entry_id' => $record['journal_entry_id'],
+          'current_balance' => $record['current_balance'],
+          'final_balance' => $record['final_balance'],
+          'is_post_to_account' => $record['is_post_to_account'],
+          'post_to_account_date' => $record['post_to_account_date'],
+          'relative_final_balance' => $record['relative_final_balance'],
+          'relative_current_balance' => $record['relative_current_balance'],
+          'source_name' => $record['source_name'],
+          'source_template_id' => $record['source_template_id'],
+          'source_id' => $record['source_id'],
+          'branch_id' => $record['branch_id'],
+          'branch_name' => Branch::find($record['branch_id']) ? Branch::find($record['branch_id'])->name : null,
+          'user_id' => $record['user_id'],
+          'user_name' => User::find($record['user_id']) ? User::find($record['user_id'])->name : null,
+          'client_id' => $record['client_id'],
+          'client_name' => Client::find($record['client_id']) ? Client::find($record['client_id'])->name : null,
+          'item_id' => $record['item_id'],
+          'item_name' => Item::find($record['item_id']) ? Item::find($record['item_id'])->name : null,
+          'employee_id' => $record['employee_id'],
+          'employee_name' => Employee::find($record['employee_id']) ? Employee::find($record['employee_id'])->name : null,
+          'asset_id' => $record['asset_id'],
+          'asset_name' => Asset::find($record['asset_id']) ? Asset::find($record['asset_id'])->name : null,
+          'category_id' => $record['category_id'],
+          'category_name' => Category::find($record['category_id']) ? Category::find($record['category_id'])->name : null,
+          'deleted_at' => $record['deleted_at'],
+          'created_at' => $record['created_at'],
+          'updated_at' => $record['updated_at'],
+        ];
 
         $accounts_records[] = $record;
       }
@@ -185,12 +185,12 @@ class ReportController extends Controller
     if (!$by_account_currency) {
       $currencyID = $currency_id;
     }
-    $accounts = array_map(function ($acc) use ( $currencyID, $accounts_records, $previous_date_filter_accounts_records, $after_date_filter_accounts_records) {
+    $accounts = array_map(function ($acc) use ($currencyID, $accounts_records, $previous_date_filter_accounts_records, $after_date_filter_accounts_records) {
       if ($currencyID == null) {
         $currencyID = $acc->currency_id;
       }
 
-      $acc['currency_name'] =  Currency::find($currencyID)->name ;
+      $acc['currency_name'] = Currency::find($currencyID)->name;
 
       $acc['children'] = array_filter($accounts_records, function ($record) use ($acc) {
         return $acc['id'] == $record['account_id'];
@@ -227,16 +227,16 @@ class ReportController extends Controller
     }, $accounts);
 
     //output
-    $accounts = array_map(function ($account){
+    $accounts = array_map(function ($account) {
       return [
         'id' => $account['id'],
         'code' => $account['code'],
         'name' => $account['name'],
         'foreign_name' => $account['foreign_name'],
         'card_type' => $account['card_type'],
-        'main_account_name' => Account::find($account['account_id'])?Account::find($account['account_id'])->name:null,
-        'result_account_name' => Account::find($account['result_account_id'])?Account::find($account['result_account_id'])->name:null ,
-        'final_account_name' => Account::find($account['final_account_id'])?Account::find($account['final_account_id'])->name:null ,
+        'main_account_name' => Account::find($account['account_id']) ? Account::find($account['account_id'])->name : null,
+        'result_account_name' => Account::find($account['result_account_id']) ? Account::find($account['result_account_id'])->name : null,
+        'final_account_name' => Account::find($account['final_account_id']) ? Account::find($account['final_account_id'])->name : null,
         'currency_name' => $account['currency_name'],
         'ratio' => $account['ratio'],
         'parity' => $account['parity'],
@@ -260,16 +260,16 @@ class ReportController extends Controller
         'tax_ratio' => $account['tax_ratio'],
         'fixed_tax' => $account['fixed_tax'],
         'enable_tax' => $account['enable_tax'],
-        'credit'=> $account['credit'],
-        'debit'=>  $account['debit'],
-        'current_balance'=> $account['current_balance'] ,
-        'previous_credit'=> $account['previous_credit'] ,
-        'previous_debit'=> $account['previous_debit'],
-        'previous_current_balance'=> $account['previous_current_balance'] ,
-        'after_credit'=> $account['after_credit'] ,
-        'after_debit'=> $account['after_debit'] ,
-        'after_current_balance'=> $account['after_current_balance'],
-        'children'=>$account['children'],
+        'credit' => $account['credit'],
+        'debit' => $account['debit'],
+        'current_balance' => $account['current_balance'],
+        'previous_credit' => $account['previous_credit'],
+        'previous_debit' => $account['previous_debit'],
+        'previous_current_balance' => $account['previous_current_balance'],
+        'after_credit' => $account['after_credit'],
+        'after_debit' => $account['after_debit'],
+        'after_current_balance' => $account['after_current_balance'],
+        'children' => $account['children'],
       ];
     }, $accounts);
 
@@ -527,40 +527,27 @@ class ReportController extends Controller
   }
 
 
-
-
-
-
-
-
-
-
-
-
 //------------------------- Activity Log -----------------------------//
 
   public function activityLog(Request $request)
   {
-
-    $price_between_from = $request->price_between ? $request->price_between['from'] : null;
-    $price_between_to = $request->price_between ? $request->price_between['to'] : null;
 
     $results = [];
     $item_report = new ReportBuilder(
       new activityLogFilter(
         $request->user_id,
         $request->branch_id,
-
+        $request->created_between,
         ),
       [],
       [
-
-        $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => false] : [],
-        $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => false] : [],
+        $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => true] : [],
+        $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => true] : [],
+        $request->created_between ? ['name' => 'date_range_filter', 'affects_final_result' => true] : [],
       ]
     );
-
-
+    $results = $item_report;
+    return $results;
 
 
   }
