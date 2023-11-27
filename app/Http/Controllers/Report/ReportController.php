@@ -95,8 +95,7 @@ class ReportController extends Controller
               null,
               null,
               null,
-              null,
-
+              null
           )
         ),
         [],
@@ -477,16 +476,16 @@ class ReportController extends Controller
                   $request->client_id ? ['name' => 'client_filter', 'affects_final_result' => true] : [],
                   $request->cost_center_id ? ['name' => 'cost_center_filter', 'affects_final_result' => true] : [],
                   $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => true] : [],
-                  $request->created_between ? ['name' => 'previous_date_filter', 'affects_final_result' => false] : [],
-                  $request->created_between ? ['name' => 'after_date_filter', 'affects_final_result' => false] : [],
-                  $request->created_between ? ['name' => 'date_range_filter', 'affects_final_result' => true] : [],
+                  optional($request->created_between) ? ['name' => 'previous_date_filter', 'affects_final_result' => false] : [],
+                  optional($request->created_between) ? ['name' => 'after_date_filter', 'affects_final_result' => false] : [],
+                  optional($request->created_between) ? ['name' => 'date_range_filter', 'affects_final_result' => true] : [],
                   $request->contains ? ['name' => 'contains_filter', 'affects_final_result' => true] : [],
                   $request->not_contains ? ['name' => 'not_contains_filter', 'affects_final_result' => true] : [],
                   $request->debit_only ? ['name' => 'debit_only_filter', 'affects_final_result' => true] : [],
                   $request->credit_only ? ['name' => 'credit_only_filter', 'affects_final_result' => true] : [],
                   $request->all ? ['name' => 'all_filter', 'affects_final_result' => true] : [],
-                 optional( $request->show_posted_balance) ? ['name' => 'is_post_to_account_filter', 'affects_final_result' => false] : [],
-                  $request->show_not_posted_balance ? ['name' => 'is_not_post_to_account_filter', 'affects_final_result' => false] : [],
+                 optional($request->show_posted_balance) ? ['name' => 'is_post_to_account_filter', 'affects_final_result' => false] : [],
+                 optional($request->show_not_posted_balance) ? ['name' => 'is_not_post_to_account_filter', 'affects_final_result' => false] : [],
 
                 ]
           );
@@ -513,7 +512,6 @@ class ReportController extends Controller
 //      return $not_post_to_accounts_records;
 
     $currencyID = null;
-
     $currency_id = $request->input('currency_id');
     $by_account_currency = $request->input('by_account_currency');
     if (!$by_account_currency) {
@@ -538,18 +536,13 @@ class ReportController extends Controller
         $after_date_filter_Specific_account_records = array_filter($after_date_filter_accounts_records, function ($record) use ($acc) {
             return $acc['id'] == $record['account_id'];
         });
-
         $Specific_post_to_accounts_records = array_filter($post_to_accounts_records, function ($record) use ($acc) {
             return $acc['id'] == $record['account_id'];
         });
         $Specific_not_post_to_accounts_records = array_filter($not_post_to_accounts_records, function ($record) use ($acc) {
             return $acc['id'] == $record['account_id'];
         });
-
-
-//      $maxLimit= $acc['profit_ratio'];
-
-
+      $acc['children']  =$accChildren ;
       $acc['credit']  =$this->sumCredit($accChildren) ;
       $acc['debit'] =$this->sumDebit($accChildren);
       $acc['current_balance'] = $this->getCredit($accChildren, $currencyID) -  $this->getDebit($accChildren, $currencyID);
@@ -583,6 +576,12 @@ class ReportController extends Controller
                   return  $account['current_balance']> $account['amount'] ;
           });
       }
+    if(!$request->read_empty_accounts)
+    {
+      $accounts = array_filter($accounts, function ($account)  {
+          return  $account['children'];
+      });
+    }
 
 //    return $accounts;
 
@@ -604,7 +603,7 @@ class ReportController extends Controller
         'max_limit' => $acc['max_limit'],
         'currency' => $acc['account_currency_name'],
         'report_currency' => $acc['report_currency_name'],
-        'max_limit_differencies' => $acc['max_limit'] -  $acc['current_balance'] ,
+        'max_limit_differencies' =>$acc['amount'] -  $acc['current_balance'] ,
         'posted_balance' =>   $acc['show_posted_balance'] ,
         'unposted_balance' =>  $acc['show_not_posted_balance'],
       ];
@@ -613,7 +612,6 @@ class ReportController extends Controller
   }
 
 
-<<<<<<< HEAD
     public function sumCredit($records)
     {
         $sumCredit=0;
@@ -632,7 +630,6 @@ class ReportController extends Controller
     }
 
 
-=======
 //------------------------- Activity Log -----------------------------//
 
   public function activityLog(Request $request)
@@ -658,7 +655,6 @@ class ReportController extends Controller
   }
 
 //------------------------- Activity Log End-----------------------------//
->>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 }
 
 
