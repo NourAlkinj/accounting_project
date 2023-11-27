@@ -643,9 +643,9 @@ class ReportController extends Controller
         ),
       [],
       [
-        $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => false] : [],
-        $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => false] : [],
-        $request->created_between ? ['name' => 'date_range_filter', 'affects_final_result' => false] : [],
+        $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => true] : [],
+        $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => true] : [],
+        $request->created_between ? ['name' => 'date_range_filter', 'affects_final_result' => true] : [],
       ]
     );
     foreach ($item_report->result as $record) {
