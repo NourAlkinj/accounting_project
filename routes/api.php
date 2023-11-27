@@ -170,9 +170,6 @@ Route::get('/locale/{locale}', function (string $locale) {
   return \Illuminate\Support\Facades\App::getLocale();
 });
 
-Route::post('chang-lang', [LanguageController::class, 'changeLanguage']);
-Route::get('get-auth-lang', [LanguageController::class, 'getAuthLang']);
-
 
 //-------User------//
 
@@ -180,7 +177,6 @@ Route::group(['namespace' => 'User', 'prefix' => 'user', 'auth'], function () {
   Route::post('/login', [UserController::class, 'login'])->name('login');
   Route::get('index', [UserController::class, 'index'])->name('user.index');
   Route::get('all', [UserController::class, 'all'])->name('user.all');
-
   Route::post('store', [UserController::class, 'store'])->name('user.store');
   Route::get('show/{id}', [UserController::class, 'show'])->name('user.show');
   Route::post('update/{id}', [UserController::class, 'update'])->name('user.update');
@@ -201,10 +197,9 @@ Route::group(['namespace' => 'User', 'prefix' => 'user', 'auth'], function () {
   Route::get('root', [UserController::class, 'callRoot'])->name('user.callRoot');
   Route::get('not-root', [UserController::class, 'callNotRoot'])->name('user.callNotRoot');
   Route::get('Permission', [UserController::class, 'Permission'])->name('user.Permission');
-
-
   Route::get('set-all-permissions-to-admin', [UserController::class, 'setAllPermissionsToAdmin']);
   Route::get('is-use-user/{id}', [UserController::class, 'isUseUser'])->name('user.isUseUser');
+  Route::get('get-logs', [UserController::class, 'getLogs']);
 
 
 });
@@ -229,7 +224,6 @@ Route::group(['namespace' => 'CompanyInformation', 'prefix' => 'company_informat
 Route::group(['namespace' => 'Category', 'prefix' => 'category', 'auth'], function () {
   Route::get('index', [CategoryController::class, 'index'])->name('category.index');
   Route::get('all', [CategoryController::class, 'all'])->name('category.all');
-
   Route::post('store', [CategoryController::class, 'store'])->name('category.store');
   Route::get('show/{id}', [CategoryController::class, 'show'])->name('category.show');
   Route::post('update/{id}', [CategoryController::class, 'update'])->name('category.update');
@@ -251,16 +245,10 @@ Route::group(['namespace' => 'Item', 'prefix' => 'item', 'auth'], function () {
   Route::get('call-generate-codes/{id}', [ItemController::class, 'callGenerateCodes'])->name('item.callGenerateCodes');
   Route::get('call-get-name-and-code/{id}', [ItemController::class, 'callGetNameAndCode'])->name('item.callGetNameAndCode');
   Route::get('get-item-by-id-or-barcode', [ItemController::class, 'getItemByIdOrBarcode'])->name('item.getItemByIdOrBarcode');
-
   Route::get('get-cost/{item_id}/{unit_id}/{store_id}/{currency_id}', [ItemController::class, 'getCost'])->name('bill.getCost');
-
-
   Route::get('get-item-max-purchase-cost/{item_id}/{unit_id}/{currency_id}', [ItemController::class, 'getItemMaxPurchaseCost']);
-
   Route::get('get-item-min-purchase-cost/{item_id}/{unit_id}/{currency_id}', [ItemController::class, 'getItemMinPurchaseCost']);
-
   Route::get('get-item-last-purchase-cost/{item_id}/{unit_id}/{currency_id}', [ItemController::class, 'getItemLastPurchaseCost']);
-
   Route::get('get-item-FIFO-cost/{currency_id}', [ItemController::class, 'getItemFIFOCost']);
 
 
@@ -479,7 +467,7 @@ Route::group(['namespace' => 'Report', 'prefix' => 'report'], function () {
 
   Route::get('accounts-balances-report', [ReportController::class, 'accountsBalancesReport'])->name('report.accountsBalancesReport');
 
-
+  Route::get('activity-log', [ReportController::class, 'activityLog']) ;
 });
 
 
@@ -683,17 +671,16 @@ Route::group(['namespace' => 'ReportTemplate', 'prefix' => 'reportTemplate', 'au
 Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], function () {
   Route::get('create/{databaseName}', [DatabaseController::class, 'create']);
   Route::get('show', [DatabaseController::class, 'show']);
-  Route::post('switchDatabase', [DatabaseController::class, 'switchDatabase']);
-  Route::get('restore/{databaseName}', [DatabaseController::class, 'restore']);
-  Route::get('backup/{databaseName}', [DatabaseController::class, 'backup']);
-
+//    Route::post('switchDatabase/{name}', [DatabaseController::class, 'switchDatabase']);
+  Route::get('switchDatabase/{name}', [DatabaseController::class, 'switchDatabase']);
+  Route::get('selectDatabase/{name}', [DatabaseController::class, 'selectDatabase']);
+  Route::get('restore/{databaseName}/{backupPath}', [DatabaseController::class, 'restore']);
   Route::get('run_migration', [DatabaseController::class, 'runMigration']);
   Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
   Route::get('run_migration_fresh', [DatabaseController::class, 'runMigrationFresh']);
-
-
-  Route::get('backup_database', [DatabaseController::class, 'backupDatabase']);
-  Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
+  Route::post('backup_database', [DatabaseController::class, 'backupDatabase']);
+  Route::get('get_current_database_information', [DatabaseController::class, 'getCurrentDatabaseInformation']);
+  Route::get('settings-database', [DatabaseController::class, 'settingsDatabase']);
 
 });
 
@@ -701,16 +688,17 @@ Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], functi
 //Route::get('get-name', [AccountController::class, 'getName'])->name('account.getName');
 
 
-Route::post('save-images', [Controller::class, 'saveImages']);
-
-Route::post('save-images', [Controller::class, 'saveImages']);
+Route::post('save-images', [AttachmentController::class, 'saveImages']);
 
 
-Route::post('upload-attachment', [Controller::class, 'uploadAttachmentss']);
-Route::post('uploadManyAttachments', [Controller::class, 'uploadManyAttachments']);
+Route::post('upload-attachment', [AttachmentController::class, 'uploadAttachmentss']);
+Route::post('uploadManyAttachments', [AttachmentController::class, 'uploadManyAttachments']);
 
 
 Route::post('change-items-price', [ReportController::class, 'changeItemsPrice']);
+
+Route::get('get-user-ip', [Controller::class, 'getUserIp']) ;
+
 
 
 Route::group(['namespace' => 'notifications', 'prefix' => 'notifications'], function () {
@@ -718,5 +706,8 @@ Route::group(['namespace' => 'notifications', 'prefix' => 'notifications'], func
 
   Route::get('register-as-seen/{user_id}/{id}', [NotificationsController::class, 'registerAsSeen'])->name('registerAsSeen');
   Route::get('delete/{user_id}/{id}', [NotificationsController::class, 'delete'])->name('delete');
+
+
+
 
 });

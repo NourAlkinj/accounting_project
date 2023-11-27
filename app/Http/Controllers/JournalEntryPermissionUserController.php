@@ -29,10 +29,10 @@ class JournalEntryPermissionUserController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
-    $journalEnteryPermissionaUser = JournalEntryPermissionUser::all();
-    $this->callActivityMethod('journal_entry_permission_users', 'index', $parameters);
-    return response()->json($journalEnteryPermissionaUser, 200);
+
+    $journalEntryPermissionUser = JournalEntryPermissionUser::all();
+
+    return response()->json($journalEntryPermissionUser, 200);
   }
 
   public function store(JournalEntriesRequest $request)
@@ -52,7 +52,7 @@ class JournalEntryPermissionUserController extends Controller
         ]
       );
       return response()->json(['message' =>
-//      __('common.update')
+
         $this->commonMessage->t(CommonWordsEnum::save->name, $lang)
 
       ], 200);
@@ -64,10 +64,10 @@ class JournalEntryPermissionUserController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => null];
-    $journalEnteryPermissionaUser = JournalEntryPermissionUser::find($id);
-    $this->callActivityMethod('journal_entry_permission_users', 'show', $parameters);
-    return response()->json($journalEnteryPermissionaUser, 200);
+
+    $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+
+    return response()->json($journalEntryPermissionUser, 200);
   }
 
 
@@ -75,13 +75,13 @@ class JournalEntryPermissionUserController extends Controller
   {
     try {
       $lang = $request->header('lang');
-      $old_data = JournalEntryPermissionUser::find($id)->toJson();
-      $journalEnteryPermissionUser = JournalEntryPermissionUser::find($id);
-      $journalEnteryPermissionUser->update($request->all());
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
-      $this->callActivityMethod('journal_entry_permission_users', 'update', $parameters);
+
+      $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+      $journalEntryPermissionUser->update($request->all());
+
+
       return response()->json(['message' =>
-//      __('common.update')
+
         $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang)
 
     ], 200);
@@ -96,12 +96,12 @@ class JournalEntryPermissionUserController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
-      $journalEnteryPermissionUser = JournalEntryPermissionUser::find($id);
-      $journalEnteryPermissionUser->delete();
-      $this->callActivityMethod('journal_entry_permission_users', 'delete', $parameters);
+
+      $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+      $journalEntryPermissionUser->delete();
+
       return response()->json(['message' =>
-//      __('common.delete')
+
         $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
 
     ], 200);

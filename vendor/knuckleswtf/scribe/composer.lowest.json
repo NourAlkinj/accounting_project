@@ -16,7 +16,11 @@
         }
     ],
     "require": {
+<<<<<<< HEAD
         "php": ">=7.4",
+=======
+        "php": ">=8.0",
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         "ext-fileinfo": "*",
         "ext-json": "*",
         "ext-pdo": "*",
@@ -50,9 +54,12 @@
         "symfony/css-selector": "^5.4|^6.0",
         "symfony/dom-crawler": "^5.4|^6.0"
     },
+<<<<<<< HEAD
     "suggest": {
         "league/fractal": "Required for transformers support"
     },
+=======
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     "autoload": {
         "psr-4": {
             "Knuckles\\Scribe\\": "src/",
@@ -67,7 +74,11 @@
     "scripts": {
         "lint": "phpstan analyse -c ./phpstan.neon src camel --memory-limit 1G",
         "test": "phpunit --stop-on-failure --exclude-group dingo",
+<<<<<<< HEAD
         "test-ci": "phpunit --exclude-group dingo",
+=======
+        "test-ci": "pest --exclude-group dingo --coverage --min=80",
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         "test-parallel": "paratest -p16 --stop-on-failure --exclude-group dingo",
         "test-parallel-ci": "paratest -p16 --exclude-group dingo"
     },

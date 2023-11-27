@@ -1,6 +1,11 @@
 <?php declare(strict_types = 1);
 namespace TheSeer\Tokenizer;
 
+<<<<<<< HEAD
+=======
+use function var_dump;
+
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 class Tokenizer {
 
     /**
@@ -70,6 +75,21 @@ class Tokenizer {
             $line   = $tok[2];
             $values = \preg_split('/\R+/Uu', $tok[1]);
 
+<<<<<<< HEAD
+=======
+            if (!$values) {
+                $result->addToken(
+                    new Token(
+                        $line,
+                        \token_name($tok[0]),
+                        '{binary data}'
+                    )
+                );
+
+                continue;
+            }
+
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             foreach ($values as $v) {
                 $token = new Token(
                     $line,
@@ -100,6 +120,7 @@ class Tokenizer {
         $final = new TokenCollection();
 
         foreach ($tokens as $token) {
+<<<<<<< HEAD
             if ($prev === null) {
                 $final->addToken($token);
                 $prev = $token;
@@ -107,6 +128,8 @@ class Tokenizer {
                 continue;
             }
 
+=======
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             $gap = $token->getLine() - $prev->getLine();
 
             while ($gap > 1) {

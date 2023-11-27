@@ -75,6 +75,8 @@ class RoleSeeder extends Seeder
       $allPermissions = Permission::all();
       foreach ($allPermissions as $permission) {
         $adminUser->givePermissionTo($permission['name']);
+                $roleAdmin->givePermissionTo($permission['name']);
+
       }
 
         $adminUser->assignRole('Admin');

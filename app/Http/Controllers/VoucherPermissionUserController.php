@@ -16,9 +16,9 @@ class VoucherPermissionUserController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $voucherPermissionaUser = VoucherPermissionUser::all();
-    $this->callActivityMethod('voucher_permission_users', 'index', $parameters);
+
     return response()->json($voucherPermissionaUser, 200);
   }
 

@@ -13,8 +13,13 @@ class DirectoryAttributes implements StorageAttributes
         private string $path,
         private ?string $visibility = null,
         private ?int $lastModified = null,
+<<<<<<< HEAD
         private array $extraMetadata = [])
     {
+=======
+        private array $extraMetadata = []
+    ) {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         $this->path = trim($this->path, '/');
     }
 

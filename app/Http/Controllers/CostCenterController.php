@@ -35,18 +35,18 @@ class CostCenterController extends Controller
 
     public function index()
     {
-        $parameters = ['id' => null];
+
         $normalCostCenters = CostCenter::whereNull('cost_center_id')->where('is_normal', true)->with('children')->select('id', 'name', 'code', 'cost_center_id')->get();
         $assemblyCostCenters = CostCenter::where('is_assembly', true)->select('id', 'name', 'code')->get();
-        $this->callActivityMethod('cost_centers', 'mainTree', $parameters);
+
+
         $dataTree=['normalCostCenters'=> $normalCostCenters, 'assemblyCostCenters'=>$assemblyCostCenters];
         return response()->json( $dataTree, 200);
     }
 
     public function all()
     {
-      $parameters = ['id' => null];
-      $this->callActivityMethod('cost_centers', 'allCostCenters', $parameters);
+
       return CostCenter::all();
     }
 
@@ -54,9 +54,14 @@ class CostCenterController extends Controller
     {
       $lang = $request->header('lang');
         $costCenter = CostCenter::create($request->all());
-        $parameters = ['request' => $request, 'id' => $costCenter->id];
+
         $this->validateCardType($costCenter->id,CostCenter::class, $request);
-        $this->callActivityMethod('cost_centers', 'store', $parameters);
+
+      $result = $this->activityParameters($lang, 'store', 'costCenter', $costCenter,  'pc_name' , null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
       event(new CostCentersUpdated([...CostCenter::all()]));
       return response()->json([
 //            'message' => __('common.store'),
@@ -69,9 +74,9 @@ class CostCenterController extends Controller
 
     public function show($id)
     {
-        $parameters = ['id' => $id];
+
         $costCenter = CostCenter::find($id);
-        $this->callActivityMethod('cost_centers', 'show', $parameters);
+
         return response()->json( $costCenter, 200);
     }
 
@@ -80,10 +85,15 @@ class CostCenterController extends Controller
     {
         $lang = $request->header('lang') ;
         $old_data = CostCenter::find($id)->toJson();
-        $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
         $costCenter = CostCenter::find($id);
         $costCenter->update($request->all());
-        $this->callActivityMethod('cost_centers', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'costCenter', $costCenter,  'pc_name' , $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
       event(new CostCentersUpdated([...CostCenter::all()]));
       return response()->json([
 //            'message' => __('common.update'),
@@ -97,7 +107,7 @@ class CostCenterController extends Controller
     public function delete($id)
     {
       $lang  =   app('request')->header('lang');;
-      $parameters = ['id' => $id];
+
         $costCenter = CostCenter::find($id);
         if ($this->numOfSubModels(CostCenter::class, $id, 'cost_center_id') > 0) {
 //            $errors = ['costCenter' => [__('common.delete error')]];
@@ -115,7 +125,11 @@ class CostCenterController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
         $costCenter->delete();
-        $this->callActivityMethod('cost_centers', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'costCenter', $costCenter,  'pc_name' , $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
       event(new CostCentersUpdated([...CostCenter::all()]));
       $data= $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang) ;
         return response()->json(['message' => $data], 200);

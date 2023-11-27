@@ -35,7 +35,12 @@ function resolve($promiseOrValue): PromiseInterface
             assert(\is_callable($canceller));
         }
 
+<<<<<<< HEAD
         return new Promise(function ($resolve, $reject) use ($promiseOrValue): void {
+=======
+        /** @var Promise<T> */
+        return new Promise(function (callable $resolve, callable $reject) use ($promiseOrValue): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             $promiseOrValue->then($resolve, $reject);
         }, $canceller);
     }
@@ -77,7 +82,12 @@ function all(iterable $promisesOrValues): PromiseInterface
 {
     $cancellationQueue = new Internal\CancellationQueue();
 
+<<<<<<< HEAD
     return new Promise(function ($resolve, $reject) use ($promisesOrValues, $cancellationQueue): void {
+=======
+    /** @var Promise<array<T>> */
+    return new Promise(function (callable $resolve, callable $reject) use ($promisesOrValues, $cancellationQueue): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         $toResolve = 0;
         /** @var bool */
         $continue  = true;
@@ -129,6 +139,10 @@ function race(iterable $promisesOrValues): PromiseInterface
 {
     $cancellationQueue = new Internal\CancellationQueue();
 
+<<<<<<< HEAD
+=======
+    /** @var Promise<T> */
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     return new Promise(function (callable $resolve, callable $reject) use ($promisesOrValues, $cancellationQueue): void {
         $continue = true;
 
@@ -165,7 +179,12 @@ function any(iterable $promisesOrValues): PromiseInterface
 {
     $cancellationQueue = new Internal\CancellationQueue();
 
+<<<<<<< HEAD
     return new Promise(function ($resolve, $reject) use ($promisesOrValues, $cancellationQueue): void {
+=======
+    /** @var Promise<T> */
+    return new Promise(function (callable $resolve, callable $reject) use ($promisesOrValues, $cancellationQueue): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         $toReject = 0;
         $continue = true;
         $reasons  = [];

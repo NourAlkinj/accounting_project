@@ -149,6 +149,10 @@ class CompositeExpression implements Countable
      * Retrieves the amount of expressions on composite expression.
      *
      * @return int
+<<<<<<< HEAD
+=======
+     * @psalm-return int<0, max>
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
      */
     #[ReturnTypeWillChange]
     public function count()

@@ -2,30 +2,24 @@
 
 namespace App\Traits\Common;
 
-use App\Http\Controllers\StoreController;
 use App\Http\Requests\StoreUnitRequest;
-use App\Models\BillTemplate;
 use App\Models\Branch;
 use App\Models\Currency;
 use App\Models\CurrencyActivity;
-use App\Models\JournalEntryRecord;
 use App\Models\User;
-use App\Models\VoucherTemplate;
-use App\Traits\Currency\ActivityCurrencyTrait;
- use App\Traits\Currency\CurrencyTrait;
- use COM;
+use COM;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Lang\Locales\CommonWords;
 use Lang\Locales\CommonWordsEnum;
-
 use Lang\Translate;
 
 
 trait  CommonTrait
 {
 
-  public  $commonMessage;
+  public $commonMessage;
 
   function __construct()
   {
@@ -102,14 +96,46 @@ trait  CommonTrait
     return count($SubModels);
   }
 
-  public function callActivityMethod($table, $method, $parameters)
+
+  public function callActivityMethod($method, $table, $parameters)
   {
     $this->makeActivity([
+      'method' => $method,
       'table' => $table,
-      'operation' => $method,
       'parameters' => $parameters
+
     ]);
   }
+
+  public function getUserIp()
+  {
+    return $user_ip_address =app('request')->ip();
+
+  }
+  public function activityParameters( $lang, $method, $model, $element,   $pc_name, $old_data)
+  {
+    $operation_ar = $this->getOperation($method)[0];
+    $operation_en = $this->getOperation($method)[1];
+    $table = $this->getTable($lang, $model);
+    $discription_ar = $this->getDiscriptionAr($operation_ar, $model, $element);
+    $discription_en = $this->getDiscriptionEn($operation_en, $model, $element);
+    $parameters = [
+      'id' => $element->id,
+      'name' => $element->name,
+      'operation_ar' => $operation_ar,
+      'operation_en' => $operation_en,
+      'description_ar' => $discription_ar,
+      'description_en' => $discription_en,
+      'mac' => $this->getUserIp(),
+      'pc_name' => $pc_name ? $pc_name : null,
+      'old_data' => $old_data ? $old_data : null
+    ];
+    return [
+      'table' => $table,
+      'parameters' => $parameters
+    ];
+  }
+
 
   public function callTaskActivityMethod($operation, $taskParameters)
   {
@@ -294,7 +320,7 @@ trait  CommonTrait
 
   public function isExistNormalInModel($id, $myModel, $value, $condition)
   {
-    $normalModelIdArr=[];
+    $normalModelIdArr = [];
     $models = $myModel::where($condition, true)->get();
     foreach ($models as $model) {
       $normalModelIdArr = $model->$value;

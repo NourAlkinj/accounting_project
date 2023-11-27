@@ -62,7 +62,16 @@ class BillTemplateController extends Controller
         $parameters = ['request' => $request, 'id' => $billTemplate->id];
         $this->validateBillType($billTemplate->id, BillTemplate::class, $request);
         $this->setBillPermissionUser($billTemplate->id);
-        $this->callActivityMethod('bill_templates', 'store', $parameters);
+
+
+      $result = $this->activityParameters($lang, 'store', 'bill_template', $billTemplate,     'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
+
+
+//      $this->callActivityMethod('bill_templates', 'store', $parameters ,'Bill Template' . ' ' . $billTemplate->name . ' ' . 'Created');
         return response()->json([
             'message'  => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
             'id' => $billTemplate->id,
@@ -73,9 +82,9 @@ class BillTemplateController extends Controller
 
     public function show($id)
     {
-        $parameters = ['id' => $id];
+
         $billTemplate = BillTemplate::find($id);
-        $this->callActivityMethod('bill_templates', 'show', $parameters);
+
         return response()->json($billTemplate, 200);
     }
 
@@ -83,12 +92,17 @@ class BillTemplateController extends Controller
     {
         $lang = $request->header('lang');
         $old_data = BillTemplate::find($id)->toJson();
-        $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
-        
+//        $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
         $billTemplate = BillTemplate::find($id);
         $billTemplate->update($request->all());
-        
-        $this->callActivityMethod('bill_templates', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'bill_templates', $billTemplate,     'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
+//        $this->callActivityMethod('bill_templates', 'update', $parameters);
         return response()->json([
             'message'  => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
             'id' => $billTemplate->id,
@@ -99,14 +113,21 @@ class BillTemplateController extends Controller
     public function delete($id)
     {
       $lang  =   app('request')->header('lang');;
-      $parameters = ['id' => $id];
+
       $billTemplate = BillTemplate::find($id);
       if($this->isUseBillTemplate($id)) {
         $errors = ['billTemplate' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);
       }
       $billTemplate->delete();
-        $this->callActivityMethod('bill_templates', 'delete', $parameters);
+
+      $result = $this->activityParameters($lang, 'delete', 'bill_templates', $billTemplate,     'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
+
+//      $this->callActivityMethod('bill_templates', 'delete', $parameters);
         return response()->json([
           'message'  => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang),
         ], 200);

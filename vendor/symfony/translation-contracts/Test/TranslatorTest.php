@@ -30,7 +30,11 @@ use Symfony\Contracts\Translation\TranslatorTrait;
  */
 class TranslatorTest extends TestCase
 {
+<<<<<<< HEAD
     private $defaultLocale;
+=======
+    private string $defaultLocale;
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 
     protected function setUp(): void
     {

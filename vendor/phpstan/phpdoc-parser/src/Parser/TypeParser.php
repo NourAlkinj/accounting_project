@@ -7,7 +7,13 @@ use PHPStan\PhpDocParser\Ast;
 use PHPStan\PhpDocParser\Lexer\Lexer;
 use function in_array;
 use function str_replace;
+<<<<<<< HEAD
 use function strpos;
+=======
+use function strlen;
+use function strpos;
+use function substr_compare;
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 use function trim;
 
 class TypeParser
@@ -380,10 +386,23 @@ class TypeParser
 			return false;
 		}
 
+<<<<<<< HEAD
 		while (!$tokens->isCurrentTokenType(Lexer::TOKEN_END)) {
 			if (
 				$tokens->tryConsumeTokenType(Lexer::TOKEN_OPEN_ANGLE_BRACKET)
 				&& strpos($tokens->currentTokenValue(), '/' . $htmlTagName . '>') !== false
+=======
+		$endTag = '</' . $htmlTagName . '>';
+		$endTagSearchOffset = - strlen($endTag);
+
+		while (!$tokens->isCurrentTokenType(Lexer::TOKEN_END)) {
+			if (
+				(
+					$tokens->tryConsumeTokenType(Lexer::TOKEN_OPEN_ANGLE_BRACKET)
+					&& strpos($tokens->currentTokenValue(), '/' . $htmlTagName . '>') !== false
+				)
+				|| substr_compare($tokens->currentTokenValue(), $endTag, $endTagSearchOffset) === 0
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 			) {
 				return true;
 			}

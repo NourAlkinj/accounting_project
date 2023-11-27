@@ -46,6 +46,10 @@
                   'required' => $field['required'] ?? false,
                   'description' => $field['description'] ?? '',
                   'example' => $field['example'] ?? '',
+<<<<<<< HEAD
+=======
+                  'enumValues' => $field['enumValues'] ?? null,
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                   'endpointId' => $endpointId,
                   'hasChildren' => true,
                   'component' => 'body',
@@ -67,7 +71,11 @@
                           'required' => $subfield['required'] ?? false,
                           'description' => $subfield['description'] ?? '',
                           'example' => $subfield['example'] ?? '',
+<<<<<<< HEAD
                           'enumValues' => $field['enumValues'] ?? null,
+=======
+                          'enumValues' => $subfield['enumValues'] ?? null,
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                           'endpointId' => $endpointId,
                           'hasChildren' => false,
                           'component' => 'body',

@@ -22,8 +22,6 @@ use Lang\Locales\ItemWordsEnum;
 use Lang\Translate;
 
 
-
-
 class ItemController extends Controller
 {
   use CommonTrait, ActivityLog, UnitTrait, ItemTrait;
@@ -49,17 +47,17 @@ class ItemController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $items = Item::with('units')->select('name', 'code', 'flag', 'id', 'category_id')->get();
-    $this->callActivityMethod('items', 'index', $parameters);
+
     return response()->json($items, 200);
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
+
     $items = Item::with('units')->get();
-    $this->callActivityMethod('items', 'all', $parameters);
+
     return response()->json($items, 200);
   }
 
@@ -117,8 +115,11 @@ class ItemController extends Controller
 //      return;
     }
 
-    $parameters = ['request' => $request, 'id' => $item->id];
-    $this->callActivityMethod('items', 'store', $parameters);
+    $result = $this->activityParameters($lang, 'store', 'item', $item,   'pc_name', null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('store', $table, $parameters);
+
     event(new CategoriesUpdated([...Category::with('items.units')->get()]));
     event(new ItemsUpdated([...Item::with('units')->get()]));
 
@@ -133,9 +134,9 @@ class ItemController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $item = Item::with('units')->find($id);
-    $this->callActivityMethod('items', 'show', $parameters);
+
     return response()->json($item, 200);
   }
 
@@ -144,7 +145,7 @@ class ItemController extends Controller
 
     $lang = $request->header('lang');
     $old_data = Item::find($id)->toJson();
-    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
     $item = Item::find($id);
 
     if (!$request->units[0]["unit_name"]) {
@@ -175,7 +176,11 @@ class ItemController extends Controller
         return response()->json(["errors" => $errors], 422);
       }
     }
-    $this->callActivityMethod('items', 'update', $parameters);
+    $result = $this->activityParameters($lang, 'update', 'item', $item,   'pc_name', $old_data);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('update', $table, $parameters);
+
     event(new CategoriesUpdated([...Category::with('items.units')->get()]));
     event(new ItemsUpdated([...Item::with('units')->get()]));
     return response()->json([
@@ -187,11 +192,10 @@ class ItemController extends Controller
   }
 
 
-
   public function delete($id)
   {
-    $lang  =   app('request')->header('lang');
-    $parameters = ['id' => $id];
+    $lang = app('request')->header('lang');
+
     DB::beginTransaction();
     try {
       $item = Item::find($id);
@@ -212,7 +216,10 @@ class ItemController extends Controller
         $this->deleteImage('upload_image', 'items/' . $item->image->file_name, $item->id);
       }
       $item->delete();
-      $this->callActivityMethod('items', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'item', $item,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
       event(new CategoriesUpdated([...Category::with('items.units')->get()]));
       event(new ItemsUpdated([...Item::with('units')->get()]));
       DB::commit();
@@ -223,7 +230,7 @@ class ItemController extends Controller
     } catch (CustomException $exc) {
       DB::rollback();
       $errors = ['message' => [$exc->message]];
-      return response()->json(['errors'=> $errors], $exc->code);
+      return response()->json(['errors' => $errors], $exc->code);
     }
   }
 
@@ -232,7 +239,6 @@ class ItemController extends Controller
   {
     return $this->generateCodes($id, Category::class, Item::class, 'category_id');
   }
-
 
 
 }

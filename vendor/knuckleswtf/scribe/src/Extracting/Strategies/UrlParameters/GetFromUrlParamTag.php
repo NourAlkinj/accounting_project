@@ -46,9 +46,16 @@ class GetFromUrlParamTag extends GetFieldsFromTagStrategy
                 : static::normalizeTypeName($type);
         }
 
+<<<<<<< HEAD
         [$description, $example, $enumValues] =
             $this->getDescriptionAndExample($description, $type, $tagContent, $name);
 
         return compact('name', 'description', 'required', 'example', 'type', 'enumValues');
+=======
+        [$description, $example, $enumValues, $exampleWasSpecified] =
+            $this->getDescriptionAndExample($description, $type, $tagContent, $name);
+
+        return compact('name', 'description', 'required', 'example', 'type', 'enumValues', 'exampleWasSpecified');
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     }
 }

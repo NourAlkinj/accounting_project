@@ -38,12 +38,12 @@ class JournalEntryController extends Controller
   public function index()
   {
 
-    $parameters = ['id' => null];
+
     $fistJournalEntry = JournalEntry::with('records')->first();
     $pagination = JournalEntry::with('branch', 'currency')->select('id', 'branch_id', 'date', 'currency_id')->get();
-    $this->callActivityMethod('journal_entries', 'Get All Journal Entries', $parameters);
+
     $data = [
-      'first_joirnal_entry' => $fistJournalEntry,
+      'first_journal_entry' => $fistJournalEntry,
       'pagination' => $pagination
     ];
     return response()->json([
@@ -59,24 +59,17 @@ class JournalEntryController extends Controller
       $lang = $request->header('lang');
       $journalEntry = JournalEntry::create(
          $request->all()
-//        'date' => $request['date'],
-//        'time' => $request['time'],
-//        'receipt_number' => $request['receipt_number'],
-//        'currency_id' => $request['currency_id'],
-//        'parity' => $request['parity'],
-//        'security_level' => $request['security_level'],
-//        'debit_total' => $request['debit_total'],
-//        'credit_total' => $request['credit_total'],
-//        'branch_id' => $request['branch_id'],
-//        'notes' => $request['notes'],
-//        'source' => $request['source'],
+
       );
       $this->saveJournalEntryRecord($request, $journalEntry->id);
-      $parameters = ['request' => $request, 'id' => $journalEntry->id];
-      $this->callActivityMethod('journal_entries', 'store', $parameters);
+
+      $result = $this->activityParameters($lang, 'store', 'journalEntry', $journalEntry,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
 
       return response()->json([
-//      'message' => __('common.store')
+
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
         'type' => 'Success',
         'id' => $journalEntry->id,
@@ -92,10 +85,10 @@ class JournalEntryController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $journalEntry = JournalEntry::with('records')->find($id);
     if ($journalEntry) {
-      $this->callActivityMethod('journal_entries', 'show', $parameters);
+
       return $journalEntry;
     }
   }
@@ -106,27 +99,21 @@ class JournalEntryController extends Controller
     try {
       $lang = $request->header('lang');
       $old_data = JournalEntry::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
       $journalEntry = JournalEntry::find($id);
       $journalEntry->update(
        $request->all()
-//        [
-//          'date' => $request['date'],
-//          'time' => $request['time'],
-//          'receipt_number' => $request['receipt_number'],
-//          'currency_id' => $request['currency_id'],
-//          'parity' => $request['parity'],
-//          'security_level' => $request['security_level'],
-//          'debit_total' => $request['debit_total'],
-//          'credit_total' => $request['credit_total'],
-//          'branch_id' => $request['branch_id'],
-//          'notes' => $request['notes'],
-//        ]
+
       );
       $this->saveJournalEntryRecord($request, $journalEntry->id);
-      $this->callActivityMethod('journal_entries', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'journalEntry', $journalEntry,   'pc_name', $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
       return response()->json([
-//      'message' => __('common.update'), 'type' => 'Success',
+
         'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
       'id' => $journalEntry->id,
     ], 200);
@@ -140,7 +127,7 @@ class JournalEntryController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $journalEntry = JournalEntry::find($id);
       $JournalEntry_Records = $journalEntry->records;
       foreach ($JournalEntry_Records as $JournalEntry_Record) {
@@ -148,16 +135,19 @@ class JournalEntryController extends Controller
       }
       if (!$journalEntry) {
         $errors = ['message' => [
-//        __("journalEntry.journalEntry_not_found")
+
           $this->commonMessage->t(CommonWordsEnum::journalEntry_not_found->name, $lang),
 
       ]];
       return response()->json(['errors' => $errors], 404);
     }
       $journalEntry->delete();
-      $this->callActivityMethod('journal_entries', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'journalEntry', $journalEntry,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
       return response()->json([
-//      'message' => __('common.delete')
+
         'message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)], 200);
   } catch (CustomException $exc) {
       $errors = ['message' => [$exc->message]];
@@ -175,13 +165,19 @@ class JournalEntryController extends Controller
       if ($journalEntry && $JournalEntry_Records) {
         $journalEntry->restore();
         $JournalEntry_Records->restore();
+
+        $result = $this->activityParameters($lang, 'restore', 'journalEntry', $journalEntry,   'pc_name', null);
+        $parameters = $result['parameters'];
+        $table = $result['table'];
+        $this->callActivityMethod('restore', $table, $parameters);
+
         return response()->json(['message' =>
-//        __('common.restore')
+
         [  $this->commonMessage->t(CommonWordsEnum::RESTORE->name, $lang)]
       ], 200);
     } else {
         return response()->json(['message' =>
-//        __('common.error_restore')
+
          [ $this->commonMessage->t(CommonWordsEnum::ERROR_RESTORE->name, $lang)]
       ], 404);
     }
@@ -196,7 +192,7 @@ class JournalEntryController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $journalEntry = JournalEntry::find($id);
       $JournalEntry_Records = $journalEntry->records;
       foreach ($JournalEntry_Records as $JournalEntry_Record) {
@@ -204,16 +200,19 @@ class JournalEntryController extends Controller
       }
       if (!$journalEntry) {
         $errors = ['message' => [
-//        __("journalEntry.journalEntry_not_found")
+
           $this->commonMessage->t(CommonWordsEnum::journalEntry_not_found->name, $lang)
 
       ]];
       return response()->json(['errors' => $errors], 404);
     }
       $journalEntry->forceDelete();
-      $this->callActivityMethod('journal_entries', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'forceDelete', 'journalEntry', $journalEntry,   'pc_name', null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('forceDelete', $table, $parameters);
       return response()->json(['message' =>
-//      __('common.delete'), 'type' => 'Success'
+
         $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
       ], 200);
   } catch (CustomException $exc) {
@@ -243,9 +242,9 @@ class JournalEntryController extends Controller
     $i = 0;
     while ($i < 5000) {
 
-//      $this->store($request);
+
       $journalEntry = JournalEntry::create([
-//         $request->all()
+
         'date' => $request['date'],
         'time' => $request['time'],
         'receipt_number' => $request['receipt_number'],

@@ -24,8 +24,8 @@ class CurrencyActivityController extends Controller
       'last_update_date' => $LastUpdateDate
     ]);
 
-    $parameters = ['request' => $request, 'id' => $currencyActivity->id];
-    $this->callActivityMethod('currency_activities', 'store', $parameters);
+
+
   }
 
 }

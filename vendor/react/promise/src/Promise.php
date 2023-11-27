@@ -10,13 +10,21 @@ use React\Promise\Internal\RejectedPromise;
  */
 final class Promise implements PromiseInterface
 {
+<<<<<<< HEAD
     /** @var ?callable */
+=======
+    /** @var (callable(callable(T):void,callable(\Throwable):void):void)|null */
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     private $canceller;
 
     /** @var ?PromiseInterface<T> */
     private $result;
 
+<<<<<<< HEAD
     /** @var callable[] */
+=======
+    /** @var list<callable(PromiseInterface<T>):void> */
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     private $handlers = [];
 
     /** @var int */
@@ -25,6 +33,13 @@ final class Promise implements PromiseInterface
     /** @var bool */
     private $cancelled = false;
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param callable(callable(T):void,callable(\Throwable):void):void $resolver
+     * @param (callable(callable(T):void,callable(\Throwable):void):void)|null $canceller
+     */
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     public function __construct(callable $resolver, callable $canceller = null)
     {
         $this->canceller = $canceller;
@@ -57,7 +72,11 @@ final class Promise implements PromiseInterface
 
         return new static(
             $this->resolver($onFulfilled, $onRejected),
+<<<<<<< HEAD
             static function () use (&$parent) {
+=======
+            static function () use (&$parent): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                 assert($parent instanceof self);
                 --$parent->requiredCancelRequests;
 
@@ -78,7 +97,11 @@ final class Promise implements PromiseInterface
      */
     public function catch(callable $onRejected): PromiseInterface
     {
+<<<<<<< HEAD
         return $this->then(null, static function ($reason) use ($onRejected) {
+=======
+        return $this->then(null, static function (\Throwable $reason) use ($onRejected) {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             if (!_checkTypehint($onRejected, $reason)) {
                 return new RejectedPromise($reason);
             }
@@ -92,12 +115,21 @@ final class Promise implements PromiseInterface
 
     public function finally(callable $onFulfilledOrRejected): PromiseInterface
     {
+<<<<<<< HEAD
         return $this->then(static function ($value) use ($onFulfilledOrRejected) {
             return resolve($onFulfilledOrRejected())->then(function () use ($value) {
                 return $value;
             });
         }, static function ($reason) use ($onFulfilledOrRejected) {
             return resolve($onFulfilledOrRejected())->then(function () use ($reason) {
+=======
+        return $this->then(static function ($value) use ($onFulfilledOrRejected): PromiseInterface {
+            return resolve($onFulfilledOrRejected())->then(function () use ($value) {
+                return $value;
+            });
+        }, static function (\Throwable $reason) use ($onFulfilledOrRejected): PromiseInterface {
+            return resolve($onFulfilledOrRejected())->then(function () use ($reason): RejectedPromise {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                 return new RejectedPromise($reason);
             });
         });
@@ -164,12 +196,21 @@ final class Promise implements PromiseInterface
 
     private function resolver(callable $onFulfilled = null, callable $onRejected = null): callable
     {
+<<<<<<< HEAD
         return function ($resolve, $reject) use ($onFulfilled, $onRejected) {
             $this->handlers[] = static function (PromiseInterface $promise) use ($onFulfilled, $onRejected, $resolve, $reject) {
                 $promise = $promise->then($onFulfilled, $onRejected);
 
                 if ($promise instanceof self && $promise->result === null) {
                     $promise->handlers[] = static function (PromiseInterface $promise) use ($resolve, $reject) {
+=======
+        return function (callable $resolve, callable $reject) use ($onFulfilled, $onRejected): void {
+            $this->handlers[] = static function (PromiseInterface $promise) use ($onFulfilled, $onRejected, $resolve, $reject): void {
+                $promise = $promise->then($onFulfilled, $onRejected);
+
+                if ($promise instanceof self && $promise->result === null) {
+                    $promise->handlers[] = static function (PromiseInterface $promise) use ($resolve, $reject): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                         $promise->then($resolve, $reject);
                     };
                 } else {
@@ -237,6 +278,12 @@ final class Promise implements PromiseInterface
         return $promise;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param callable(callable(mixed):void,callable(\Throwable):void):void $cb
+     */
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     private function call(callable $cb): void
     {
         // Explicitly overwrite argument with null value. This ensure that this
@@ -274,13 +321,21 @@ final class Promise implements PromiseInterface
                 $target =& $this;
 
                 $callback(
+<<<<<<< HEAD
                     static function ($value) use (&$target) {
+=======
+                    static function ($value) use (&$target): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                         if ($target !== null) {
                             $target->settle(resolve($value));
                             $target = null;
                         }
                     },
+<<<<<<< HEAD
                     static function (\Throwable $reason) use (&$target) {
+=======
+                    static function (\Throwable $reason) use (&$target): void {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                         if ($target !== null) {
                             $target->reject($reason);
                             $target = null;

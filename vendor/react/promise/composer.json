@@ -28,8 +28,13 @@
         "php": ">=7.1.0"
     },
     "require-dev": {
+<<<<<<< HEAD
         "phpstan/phpstan": "1.10.20 || 1.4.10",
         "phpunit/phpunit": "^9.5 || ^7.5"
+=======
+        "phpstan/phpstan": "1.10.39 || 1.4.10",
+        "phpunit/phpunit": "^9.6 || ^7.5"
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     },
     "autoload": {
         "psr-4": {

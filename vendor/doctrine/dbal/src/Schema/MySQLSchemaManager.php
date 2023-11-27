@@ -292,7 +292,11 @@ class MySQLSchemaManager extends AbstractSchemaManager
 
         // Check underlying database type where doctrine type is inferred from DC2Type comment
         // and set a flag if it is not as expected.
+<<<<<<< HEAD
         if ($origType !== $type && $this->expectedDbType($type, $options) !== $dbType) {
+=======
+        if ($type === 'json' && $origType !== $type && $this->expectedDbType($type, $options) !== $dbType) {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             $column->setPlatformOption('declarationMismatch', true);
         }
 
@@ -437,7 +441,12 @@ SQL;
 
     protected function selectTableColumns(string $databaseName, ?string $tableName = null): Result
     {
+<<<<<<< HEAD
         [$columnTypeSQL, $joinCheckConstraintSQL] = $this->_platform->getColumnTypeSQLSnippets();
+=======
+        // @todo 4.0 - call getColumnTypeSQLSnippet() instead
+        [$columnTypeSQL, $joinCheckConstraintSQL] = $this->_platform->getColumnTypeSQLSnippets('c', $databaseName);
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 
         $sql = 'SELECT';
 

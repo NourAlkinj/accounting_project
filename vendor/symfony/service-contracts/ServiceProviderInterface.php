@@ -39,7 +39,11 @@ interface ServiceProviderInterface extends ContainerInterface
      *  * ['foo' => '?'] means the container provides service name "foo" of unspecified type
      *  * ['bar' => '?Bar\Baz'] means the container provides a service "bar" of type Bar\Baz|null
      *
+<<<<<<< HEAD
      * @return string[] The provided service types, keyed by service names
+=======
+     * @return array<string, string> The provided service types, keyed by service names
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
      */
     public function getProvidedServices(): array;
 }

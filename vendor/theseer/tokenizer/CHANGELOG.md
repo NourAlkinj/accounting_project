@@ -2,6 +2,15 @@
 
 All notable changes to Tokenizer are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+<<<<<<< HEAD
+=======
+## [1.2.2] - 2023-11-20
+
+### Fixed
+
+* [#18](https://github.com/theseer/tokenizer/issues/18): Tokenizer fails on protobuf metadata files
+
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 
 ## [1.2.1] - 2021-07-28
 

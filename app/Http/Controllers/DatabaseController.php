@@ -2,141 +2,210 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Exceptions\CustomException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Lang\Locales\CommonWords;
+use Lang\Locales\CommonWordsEnum;
+use Lang\Translate;
 
 class DatabaseController extends Controller
 {
+  public $commonMessage;
 
-  function create($databaseName)
+  function __construct()
   {
-    if (DB::statement("CREATE DATABASE IF NOT EXISTS $databaseName")) {
-//      $user = auth()->user();
-      $user = auth('sanctum')->user();
-      $databases = $user->databases ?? [];
-      $databases[] = $databaseName;
-      $user->databases = $databases;
-      $user->save();
-      return 'Database ' . $databaseName . ' Created Successfully.';
-    } else {
-      return 'ERROR';
-    }
+    $this->commonMessage = new Translate(new CommonWords());
   }
-
-  public function show()
+  public function selectDatabase($newDatabaseName)
   {
-//    return DB::select('SHOW DATABASES');
-    $user = auth('sanctum')->user();
-    $userDatabases = $user->databases;
-    return response()->json(['databases' => $userDatabases]);
-  }
-
-  public function switchDatabase(Request $request)
-  {
-//    dd(config()->get('database.connections.mysql'));
-    $newDatabaseName = $request->new_database_name;
-
     DB::disconnect();
-    Config::set('database.mysql.database', $request->new_database_name);
-//    Config::set('database.default',$request->new_database_name);
+    Config::set('database.mysql.database', $newDatabaseName);
     DB::reconnect();
-
-    DB::purge('mysql');
-    $user = auth('sanctum')->user();
-    $databases[] = $newDatabaseName;
-    $user->databases = $databases;
-    $user->save();
-
-    DB::purge('mysql');
-
     Config::set('database.connections.' . $newDatabaseName . '.driver', 'mysql');
     Config::set('database.connections.' . $newDatabaseName . '.host', 'localhost');
     Config::set('database.connections.' . $newDatabaseName . '.username', 'root');
     Config::set('database.connections.' . $newDatabaseName . '.password', '');
+    Config::set('database.connections.' . $newDatabaseName . '.collation', 'utf8_general_ci');
+    Config::set('database.connections.' . $newDatabaseName . '.charset', 'utf8');
+    Config::set('database.connections.' . $newDatabaseName . '.dump', [
+      'dump_binary_path' => 'C:\\xampp\\mysql\\bin',
+      'use_single_transaction',
+      'timeout' => 60 * 5,
+    ]);
     Config::set('database.connections.' . $newDatabaseName . '.database', $newDatabaseName);
-
     Config::set('database.default', $newDatabaseName);
     DB::reconnect($newDatabaseName);
+    $envPath = base_path('.env');
+    $envContents = file_get_contents($envPath);
+    $envContents = preg_replace(
+      '/^DB_DATABASE=.*/m',
+      'DB_DATABASE=' . $newDatabaseName,
+      $envContents
+    );
+    file_put_contents($envPath, $envContents);
 
-    DB::connection($newDatabaseName);
-    $connection = DB::connection()->getDatabaseName();
 
+  }
+
+  public function create($databaseName)
+  {
+    $lang = app('request')->header('lang');
+    $exists = DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?", [$databaseName]);
+    if ($exists) {
+      return response()->json([
+        'errors' => ['message' => $this->commonMessage->t(CommonWordsEnum::already_exist->name, $lang)],
+        ], 422);
+      }
+    try {
+      DB::statement("CREATE DATABASE IF NOT EXISTS $databaseName");
+
+      return [
+        'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)
+        ];
+      } catch (CustomException $exc) {
+      return response()->json(
+        ['errors' => ['message' => [$exc->message]],],
+        $exc->code
+      );
+    }
+  }
+
+  public function settingsDatabase()
+  {
+    $lang = app('request')->header('lang');
+    DB::statement('CREATE DATABASE IF NOT EXISTS settings');
+    config(['database.connections.mysql.database' => 'settings']);
+    DB::reconnect('mysql');
+//    DB::reconnect('settings');
+    DB::statement('
+          CREATE TABLE IF NOT EXISTS connections (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+
+          database_information JSON,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)');
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)
+      ];
+    }
+
+  public function show()
+  {
+    return DB::select('SHOW DATABASES');
+//        $user = auth('sanctum')->user();
+//        $userDatabases = $user->databases;
+//        return response()->json(['databases' => $userDatabases]);
+  }
+
+  public function switchDatabase($newDatabaseName)
+  {
+    $lang = app('request')->header('lang');
+    if ($newDatabaseName == env('DB_DATABASE')) {
+      return [
+        'message' => $this->commonMessage->t(CommonWordsEnum::already_in_database->name, $lang) .'' . $newDatabaseName
+      ];
+      }
+
+    DB::disconnect();
+    Config::set('database.mysql.database', $newDatabaseName);
+    DB::reconnect();
+    // Default Settings
+    Config::set('database.connections.' . $newDatabaseName . '.driver', 'mysql');
+    Config::set('database.connections.' . $newDatabaseName . '.host', 'localhost');
+    Config::set('database.connections.' . $newDatabaseName . '.username', 'root');
+    Config::set('database.connections.' . $newDatabaseName . '.password', '');
+    Config::set('database.connections.' . $newDatabaseName . '.collation', 'utf8_general_ci');
+    Config::set('database.connections.' . $newDatabaseName . '.charset', 'utf8');
+    Config::set('database.connections.' . $newDatabaseName . '.dump', [
+      'dump_binary_path' => 'C:\\xampp\\mysql\\bin',
+      'use_single_transaction',
+      'timeout' => 60 * 5,
+    ]);
+    Config::set('database.connections.' . $newDatabaseName . '.database', $newDatabaseName);
+    Config::set('database.default', $newDatabaseName);
+    DB::reconnect($newDatabaseName);
     $envDatabaseName = env('DB_DATABASE');
-
-    if ($envDatabaseName !== $newDatabaseName) {
-
+//    if ($envDatabaseName !== $newDatabaseName) {
       $envPath = base_path('.env');
       $envContents = file_get_contents($envPath);
-
       $envContents = preg_replace(
-        "/^DB_DATABASE=.*/m",
-        "DB_DATABASE=" . $newDatabaseName,
+        '/^DB_DATABASE=.*/m',
+        'DB_DATABASE=' . $newDatabaseName,
         $envContents
       );
-
       file_put_contents($envPath, $envContents);
-
-    } else {
-      print(env('DB_DATABASE'));
-    }
-//
-
-    return $connection;
-  }
-
-  function restore($databaseName, $backupPath)
-  {
-    DB::statement("DROP DATABASE IF EXISTS $databaseName");
-    DB::statement("CREATE DATABASE $databaseName");
-    DB::statement("USE $databaseName");
-    $command = "C:\xampp\mysql\bin\mysqldump -u username -p password $databaseName < $backupPath";
-    exec($command);
-  }
-
-//  function backup($databaseName)
-//  {
-//    $backupPath = "C:\Users\asus\Desktop\Work\Palmyra API";
-////        $backupPath = storage_path('app\backup') ;
-//
-//    // $backupPath = storage_path('backup');
-//    if (!File::exists($backupPath)) {
-//      File::makeDirectory($backupPath);
+//    } else {
+//      echo env('DB_DATABASE');
 //    }
-//    $command = "C:\xampp\mysql\bin\mysqldump -u root  $databaseName > $backupPath";
-//    exec($command);
-//    return "Done";
-//  }
-
+    $currentConnectionInformation = new Collection(DB::connection('mysql')->getConfig());
+    DB::connection('settings')->table('connections')->insert([
+      'database_information' => $currentConnectionInformation,
+    ]);
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::switch_database->name, $lang)
+      ];
+    }
 
   public function runMigration()
   {
+    $lang = app('request')->header('lang');
     Artisan::call('migrate');
-
-    return 'Migrations executed successfully!';
-  }
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
+      ];
+    }
 
   public function runMigrationFreshSeed()
   {
+    $lang = app('request')->header('lang');
     Artisan::call('migrate:fresh --seed');
-
-    return 'Migrations - Fresh - Seed executed successfully!';
-  }
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
+      ];
+    }
 
   public function runMigrationFresh()
   {
+    $lang = app('request')->header('lang');
     Artisan::call('migrate:fresh');
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::command_runs_successfully->name, $lang)
+      ];
+    }
 
-    return 'Migrations Fresh executed successfully!';
-  }
-
-  public function backupDatabase()
+  public function backupDatabase(Request $request)
   {
-    exec('C:\xampp\mysql\bin\mysqldump -u root -p palmyraAPI > backupe.sql 2> error.log');
+    $lang = app('request')->header('lang');
+    $databaseName = $request->input('database_name');
+//    if ($databaseName) {
+//      $this->switchDatabase($databaseName);
+//    }
+    $backupPath = $request->input('backup_path');
+    $outputPath = $backupPath . '\backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
+    $command = exec("mysqldump -u " . env('DB_USERNAME') . " " . $databaseName . " > {$outputPath}");
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::backup_database->name, $lang)
+      ];
+    }
 
-    return 'Database backed up successfully!';
+  public function restore(Request $request)
+  {
+    $lang = app('request')->header('lang');
+    $fileName = $request->input('file_name');
+    Artisan::call('backup:restore', [
+      '--filename' => $fileName,
+    ]);
+    return [
+      'message' => $this->commonMessage->t(CommonWordsEnum::restore_database->name, $lang)
+      ];
+    }
+
+  function getCurrentDatabaseInformation()
+  {
+    return DB::connection()->getConfig();
   }
 }

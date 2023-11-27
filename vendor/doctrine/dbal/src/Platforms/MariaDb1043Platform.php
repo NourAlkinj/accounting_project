@@ -40,7 +40,12 @@ class MariaDb1043Platform extends MariaDb1027Platform
      */
     public function getListTableColumnsSQL($table, $database = null): string
     {
+<<<<<<< HEAD
         [$columnTypeSQL, $joinCheckConstraintSQL] = $this->getColumnTypeSQLSnippets();
+=======
+        // @todo 4.0 - call getColumnTypeSQLSnippet() instead
+        [$columnTypeSQL, $joinCheckConstraintSQL] = $this->getColumnTypeSQLSnippets('c', $database);
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 
         return sprintf(
             <<<SQL
@@ -72,6 +77,7 @@ class MariaDb1043Platform extends MariaDb1027Platform
      * is valid json. This function generates the SQL snippets which reverse this aliasing i.e. report a column
      * as JSON where it was originally specified as such instead of LONGTEXT.
      *
+<<<<<<< HEAD
      * The CHECK constraints are stored in information_schema.CHECK_CONSTRAINTS so JOIN that table.
      *
      * @return array{string, string}
@@ -85,10 +91,37 @@ class MariaDb1043Platform extends MariaDb1027Platform
         $columnTypeSQL = <<<SQL
             IF(
                 x.CHECK_CLAUSE IS NOT NULL AND $tableAlias.COLUMN_TYPE = 'longtext',
+=======
+     * The CHECK constraints are stored in information_schema.CHECK_CONSTRAINTS so query that table.
+     */
+    public function getColumnTypeSQLSnippet(string $tableAlias = 'c', ?string $databaseName = null): string
+    {
+        if ($this->getJsonTypeDeclarationSQL([]) !== 'JSON') {
+            return parent::getColumnTypeSQLSnippet($tableAlias, $databaseName);
+        }
+
+        $databaseName = $this->getDatabaseNameSQL($databaseName);
+
+        // The check for `CONSTRAINT_SCHEMA = $databaseName` is mandatory here to prevent performance issues
+        return <<<SQL
+            IF(
+                $tableAlias.COLUMN_TYPE = 'longtext'
+                AND EXISTS(
+                    SELECT * from information_schema.CHECK_CONSTRAINTS 
+                    WHERE CONSTRAINT_SCHEMA = $databaseName
+                    AND TABLE_NAME = $tableAlias.TABLE_NAME
+                    AND CHECK_CLAUSE = CONCAT(
+                        'json_valid(`',
+                            $tableAlias.COLUMN_NAME,
+                        '`)'
+                    )
+                ),
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
                 'json',
                 $tableAlias.COLUMN_TYPE
             )
         SQL;
+<<<<<<< HEAD
 
         $joinCheckConstraintSQL = <<<SQL
         LEFT JOIN information_schema.CHECK_CONSTRAINTS x
@@ -100,6 +133,8 @@ class MariaDb1043Platform extends MariaDb1027Platform
         SQL;
 
         return [$columnTypeSQL, $joinCheckConstraintSQL];
+=======
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     }
 
     /** {@inheritDoc} */

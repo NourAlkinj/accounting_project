@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace League\Flysystem\Local;
 
+<<<<<<< HEAD
+=======
+use const DIRECTORY_SEPARATOR;
+use const LOCK_EX;
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 use DirectoryIterator;
 use FilesystemIterator;
 use Generator;
@@ -44,8 +49,11 @@ use function is_dir;
 use function is_file;
 use function mkdir;
 use function rename;
+<<<<<<< HEAD
 use const DIRECTORY_SEPARATOR;
 use const LOCK_EX;
+=======
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 
 class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
 {
@@ -270,7 +278,18 @@ class LocalFilesystemAdapter implements FilesystemAdapter, ChecksumProvider
             throw UnableToCopyFile::because(error_get_last()['message'] ?? 'unknown', $source, $destination);
         }
 
+<<<<<<< HEAD
         if ($visibility = $config->get(Config::OPTION_VISIBILITY)) {
+=======
+        $visibility = $config->get(
+            Config::OPTION_VISIBILITY,
+            $config->get('retain_visibility', true)
+                ? $this->visibility($source)->visibility()
+                : null,
+        );
+
+        if ($visibility) {
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
             $this->setVisibility($destination, (string) $visibility);
         }
     }

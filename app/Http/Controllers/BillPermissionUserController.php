@@ -25,26 +25,26 @@ class BillPermissionUserController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $billPermissionaUser = BillPermissionUser::all();
-    $this->callActivityMethod('bill_permission_users', 'index', $parameters);
+
     return response()->json($billPermissionaUser, 200);
   }
 
 
   public function store(BillRequest $request, $bill_template_id)
   {
-  
+
     try {
-      
+
       $lang = $request->header('lang');
       $id = auth('sanctum')->user()->id;
       $oldBillPermissionsUser = User::find($id)->billPermissionUser;
-      
+
       if ($oldBillPermissionsUser) {
         $oldBillPermissionsUser->forceDelete();
       }
-    
+
       BillPermissionUser::create(
         [
           'print_setting' => $request['print_setting'],
@@ -53,9 +53,9 @@ class BillPermissionUserController extends Controller
           'bill_template_id' => $bill_template_id
         ]
       );
-    
+
       return response()->json(['message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang) ], 200);
-  
+
 
     }  catch (CustomException $exc) {
 

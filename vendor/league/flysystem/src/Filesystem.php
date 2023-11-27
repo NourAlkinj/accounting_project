@@ -187,7 +187,11 @@ class Filesystem implements FilesystemOperator
             ?? throw UnableToGeneratePublicUrl::noGeneratorConfigured($path);
         $config = $this->config->extend($config);
 
+<<<<<<< HEAD
         return $this->publicUrlGenerator->publicUrl($path, $config);
+=======
+        return $this->publicUrlGenerator->publicUrl($this->pathNormalizer->normalizePath($path), $config);
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
     }
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = []): string
@@ -195,7 +199,15 @@ class Filesystem implements FilesystemOperator
         $generator = $this->temporaryUrlGenerator ?? $this->adapter;
 
         if ($generator instanceof TemporaryUrlGenerator) {
+<<<<<<< HEAD
             return $generator->temporaryUrl($path, $expiresAt, $this->config->extend($config));
+=======
+            return $generator->temporaryUrl(
+                $this->pathNormalizer->normalizePath($path),
+                $expiresAt,
+                $this->config->extend($config)
+            );
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
         }
 
         throw UnableToGenerateTemporaryUrl::noGeneratorConfigured($path);

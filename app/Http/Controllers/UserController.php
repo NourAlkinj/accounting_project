@@ -9,7 +9,6 @@ use App\Events\UsersUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\Activity;
 use App\Models\AppSetting;
 use App\Models\BillPermissionUser;
 use App\Models\Branch;
@@ -55,24 +54,35 @@ class UserController extends Controller
     $this->commonMessage = new Translate(new CommonWords());
   }
 
+
   public function login(Request $request)
   {
+
     $lang = $request->header('lang');
     $user = User::where('email', $request->email)
       ->orWhere('name', $request->email)
       ->first();
     if ($user && FacadesCrypt::decryptString($user->password) == $request->password) {
       $token = $user->createToken('user-token')->plainTextToken;
+
+      $result = $this->activityParameters($lang, 'login', 'user', $user ,  'pc_name' , null);
+
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+
+
+      $this->callActivityMethod('login', $table, $parameters);
+
       $data = [
         'token' => $token,
         'branch_id' => $user->branch_id,
         'id' => $user->id
       ];
       return response()->json($data, 200);
+
     } else {
       $errors = [
         'message' => [$this->authMessage->t(AuthWordsEnum::Invalid_login_details->name, $lang)]
-
       ];
       return response()->json(['errors' => $errors,
         'email' => $request->email,
@@ -83,16 +93,13 @@ class UserController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('users', 'index', $parameters);
     $user = User::select('id', 'name', 'code', 'is_active')->get();
     return $user;
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('users', 'index', $parameters);
+
     $users = User::all();
     foreach ($users as $user) {
       $user->password = FacadesCrypt::decryptString($user->password);
@@ -119,7 +126,12 @@ class UserController extends Controller
       $this->setUserHomeSetting($user->id);
       $this->saveImage($request, 'photo', 'users', 'upload_image', $user->id, 'App\Models\User');
 
-      $this->callActivityMethod('users', 'store', $parameters);
+
+      $result = $this->activityParameters($lang, 'store', 'user', $user,  'pc_name' , null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
+
       event(new BranchesUpdated([...Branch::with('users')->get()]));
 
       event(new UsersUpdated([...User::all()]));
@@ -148,7 +160,7 @@ class UserController extends Controller
     $user = User::with('permissions', 'roles')->find($id);
 
     if ($user) {
-      $this->callActivityMethod('users', 'show', $parameters);
+
       $user->password = FacadesCrypt::decryptString($user->password);
       $user['role'] = $user->getRoleNames()[0] ?? "";
 
@@ -170,9 +182,6 @@ class UserController extends Controller
     $lang = $request->header('lang');
     $old_data = User::find($id)->toJson();
     $user = User::find($id);
-//    if ($result = $this->validateBranchID($request->branch_id, $lang))
-//      return $result;
-
 
     DB::beginTransaction();
     try {
@@ -190,7 +199,14 @@ class UserController extends Controller
       $user->load('roles', 'permissions'); //$user->with('roles', 'permissions')->get()
       event(new BranchesUpdated([...Branch::with('users')->get()]));
       broadcast(new UserInformation($user))->toOthers();
-      $this->callActivityMethod('users', 'update', $parameters);
+
+
+      $result = $this->activityParameters($lang, 'update', 'user', $user ,  'pc_name' , $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
+
       DB::commit();
       return [
         'user' => $user,
@@ -211,8 +227,9 @@ class UserController extends Controller
   {
     $lang = app('request')->header('lang');
 
-    $parameters = ['id' => $id];
     $user = User::find($id);
+
+
     if ($user['is_root'] == true) {
       $errors = [
         'message' => [$this->userMessage->t(UserWordsEnum::admin_can_not_be_deleted->name, $lang)]
@@ -227,13 +244,18 @@ class UserController extends Controller
         $this->deleteImage('upload_image', 'users/' . $user->image->file_name, $user->id);
       }
 
-      if($this->isUseUser($id)) {
+      if ($this->isUseUser($id)) {
         $errors = ['user' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);
       }
 
+      $result = $this->activityParameters($lang, 'delete', 'user', $user , 'pc_name' , null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
+
       $user->delete();
-      $this->callActivityMethod('users', 'delete', $parameters);
       event(new BranchesUpdated([...Branch::with('users')->get()]));
       event(new UsersUpdated([...User::all()]));
       DB::commit();
@@ -305,14 +327,7 @@ class UserController extends Controller
 
   public function isUseUser($user_id)
   {
-    //user related to activity
-    $activity = Activity::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
-    if ($activity != null)
-      return true;
-//      return ['activityId' => $activity->id, 'table' => 'activities'];
 
-    //user related to app setting
     $appSetting = AppSetting::where(function ($query) use ($user_id) {
       $query->where('user_id', $user_id);
     })->first();
@@ -353,15 +368,6 @@ class UserController extends Controller
 //      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
 
 
-    //user related to Language
-    $language = Language::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($language != null)
-      return true;
-//      return ['languageId' => $language->id, 'table' => 'languages'];
-
-
     //user related to notification
     $notification = Notification::where(function ($query) use ($user_id) {
       $query->where('from_user_id', $user_id)->orWhere('to_user_id', $user_id);
@@ -372,35 +378,40 @@ class UserController extends Controller
 
     //user related to report setting
     $reportSetting = ReportSetting::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
+      $query->where('user_id', $user_id);
+    })->first();
     if ($reportSetting != null)
       return true;
 //      return ['reportSettingId' => $reportSetting->id, 'table' => 'report_settings'];
 
     //user related to setting
     $setting = Setting::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
+      $query->where('user_id', $user_id);
+    })->first();
     if ($setting != null)
       return true;
 //      return ['settingId' => $setting->id, 'table' => 'settings'];
 
     //user related to Trash
     $trash = Trash::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
+      $query->where('user_id', $user_id);
+    })->first();
     if ($trash != null)
       return true;
 //      return ['trashId' => $trash->id, 'table' => 'trashes'];
 
     //user related to user setting
     $userSetting = UserSetting::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
+      $query->where('user_id', $user_id);
+    })->first();
     if ($userSetting != null)
       return true;
 //      return ['userSettingId' => $userSetting->id, 'table' => 'user_settings'];
 
     //user related to voucher permission user
     $voucherPermissionUser = VoucherPermissionUser::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id); })->first();
+      $query->where('user_id', $user_id);
+    })->first();
     if ($voucherPermissionUser != null)
       return true;
 //      return ['voucherPermissionUserId' => $voucherPermissionUser->id, 'table' => 'voucher_permission_users'];

@@ -1,5 +1,19 @@
 # Changelog
 
+<<<<<<< HEAD
+=======
+## 3.1.0 (2023-11-16)
+
+*   Feature: Full PHP 8.3 compatibility.
+    (#255 by @clue)
+
+*   Feature: Describe all callable arguments with types for `Promise` and `Deferred`.
+    (#253 by @clue)
+
+*   Update test suite and minor documentation improvements.
+    (#251 by @ondrejmirtes and #250 by @SQKo)
+
+>>>>>>> 06408f47f14cbeb88ea760bb11bed2d42158fc64
 ## 3.0.0 (2023-07-11)
 
 A major new feature release, see [**release announcement**](https://clue.engineering/2023/announcing-reactphp-promise-v3).
