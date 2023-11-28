@@ -698,6 +698,7 @@ Route::post('uploadManyAttachments', [AttachmentController::class, 'uploadManyAt
 Route::post('change-items-price', [ReportController::class, 'changeItemsPrice']);
 
 Route::get('get-user-ip', [Controller::class, 'getUserIp']) ;
+Route::get('get-user-pc-name', [Controller::class, 'getUserPCname']) ;
 
 
 

@@ -55,7 +55,7 @@ class EmployeeController extends Controller
       }
 
       $employee = Employee::create($request->all());
-      $result = $this->activityParameters($lang, 'store', 'employee', $employee,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'employee', $employee,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -100,7 +100,7 @@ class EmployeeController extends Controller
       }
 
       $employee->update($request->all());
-      $result = $this->activityParameters($lang, 'update', 'employee', $employee,   'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'employee', $employee,     $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -130,7 +130,7 @@ class EmployeeController extends Controller
 
       $employee = Employee::find($id);
       $employee->delete();
-      $result = $this->activityParameters($lang, 'delete', 'employee', $employee,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'employee', $employee,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

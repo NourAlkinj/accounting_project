@@ -76,7 +76,7 @@ class CurrencyController extends Controller
       $this->updateValueInDB($currency->id, Currency::class, 'is_default', true);
     $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->created_at, $request);
 
-    $result = $this->activityParameters($lang, 'store', 'currency', $currency,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'currency', $currency,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -105,7 +105,7 @@ class CurrencyController extends Controller
     if ($currencyBeforUpdate != $currency->parity)
       $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->updated_at, $request);
 
-    $result = $this->activityParameters($lang, 'update', 'currency', $currency,   'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'currency', $currency,     $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -125,7 +125,7 @@ class CurrencyController extends Controller
       return response()->json(['errors' => $errors], 400);
     }
     $currency->delete();
-    $result = $this->activityParameters($lang, 'delete', 'currency', $currency,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'delete', 'currency', $currency,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);

@@ -48,7 +48,7 @@ trait  ActivityLog
     } else
       Activity::create([
         'table' => $activity['table'],
-        'user_id' => auth('sanctum')->user() ? auth('sanctum')->user()->id : null,
+        'user_id' => auth('sanctum')->user() ? auth('sanctum')->user()->id : $activity['parameters']['id'],
         'branch_id' => auth('sanctum')->user() ? auth('sanctum')->user()->branch_id : null,
         'table_id' => $activity['parameters']['id'],
         'description_ar' => $activity['parameters']['description_ar'],
@@ -62,6 +62,7 @@ trait  ActivityLog
       ]);
 
   }
+
 
   public function getOperation($method)
   {

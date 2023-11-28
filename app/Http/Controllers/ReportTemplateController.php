@@ -47,7 +47,7 @@ class ReportTemplateController extends Controller
     $reportTemplate = ReportTemplate::create($request->all());
     $this->saveImage($request, 'photo', 'reports', 'upload_image', $reportTemplate->id, 'App\Models\ReportTemplate');
 
-    $result = $this->activityParameters($lang, 'store', 'reportTemplate', $reportTemplate,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'reportTemplate', $reportTemplate,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -72,7 +72,7 @@ class ReportTemplateController extends Controller
     }
     $this->saveImage($request, 'photo', 'reports', 'upload_image', $reportTemplate->id, 'App\Models\ReportTemplate');
     $reportTemplate->update($request->all());
-    $result = $this->activityParameters($lang, 'update', 'reportTemplate', $reportTemplate,   'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'reportTemplate', $reportTemplate,     $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -93,7 +93,7 @@ class ReportTemplateController extends Controller
       $this->deleteImage('upload_image', 'reports/' . $reportTemplate->image->file_name, $reportTemplate->id);
     }
     $reportTemplate->delete();
-    $result = $this->activityParameters($lang, 'delete', 'reportTemplate', $reportTemplate,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'delete', 'reportTemplate', $reportTemplate,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);

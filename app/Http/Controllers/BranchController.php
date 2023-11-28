@@ -56,7 +56,7 @@ class BranchController extends Controller
 
 
 
-      $result = $this->activityParameters($lang, 'store', 'branch', $branch,     'pc_name' , null);
+      $result = $this->activityParameters($lang, 'store', 'branch', $branch,        null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -114,7 +114,7 @@ class BranchController extends Controller
         $this->callActivateChildren($id);
       }
 
-      $result = $this->activityParameters($lang, 'update', 'branch', $branch,     'pc_name' , $old_data);
+      $result = $this->activityParameters($lang, 'update', 'branch', $branch,        $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -163,7 +163,7 @@ class BranchController extends Controller
     try {
       $branch->delete();
 
-      $result = $this->activityParameters($lang, 'delete', 'branch', $branch,     'pc_name' , null);
+      $result = $this->activityParameters($lang, 'delete', 'branch', $branch,        null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

@@ -53,7 +53,7 @@ class DepartmentController extends Controller
         $this->updateValueInDB($department->id, Department::class, 'is_root', true);
       }
 
-      $result = $this->activityParameters($lang, 'store', 'department', $department,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'department', $department,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);      event(new DepartmentUpdated([...Department::all()]));
@@ -87,7 +87,7 @@ class DepartmentController extends Controller
 
       $department->update($request->all());
 
-      $result = $this->activityParameters($lang, 'update', 'department', $department,   'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'department', $department,     $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);      event(new DepartmentUpdated([...Department::all()]));
@@ -123,7 +123,7 @@ class DepartmentController extends Controller
       return response()->json(['errors' => $errors], 400);
     }
       $department->delete();
-      $result = $this->activityParameters($lang, 'delete', 'department', $department,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'department', $department,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

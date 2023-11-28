@@ -57,7 +57,7 @@ class CostCenterController extends Controller
 
         $this->validateCardType($costCenter->id,CostCenter::class, $request);
 
-      $result = $this->activityParameters($lang, 'store', 'costCenter', $costCenter,  'pc_name' , null);
+      $result = $this->activityParameters($lang, 'store', 'costCenter', $costCenter,    null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -89,7 +89,7 @@ class CostCenterController extends Controller
         $costCenter = CostCenter::find($id);
         $costCenter->update($request->all());
 
-      $result = $this->activityParameters($lang, 'update', 'costCenter', $costCenter,  'pc_name' , $old_data);
+      $result = $this->activityParameters($lang, 'update', 'costCenter', $costCenter,    $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -125,7 +125,7 @@ class CostCenterController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
         $costCenter->delete();
-      $result = $this->activityParameters($lang, 'delete', 'costCenter', $costCenter,  'pc_name' , $old_data);
+      $result = $this->activityParameters($lang, 'delete', 'costCenter', $costCenter,    null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

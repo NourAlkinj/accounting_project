@@ -46,7 +46,7 @@ class StoreController extends Controller
     $store = Store::create($request->all());
 
     $this->validateCardType($store->id, Store::class, $request);
-    $result = $this->activityParameters($lang, 'store', 'store', $store,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'store', $store,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -81,7 +81,7 @@ class StoreController extends Controller
 
     $store = Store::find($id);
     $store->update($request->all());
-    $result = $this->activityParameters($lang, 'update', 'store', $store,   'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'store', $store,     $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -114,7 +114,7 @@ class StoreController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
     $store->delete();
-    $result = $this->activityParameters($lang, 'delete', 'store', $store,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'delete', 'store', $store,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);
