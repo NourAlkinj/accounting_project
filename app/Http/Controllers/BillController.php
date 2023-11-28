@@ -97,7 +97,7 @@ class BillController extends Controller
       }
 
 
-      $result = $this->activityParameters($lang, 'store', 'bill', $bill,    'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'bill', $bill,       null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -150,7 +150,7 @@ class BillController extends Controller
       $this->saveBillRecord($request, $bill->id);
       $this->saveBillAdditionAndDiscount($request, $bill->id);
 
-      $result = $this->activityParameters($lang, 'update', 'bill', $bill,    'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'bill', $bill,       $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -201,7 +201,7 @@ class BillController extends Controller
       // -------OR BY M M TABLE --------------
       BillReturnedBill::where('bill_id', $id)->delete();
       $bill->delete();
-      $result = $this->activityParameters($lang, 'delete', 'bill', $bill,    'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'bill', $bill,       null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);
@@ -239,7 +239,7 @@ class BillController extends Controller
       }
       $bill->forceDelete();
 
-      $result = $this->activityParameters($lang, 'forceDelete', 'bill', $bill,    'pc_name', null);
+      $result = $this->activityParameters($lang, 'forceDelete', 'bill', $bill,       null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('forceDelete', $table, $parameters);

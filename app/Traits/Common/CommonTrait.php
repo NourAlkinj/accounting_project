@@ -8,7 +8,6 @@ use App\Models\Currency;
 use App\Models\CurrencyActivity;
 use App\Models\User;
 use COM;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Lang\Locales\CommonWords;
@@ -109,10 +108,13 @@ trait  CommonTrait
 
   public function getUserIp()
   {
-    return $user_ip_address =app('request')->ip();
+    return $user_ip_address = app('request')->ip();
 
   }
-  public function activityParameters( $lang, $method, $model, $element,   $pc_name, $old_data)
+
+
+
+  public function activityParameters($lang, $method, $model, $element, $old_data)
   {
     $operation_ar = $this->getOperation($method)[0];
     $operation_en = $this->getOperation($method)[1];
@@ -127,7 +129,7 @@ trait  CommonTrait
       'description_ar' => $discription_ar,
       'description_en' => $discription_en,
       'mac' => $this->getUserIp(),
-      'pc_name' => $pc_name ? $pc_name : null,
+      'pc_name' => gethostname(),
       'old_data' => $old_data ? $old_data : null
     ];
     return [

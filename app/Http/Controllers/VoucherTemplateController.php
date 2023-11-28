@@ -54,7 +54,7 @@ class VoucherTemplateController extends Controller
     $this->validateVoucherType($voucherTemplate->id, VoucherTemplate::class, $request);
     $this->setVoucherPermissionUser($voucherTemplate->id);
 
-    $result = $this->activityParameters($lang, 'store', 'voucherTemplate', $voucherTemplate, 'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'voucherTemplate', $voucherTemplate,   null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -84,7 +84,7 @@ class VoucherTemplateController extends Controller
     $voucherTemplate = VoucherTemplate::find($id);
 
     $voucherTemplate->update($request->all());
-    $result = $this->activityParameters($lang, 'update', 'voucherTemplate', $voucherTemplate, 'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'voucherTemplate', $voucherTemplate,   $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -106,7 +106,7 @@ class VoucherTemplateController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
     $voucherTemplate->delete();
-    $result = $this->activityParameters($lang, 'delete', 'voucherTemplate', $voucherTemplate, 'pc_name', null);
+    $result = $this->activityParameters($lang, 'delete', 'voucherTemplate', $voucherTemplate,   null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);

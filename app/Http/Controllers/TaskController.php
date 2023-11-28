@@ -126,7 +126,7 @@ class TaskController extends Controller
 
       event(new TasksUpdated([...Task::all()]));
 
-      $result = $this->activityParameters($lang, 'store', 'task', $task,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'task', $task,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -257,7 +257,7 @@ class TaskController extends Controller
       $task->update($request->all());
 
 
-      $result = $this->activityParameters($lang, 'update', 'task', $task,   'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'task', $task,     $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -318,7 +318,7 @@ class TaskController extends Controller
         }
       }
       $task->delete();
-      $result = $this->activityParameters($lang, 'delete', 'task', $task,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'task', $task,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

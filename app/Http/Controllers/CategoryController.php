@@ -53,7 +53,7 @@ class CategoryController extends Controller
       $category = Category::create($request->all());
 
 
-      $result = $this->activityParameters($lang, 'store', 'category', $category,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'category', $category,      null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -97,7 +97,7 @@ class CategoryController extends Controller
 
     try {
       $category->update($request->all());
-      $result = $this->activityParameters($lang, 'update', 'category', $category,   'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'category', $category,      $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -138,7 +138,7 @@ class CategoryController extends Controller
       }
       $category->delete();
 
-      $result = $this->activityParameters($lang, 'delete', 'category', $category,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'category', $category,      null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

@@ -63,7 +63,7 @@ class JournalEntryController extends Controller
       );
       $this->saveJournalEntryRecord($request, $journalEntry->id);
 
-      $result = $this->activityParameters($lang, 'store', 'journalEntry', $journalEntry,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'journalEntry', $journalEntry,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -107,7 +107,7 @@ class JournalEntryController extends Controller
       );
       $this->saveJournalEntryRecord($request, $journalEntry->id);
 
-      $result = $this->activityParameters($lang, 'update', 'journalEntry', $journalEntry,   'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'journalEntry', $journalEntry,     $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -142,7 +142,7 @@ class JournalEntryController extends Controller
       return response()->json(['errors' => $errors], 404);
     }
       $journalEntry->delete();
-      $result = $this->activityParameters($lang, 'delete', 'journalEntry', $journalEntry,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'journalEntry', $journalEntry,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);
@@ -166,7 +166,7 @@ class JournalEntryController extends Controller
         $journalEntry->restore();
         $JournalEntry_Records->restore();
 
-        $result = $this->activityParameters($lang, 'restore', 'journalEntry', $journalEntry,   'pc_name', null);
+        $result = $this->activityParameters($lang, 'restore', 'journalEntry', $journalEntry,     null);
         $parameters = $result['parameters'];
         $table = $result['table'];
         $this->callActivityMethod('restore', $table, $parameters);
@@ -207,7 +207,7 @@ class JournalEntryController extends Controller
       return response()->json(['errors' => $errors], 404);
     }
       $journalEntry->forceDelete();
-      $result = $this->activityParameters($lang, 'forceDelete', 'journalEntry', $journalEntry,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'forceDelete', 'journalEntry', $journalEntry,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('forceDelete', $table, $parameters);

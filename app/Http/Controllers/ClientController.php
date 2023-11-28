@@ -40,7 +40,7 @@ class ClientController extends Controller
     $client = Client::create($request->all());
     $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
 
-    $result = $this->activityParameters($lang, 'store', 'category', $client,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'category', $client,      null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -68,7 +68,7 @@ class ClientController extends Controller
     $client->update($request->all());
     $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
 
-    $result = $this->activityParameters($lang, 'update', 'client', $client,   'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'client', $client,      $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -88,7 +88,7 @@ class ClientController extends Controller
     $client->delete();
     $this->updateValueInDB($accountId, Account::class, 'is_client', false);
 
-    $result = $this->activityParameters($lang, 'delete', 'client', $client,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'delete', 'client', $client,      null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);

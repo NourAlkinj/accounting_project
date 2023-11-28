@@ -9,6 +9,7 @@ use App\Events\UsersUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Activity;
 use App\Models\AppSetting;
 use App\Models\BillPermissionUser;
 use App\Models\Branch;
@@ -65,13 +66,13 @@ class UserController extends Controller
     if ($user && FacadesCrypt::decryptString($user->password) == $request->password) {
       $token = $user->createToken('user-token')->plainTextToken;
 
-      $result = $this->activityParameters($lang, 'login', 'user', $user ,  'pc_name' , null);
+      $result = $this->activityParameters($lang, 'login', 'user', $user, null);
 
       $parameters = $result['parameters'];
       $table = $result['table'];
 
 
-      $this->callActivityMethod('login', $table, $parameters);
+       $this->callActivityMethod('login', $table, $parameters);
 
       $data = [
         'token' => $token,
@@ -127,10 +128,11 @@ class UserController extends Controller
       $this->saveImage($request, 'photo', 'users', 'upload_image', $user->id, 'App\Models\User');
 
 
-      $result = $this->activityParameters($lang, 'store', 'user', $user,  'pc_name' , null);
+      $result = $this->activityParameters($lang, 'store', 'user', $user, null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
+
 
       event(new BranchesUpdated([...Branch::with('users')->get()]));
 
@@ -201,7 +203,7 @@ class UserController extends Controller
       broadcast(new UserInformation($user))->toOthers();
 
 
-      $result = $this->activityParameters($lang, 'update', 'user', $user ,  'pc_name' , $old_data);
+      $result = $this->activityParameters($lang, 'update', 'user', $user, $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -249,7 +251,7 @@ class UserController extends Controller
         return response()->json(['errors' => $errors], 400);
       }
 
-      $result = $this->activityParameters($lang, 'delete', 'user', $user , 'pc_name' , null);
+      $result = $this->activityParameters($lang, 'delete', 'user', $user, null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

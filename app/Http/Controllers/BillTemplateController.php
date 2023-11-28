@@ -64,7 +64,7 @@ class BillTemplateController extends Controller
         $this->setBillPermissionUser($billTemplate->id);
 
 
-      $result = $this->activityParameters($lang, 'store', 'bill_template', $billTemplate,     'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'bill_template', $billTemplate,        null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -97,7 +97,7 @@ class BillTemplateController extends Controller
         $billTemplate = BillTemplate::find($id);
         $billTemplate->update($request->all());
 
-      $result = $this->activityParameters($lang, 'update', 'bill_templates', $billTemplate,     'pc_name', null);
+      $result = $this->activityParameters($lang, 'update', 'bill_templates', $billTemplate,        null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -121,7 +121,7 @@ class BillTemplateController extends Controller
       }
       $billTemplate->delete();
 
-      $result = $this->activityParameters($lang, 'delete', 'bill_templates', $billTemplate,     'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'bill_templates', $billTemplate,        null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

@@ -49,7 +49,7 @@ class CompanyInformationController extends Controller
 
       $this->saveImage($request, 'photo', 'Company_Information', 'upload_image', $company_information->id, 'App\Models\CompanyInformation');
 
-      $result = $this->activityParameters($lang, 'store', 'company_information', $company_information,   'pc_name' , null);
+      $result = $this->activityParameters($lang, 'store', 'company_information', $company_information,      null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);
@@ -115,7 +115,7 @@ class CompanyInformationController extends Controller
       $company_information->update($request->all());
 
 
-      $result = $this->activityParameters($lang, 'update', 'company_information', $company_information,   'pc_name' , $old_data);
+      $result = $this->activityParameters($lang, 'update', 'company_information', $company_information,      $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -161,7 +161,7 @@ class CompanyInformationController extends Controller
       }
       $company_information->delete();
 
-      $result = $this->activityParameters($lang, 'delete', 'company_information', $company_information,   'pc_name' , null);
+      $result = $this->activityParameters($lang, 'delete', 'company_information', $company_information,      null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

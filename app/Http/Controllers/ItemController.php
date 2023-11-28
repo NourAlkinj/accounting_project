@@ -115,7 +115,7 @@ class ItemController extends Controller
 //      return;
     }
 
-    $result = $this->activityParameters($lang, 'store', 'item', $item,   'pc_name', null);
+    $result = $this->activityParameters($lang, 'store', 'item', $item,     null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -176,7 +176,7 @@ class ItemController extends Controller
         return response()->json(["errors" => $errors], 422);
       }
     }
-    $result = $this->activityParameters($lang, 'update', 'item', $item,   'pc_name', $old_data);
+    $result = $this->activityParameters($lang, 'update', 'item', $item,     $old_data);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -216,7 +216,7 @@ class ItemController extends Controller
         $this->deleteImage('upload_image', 'items/' . $item->image->file_name, $item->id);
       }
       $item->delete();
-      $result = $this->activityParameters($lang, 'delete', 'item', $item,   'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'item', $item,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);

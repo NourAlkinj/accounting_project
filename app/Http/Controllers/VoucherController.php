@@ -69,7 +69,7 @@ class VoucherController extends Controller
 //      $this->generateJournalEntry($request, $voucher->id, $voucher->voucher_template_id);
       $this->generateJournalEntryFromVoucher($request, $voucher->id, $voucher->voucher_template_id);
 
-      $result = $this->activityParameters($lang, 'store', 'voucher', $voucher,  'pc_name', null);
+      $result = $this->activityParameters($lang, 'store', 'voucher', $voucher,    null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('store', $table, $parameters);
@@ -124,7 +124,7 @@ class VoucherController extends Controller
 //      ]
       );
       $this->saveVoucherRecord($request, $voucher->id);
-      $result = $this->activityParameters($lang, 'update', 'voucher', $voucher,  'pc_name', $old_data);
+      $result = $this->activityParameters($lang, 'update', 'voucher', $voucher,    $old_data);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('update', $table, $parameters);
@@ -158,7 +158,7 @@ class VoucherController extends Controller
         return response()->json(['errors' => $errors], 404);
       }
       $voucher->delete();
-      $result = $this->activityParameters($lang, 'delete', 'voucher', $voucher,  'pc_name', null);
+      $result = $this->activityParameters($lang, 'delete', 'voucher', $voucher,    null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('delete', $table, $parameters);
@@ -191,7 +191,7 @@ class VoucherController extends Controller
       return response()->json(['errors' => $errors], 404);
     }
     $voucher->forceDelete();
-    $result = $this->activityParameters($lang, 'forceDelete', 'voucher', $voucher,  'pc_name', null);
+    $result = $this->activityParameters($lang, 'forceDelete', 'voucher', $voucher,    null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('forceDelete', $table, $parameters);
@@ -208,7 +208,7 @@ class VoucherController extends Controller
     if ($voucher && $voucher_Records) {
       $voucher->restore();
       $voucher_Records->restore();
-      $result = $this->activityParameters($lang, 'restore', 'voucher', $voucher,  'pc_name', null);
+      $result = $this->activityParameters($lang, 'restore', 'voucher', $voucher,    null);
       $parameters = $result['parameters'];
       $table = $result['table'];
       $this->callActivityMethod('restore', $table, $parameters);

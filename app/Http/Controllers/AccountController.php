@@ -78,7 +78,7 @@ class AccountController extends Controller
       $this->updateValueInDB($account->id, Account::class, 'is_client', true);
       $client = (new ClientController)->store($request, $account->id);
     }
-    $result = $this->activityParameters($lang, 'store', 'account', $account,  'pc_name' , null);
+    $result = $this->activityParameters($lang, 'store', 'account', $account,    null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('store', $table, $parameters);
@@ -130,7 +130,7 @@ class AccountController extends Controller
 
 
 
-    $result = $this->activityParameters($lang, 'update', 'account', $account , 'pc_name' , $old_data_account);
+    $result = $this->activityParameters($lang, 'update', 'account', $account    , $old_data_account);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('update', $table, $parameters);
@@ -195,7 +195,7 @@ class AccountController extends Controller
 
     $account->delete();
 
-    $result = $this->activityParameters($lang, 'delete', 'account', $account , 'pc_name' , null);
+    $result = $this->activityParameters($lang, 'delete', 'account', $account    , null);
     $parameters = $result['parameters'];
     $table = $result['table'];
     $this->callActivityMethod('delete', $table, $parameters);
