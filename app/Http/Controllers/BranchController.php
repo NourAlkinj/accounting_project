@@ -6,8 +6,16 @@ use App\Events\BranchesUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
+use App\Models\Activity;
+use App\Models\Bill;
+use App\Models\BillTemplate;
 use App\Models\Branch;
+use App\Models\Department;
+use App\Models\JournalEntry;
+use App\Models\JournalEntryRecord;
 use App\Models\User;
+use App\Models\Voucher;
+use App\Models\VoucherTemplate;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use Illuminate\Support\Facades\DB;
@@ -161,6 +169,10 @@ class BranchController extends Controller
     }
     DB::beginTransaction();
     try {
+        if($this->isUseBranch($id)) {
+            $errors = ['branch' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        return response()->json(['errors' => $errors], 400);
+      }
       $branch->delete();
 
       $result = $this->activityParameters($lang, 'delete', 'branch', $branch,        null);
@@ -281,6 +293,93 @@ class BranchController extends Controller
   {
     return $this->notRootModel(Branch::class);
   }
+
+    public function isUseBranch($branch_id)
+    {
+        //branch related to activity
+        $activity = Activity::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($activity != null)
+            return true;
+//      return ['activityId' => $activity->id, 'table' => 'activities'];
+
+        //branch related to bill
+        $bill = Bill::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($bill != null)
+            return true;
+//      return ['billId' => $bill->id, 'table' => 'bills'];
+
+        //branch related to billTemplate
+        $billTemplate = BillTemplate::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($billTemplate != null)
+            return true;
+//      return ['billTemplateId' => $billTemplate->id, 'table' => 'bill_templates'];
+
+        //branch related to branch
+        $branch = Branch::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($branch != null)
+            return true;
+//      return ['branchId' => $branch->id, 'table' => 'branches'];
+
+        //branch related to department
+        $department = Department::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($department != null)
+            return true;
+//      return ['departmentId' => $department->id, 'table' => 'departments'];
+
+        //branch related to journalEntry
+        $journalEntry = JournalEntry::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($journalEntry != null)
+            return true;
+//      return ['journalEntryId' => $journalEntry->id, 'table' => 'journal_entries'];
+
+        //branch related to journalEntryRecord
+        $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($journalEntryRecord != null)
+            return true;
+//      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
+
+        //branch related to user
+        $user = User::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($user != null)
+            return true;
+//      return ['userId' => $user->id, 'table' => 'users'];
+
+        //branch related to voucher
+        $voucher = Voucher::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($voucher != null)
+            return true;
+//      return ['voucherId' => $voucher->id, 'table' => 'vouchers'];
+
+        //branch related to voucherTemplate
+        $voucherTemplate = VoucherTemplate::where(function ($query) use ($branch_id) {
+            $query->where('branch_id', $branch_id);
+        })->first();
+        if ($voucherTemplate != null)
+            return true;
+//      return ['voucherTemplateId' => $voucherTemplate->id, 'table' => 'voucher_templates'];
+
+
+//    return ['id' => null, 'table' => null];
+        return false;
+    }
 
 
 }

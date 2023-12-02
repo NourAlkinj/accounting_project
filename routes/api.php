@@ -125,6 +125,7 @@ Route::group(['namespace' => 'Branch', 'prefix' => 'branch', 'auth'], function (
   Route::get('not-root', [BranchController::class, 'callNotRoot'])->name('branch.callNotRoot');
   Route::get('call-de-activate-children/{id}', [BranchController::class, 'callDeActivateChildren'])->name('branch.callDeActivateChildren');
   // Route::get('call--activate-de-activate-children/{id}', [BranchController::class, 'callActivateDeActivateBranch'])->name('branch.callActivateDeActivateBranch');
+    Route::get('is-use-branch/{id}', [BranchController::class, 'isUseBranch'])->name('branch.isUseBranch');
 
 
 });
@@ -250,6 +251,7 @@ Route::group(['namespace' => 'Item', 'prefix' => 'item', 'auth'], function () {
   Route::get('get-item-min-purchase-cost/{item_id}/{unit_id}/{currency_id}', [ItemController::class, 'getItemMinPurchaseCost']);
   Route::get('get-item-last-purchase-cost/{item_id}/{unit_id}/{currency_id}', [ItemController::class, 'getItemLastPurchaseCost']);
   Route::get('get-item-FIFO-cost/{currency_id}', [ItemController::class, 'getItemFIFOCost']);
+  Route::get('is-use-item/{id}', [ItemController::class, 'isUseItem'])->name('item.isUseItem');
 
 
 });

@@ -8,8 +8,15 @@ use App\Http\Exceptions\CustomException;
 use App\Http\Requests\Request;
 use App\Http\Requests\StoreRequest;
 use App\Http\Requests\UpdateRequest;
+use App\Models\Barcode;
+use App\Models\BillRecord;
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\JournalEntryRecord;
+use App\Models\Quantity;
+use App\Models\Serial;
+use App\Models\SerialNumberBillRecord;
+use App\Models\Unit;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use App\Traits\Item\ItemTrait;
@@ -215,6 +222,10 @@ class ItemController extends Controller
       if ($item->image) {
         $this->deleteImage('upload_image', 'items/' . $item->image->file_name, $item->id);
       }
+        if ($this->isUseItem($id)) {
+            $errors = ['item' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        return response()->json(['errors' => $errors], 400);
+      }
       $item->delete();
       $result = $this->activityParameters($lang, 'delete', 'item', $item,     null);
       $parameters = $result['parameters'];
@@ -239,6 +250,69 @@ class ItemController extends Controller
   {
     return $this->generateCodes($id, Category::class, Item::class, 'category_id');
   }
+
+    public function isUseItem($item_id)
+    {
+        //item related to barcode
+        $barcode = Barcode::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($barcode != null)
+            return true;
+//      return ['barcodeId' => $barcode->id, 'table' => 'barcodes'];
+
+        //item related to bill record
+        $billRecord = BillRecord::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($billRecord != null)
+            return true;
+//      return ['billRecordId' => $billRecord->id, 'table' => 'bill_records'];
+
+        //item related to journalEntryRecord
+        $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($journalEntryRecord != null)
+            return true;
+//      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
+
+        //item related to quantity
+        $quantity = Quantity::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($quantity != null)
+            return true;
+//      return ['quantityId' => $quantity->id, 'table' => 'quantities'];
+
+        //item related to serial
+        $serial = Serial::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($serial != null)
+            return true;
+//      return ['serialId' => $serial->id, 'table' => 'serials'];
+
+        //item related to serialNumberBillRecord
+        $serialNumberBillRecord = SerialNumberBillRecord::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($serialNumberBillRecord != null)
+            return true;
+//      return ['serialNumberBillRecordId' => $serialNumberBillRecord->id, 'table' => 'serial_number_bill_records'];
+
+        //item related to unit
+        $unit = Unit::where(function ($query) use ($item_id) {
+            $query->where('item_id', $item_id);
+        })->first();
+        if ($unit != null)
+            return true;
+//      return ['unitId' => $unit->id, 'table' => 'units'];
+
+//    return ['id' => null, 'table' => null];
+        return false;
+
+    }
 
 
 }

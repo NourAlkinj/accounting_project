@@ -24,7 +24,7 @@ return new class extends Migration {
       $table->integer('today_parity')->nullable();
       $table->integer('equivalent')->nullable();
       $table->unsignedBigInteger('contra_account_id')->nullable();
-      $table->unsignedBigInteger('journal_entry_id');
+      $table->unsignedBigInteger('journal_entry_id')->nullable();
       $table->double('current_balance')->nullable();
       $table->double('final_balance')->nullable();
       $table->boolean('is_post_to_account')->nullable();
