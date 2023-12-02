@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\JournalEntryRecord;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JournalEntryRecordSeeder extends Seeder
 {
@@ -142,150 +143,156 @@ class JournalEntryRecordSeeder extends Seeder
 
     /////////////////////////////////////////////////////////test///////////
 
-    $JournalEntryRecord1 = JournalEntryRecord::create([
-      'currency_id' => 1,
-      'parity' => '1',
-      'debit' => 5000,
-      'date' => '2020-1-1',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 5000,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 1,
+//    $JournalEntryRecord1 = JournalEntryRecord::create([
+//      'currency_id' => 1,
+//      'parity' => '1',
+//      'debit' => 5000,
+//      'date' => '2020-1-1',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 5000,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 1,
+//
+//
+//    ]);
+//    $JournalEntryRecord2 = JournalEntryRecord::create([
+//      'currency_id' => 1,
+//      'parity' => '1',
+//      'debit' => 5000,
+//      'date' => '2020-1-2',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 5000,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 2,
+//
+//
+//    ]);
+//    $JournalEntryRecord3 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '7000',
+//      'debit' => 5,
+//      'date' => '2020-1-3',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 5,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Voucher',
+//      'source_id' => 1,
+//
+//    ]);
+//    $JournalEntryRecord4 = JournalEntryRecord::create([
+//      'currency_id' => 1,
+//      'parity' => '1',
+//      'debit' => 10000,
+//      'date' => '2020-1-3',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 10000,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Voucher',
+//      'source_id' => 4,
+//
+//
+//    ]);
+//    $JournalEntryRecord5 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '10000',
+//      'debit' => 10,
+//      'date' => '2020-1-4',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 10,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 1,
+//
+//    ]);
+//    $JournalEntryRecord6 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '12000',
+//      'debit' => 10,
+//      'date' => '2020-1-5',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 10,
+//      'final_balance' => 123,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 3,
+//    ]);
+//    $JournalEntryRecord7 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '13000',
+//      'debit' => 5,
+//      'date' => '2020-1-6',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'final_balance' => 123,
+//      'credit' => 5,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 4,
+//    ]);
+//    $JournalEntryRecord8 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '13000',
+//      'debit' => 10,
+//      'date' => '2020-1-7',
+//      'journal_entry_id' => 1,
+//      'final_balance' => 123,
+//      'account_id' => 1,
+//      'credit' => 10,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 1,
+//    ]);
+//    $JournalEntryRecord8 = JournalEntryRecord::create([
+//      'currency_id' => 2,
+//      'parity' => '12000',
+//      'debit' => 10,
+//      'date' => '2020-1-8',
+//      'final_balance' => 123,
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 10,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Voucher',
+//      'source_id' => 1,
+//    ]);
+//    $JournalEntryRecord9 = JournalEntryRecord::create([
+//      'currency_id' => 3,
+//      'parity' => '10000',
+//      'debit' => 7,
+//      'date' => '2020-1-9',
+//      'journal_entry_id' => 1,
+//      'account_id' => 1,
+//      'credit' => 7,
+//      'cost_center_id' => 1,
+//      'is_post_to_account' => 1,
+//      'source_name' => 'Bill',
+//      'source_id' => 2,
+//    ]);
+//
+//
+//    /////////////////////////////////////////////////////////test///////////
 
+      JournalEntryRecord::truncate();
 
-    ]);
-    $JournalEntryRecord2 = JournalEntryRecord::create([
-      'currency_id' => 1,
-      'parity' => '1',
-      'debit' => 5000,
-      'date' => '2020-1-2',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 5000,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 2,
+      JournalEntryRecord::factory(10000)->create();
+//      factory(JournalEntryRecord::class, 100)->create();
 
-
-    ]);
-    $JournalEntryRecord3 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '7000',
-      'debit' => 5,
-      'date' => '2020-1-3',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 5,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Voucher',
-      'source_id' => 1,
-
-    ]);
-    $JournalEntryRecord4 = JournalEntryRecord::create([
-      'currency_id' => 1,
-      'parity' => '1',
-      'debit' => 10000,
-      'date' => '2020-1-3',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 10000,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Voucher',
-      'source_id' => 4,
-
-
-    ]);
-    $JournalEntryRecord5 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '10000',
-      'debit' => 10,
-      'date' => '2020-1-4',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 10,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 1,
-
-    ]);
-    $JournalEntryRecord6 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '12000',
-      'debit' => 10,
-      'date' => '2020-1-5',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 10,
-      'final_balance' => 123,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 3,
-    ]);
-    $JournalEntryRecord7 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '13000',
-      'debit' => 5,
-      'date' => '2020-1-6',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'final_balance' => 123,
-      'credit' => 5,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 4,
-    ]);
-    $JournalEntryRecord8 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '13000',
-      'debit' => 10,
-      'date' => '2020-1-7',
-      'journal_entry_id' => 1,
-      'final_balance' => 123,
-      'account_id' => 1,
-      'credit' => 10,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 1,
-    ]);
-    $JournalEntryRecord8 = JournalEntryRecord::create([
-      'currency_id' => 2,
-      'parity' => '12000',
-      'debit' => 10,
-      'date' => '2020-1-8',
-      'final_balance' => 123,
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 10,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Voucher',
-      'source_id' => 1,
-    ]);
-    $JournalEntryRecord9 = JournalEntryRecord::create([
-      'currency_id' => 3,
-      'parity' => '10000',
-      'debit' => 7,
-      'date' => '2020-1-9',
-      'journal_entry_id' => 1,
-      'account_id' => 1,
-      'credit' => 7,
-      'cost_center_id' => 1,
-      'is_post_to_account' => 1,
-      'source_name' => 'Bill',
-      'source_id' => 2,
-    ]);
-
-
-    /////////////////////////////////////////////////////////test///////////
   }
 }

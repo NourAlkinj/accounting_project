@@ -329,21 +329,28 @@ class UserController extends Controller
 
   public function isUseUser($user_id)
   {
-
-    $appSetting = AppSetting::where(function ($query) use ($user_id) {
+      //user related to activity
+      $activity = Activity::where(function ($query) use ($user_id) {
       $query->where('user_id', $user_id);
     })->first();
-    if ($appSetting != null)
+    if ($activity != null)
       return true;
-//      return ['appSettingId' => $appSetting->id, 'table' => 'app_settings'];
+//      return ['activityId' => $activity->id, 'table' => 'activities'];
 
-    //user related to bill permission user
-    $billPermissionUser = BillPermissionUser::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($billPermissionUser != null)
-      return true;
-//      return ['billPermissionUserId' => $billPermissionUser->id, 'table' => 'bill_permission_users'];
+//    $appSetting = AppSetting::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($appSetting != null)
+//      return true;
+////      return ['appSettingId' => $appSetting->id, 'table' => 'app_settings'];
+
+//       //user related to bill permission user
+//        $billPermissionUser = BillPermissionUser::where(function ($query) use ($user_id) {
+//            $query->where('user_id', $user_id);
+//        })->first();
+//      if ($billPermissionUser != null)
+//          return true;
+////      return ['billPermissionUserId' => $billPermissionUser->id, 'table' => 'bill_permission_users'];
 
     //user related to employee
     $employee = Employee::where(function ($query) use ($user_id) {
@@ -353,30 +360,30 @@ class UserController extends Controller
       return true;
 //      return ['employeeId' => $employee->id, 'table' => 'employees'];
 
-    //user related to journal entry permission user
-    $journalEntryPermissionUser = JournalEntryPermissionUser::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($journalEntryPermissionUser != null)
-      return true;
-//      return ['journalEntryPermissionUserId' => $journalEntryPermissionUser->id, 'table' => 'journal_entry_permission_users'];
+//    //user related to journal entry permission user
+//    $journalEntryPermissionUser = JournalEntryPermissionUser::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($journalEntryPermissionUser != null)
+//      return true;
+////      return ['journalEntryPermissionUserId' => $journalEntryPermissionUser->id, 'table' => 'journal_entry_permission_users'];
 
-    //user related to journal entry record
-    $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($journalEntryRecord != null)
-      return true;
-//      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
+//    //user related to journal entry record
+//    $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($journalEntryRecord != null)
+//      return true;
+////      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
 
 
-    //user related to notification
-    $notification = Notification::where(function ($query) use ($user_id) {
-      $query->where('from_user_id', $user_id)->orWhere('to_user_id', $user_id);
-    })->first();
-    if ($notification != null)
-      return true;
-//      return ['notificationId' => $notification->id, 'table' => 'notifications'];
+//    //user related to notification
+//    $notification = Notification::where(function ($query) use ($user_id) {
+//      $query->where('from_user_id', $user_id)->orWhere('to_user_id', $user_id);
+//    })->first();
+//    if ($notification != null)
+//      return true;
+////      return ['notificationId' => $notification->id, 'table' => 'notifications'];
 
     //user related to report setting
     $reportSetting = ReportSetting::where(function ($query) use ($user_id) {
@@ -386,37 +393,37 @@ class UserController extends Controller
       return true;
 //      return ['reportSettingId' => $reportSetting->id, 'table' => 'report_settings'];
 
-    //user related to setting
-    $setting = Setting::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($setting != null)
-      return true;
-//      return ['settingId' => $setting->id, 'table' => 'settings'];
+//    //user related to setting
+//    $setting = Setting::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($setting != null)
+//      return true;
+////      return ['settingId' => $setting->id, 'table' => 'settings'];
 
-    //user related to Trash
-    $trash = Trash::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($trash != null)
-      return true;
-//      return ['trashId' => $trash->id, 'table' => 'trashes'];
+//    //user related to Trash
+//    $trash = Trash::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($trash != null)
+//      return true;
+////      return ['trashId' => $trash->id, 'table' => 'trashes'];
 
-    //user related to user setting
-    $userSetting = UserSetting::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($userSetting != null)
-      return true;
-//      return ['userSettingId' => $userSetting->id, 'table' => 'user_settings'];
+//    //user related to user setting
+//    $userSetting = UserSetting::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($userSetting != null)
+//      return true;
+////      return ['userSettingId' => $userSetting->id, 'table' => 'user_settings'];
 
-    //user related to voucher permission user
-    $voucherPermissionUser = VoucherPermissionUser::where(function ($query) use ($user_id) {
-      $query->where('user_id', $user_id);
-    })->first();
-    if ($voucherPermissionUser != null)
-      return true;
-//      return ['voucherPermissionUserId' => $voucherPermissionUser->id, 'table' => 'voucher_permission_users'];
+//    //user related to voucher permission user
+//    $voucherPermissionUser = VoucherPermissionUser::where(function ($query) use ($user_id) {
+//      $query->where('user_id', $user_id);
+//    })->first();
+//    if ($voucherPermissionUser != null)
+//      return true;
+////      return ['voucherPermissionUserId' => $voucherPermissionUser->id, 'table' => 'voucher_permission_users'];
 
 
 //    return ['id' => null, 'table' => null];
