@@ -22,6 +22,7 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+        'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
         'old_data' => $activity['parameters']['old_data'],
         'branch_id' => auth('sanctum')->user()->branch_id,
@@ -44,6 +45,7 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+          'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
       ]);
     } else
@@ -58,6 +60,7 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+          'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
 
       ]);
