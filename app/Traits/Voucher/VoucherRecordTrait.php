@@ -88,20 +88,22 @@ trait  VoucherRecordTrait
         $voucher = Voucher::find($voucher_id);
         $voucher_Recordss = $voucher->records->toArray();
         $records_in_request = $request->records;
-        $recordsToCreate = array_diff(array_column($records_in_request, 'id'), array_column($voucher_Recordss, 'id'));
+        $recordsToCreate = array_diff(array_column($records_in_request, 'index'), array_column($voucher_Recordss, 'index'));
         foreach ($recordsToCreate as $record) {
-            $recordData = $request->records[array_search($record, array_column($request->records, 'id'))];
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $recordData['voucher_id'] = $voucher_id;
             VoucherRecord::create($recordData);
+
         }
-        $recordsToDelete = array_diff(array_column($voucher_Recordss, 'id'), array_column($records_in_request, 'id'));
+        $recordsToDelete = array_diff(array_column($voucher_Recordss, 'index'), array_column($records_in_request, 'index'));
         foreach ($recordsToDelete as $record) {
-            $record = VoucherRecord::where('voucher_id', $voucher_id)->where('id', $record)->first();
+            $record = VoucherRecord::where('voucher_id', $voucher_id)->where('index', $record)->first();
             $record->delete();
         }
-        $recordsToUpdate = array_intersect(array_column($records_in_request, 'id2'), array_column($voucher_Recordss, 'id2'));
+        $recordsToUpdate = array_intersect(array_column($records_in_request, 'index'), array_column($voucher_Recordss, 'index'));
         foreach ($recordsToUpdate as $record) {
-            $recordData = $request->records[array_search($record, array_column($request->records, 'id2'))];
-            $record = VoucherRecord::where('voucher_id', $voucher_id)->where('id2', $record)->first();
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $record = VoucherRecord::where('voucher_id', $voucher_id)->where('index', $record)->first();
             $record->update($recordData);
         }
     }

@@ -91,22 +91,8 @@ class VoucherController extends Controller
             $old_data = Voucher::find($id)->toJson();
 
             $voucher = Voucher::find($id);
-            $voucher->update($request->all()
-//        [
-//        'date' => $request['date'],
-//        'time' => $request['time'],
-//        'receipt_number' => $request['receipt_number'],
-//        'currency_id' => $request['currency_id'],
-//        'parity' => $request['parity'],
-//        'security_level' => $request['security_level'],
-//        'debit_total' => $request['debit_total'],
-//        'credit_total' => $request['credit_total'],
-//        'branch_id' => $request['branch_id'],
-//        'notes' => $request['notes'],
-//        'voucher_template_id' => $request['voucher_template_id'],
-//      ]
-            );
-            $this->saveVoucherRecord($request, $voucher->id);
+            $voucher->update($request->all());
+            $this->saveVoucherRecords($request, $voucher->id);
             $result = $this->activityParameters($lang, 'update', 'voucher', $voucher, $old_data);
             $parameters = $result['parameters'];
             $table = $result['table'];

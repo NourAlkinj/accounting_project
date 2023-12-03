@@ -38,8 +38,18 @@ Broadcast::channel('public.branch', function ($branch) {
   return true;
 });
 
+Broadcast::channel('public.bill_template', function ($bill_templates) {
+  return true;
+});
 
-Broadcast::channel('public.category', function ($category) {
+
+Broadcast::channel('public.category', function ($categories) {
+  return true;
+});
+
+
+
+Broadcast::channel('public.client', function ($clients) {
   return true;
 });
 
