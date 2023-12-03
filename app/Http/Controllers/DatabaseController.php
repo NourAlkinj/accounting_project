@@ -182,9 +182,6 @@ class DatabaseController extends Controller
     {
         $lang = app('request')->header('lang');
         $databaseName = $request->input('database_name');
-//    if ($databaseName) {
-//      $this->switchDatabase($databaseName);
-//    }
         $backupPath = $request->input('backup_path');
         $outputPath = $backupPath . '\backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
         $command = exec("mysqldump -u " . env('DB_USERNAME') . " " . $databaseName . " > {$outputPath}");
@@ -195,11 +192,13 @@ class DatabaseController extends Controller
 
     public function restore(Request $request)
     {
+        $databaseName = $request->databaseName;
+        $backupPath = $request->backupPath;
         $lang = app('request')->header('lang');
-        $fileName = $request->input('file_name');
-        Artisan::call('backup:restore', [
-            '--filename' => $fileName,
-        ]);
+        DB::statement("DROP DATABASE IF EXISTS $databaseName");
+        DB::statement("CREATE DATABASE $databaseName");
+        DB::statement("USE $databaseName");
+        exec("mysql -u " . env('DB_USERNAME') . " " . $databaseName . " < {$backupPath}");
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::restore_database->name, $lang)
       ];

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
        PermissionGroupSeeder::class,
        StoreSeeder::class,
       BarcodeSeeder::class,
-      JournalEntryRecordSeeder::class,
+//      JournalEntryRecordSeeder::class,
 //      JournalEntrySeeder::class,
  //             JournalEntryPermissionUserSeeder::class,
 ////      VoucherTemplateSeeder::class,
