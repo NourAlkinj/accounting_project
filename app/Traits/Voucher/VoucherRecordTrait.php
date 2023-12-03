@@ -98,7 +98,7 @@ trait  VoucherRecordTrait
         $recordsToDelete = array_diff(array_column($voucher_Recordss, 'index'), array_column($records_in_request, 'index'));
         foreach ($recordsToDelete as $record) {
             $record = VoucherRecord::where('voucher_id', $voucher_id)->where('index', $record)->first();
-            $record->delete();
+            $record->forceDelete();
         }
         $recordsToUpdate = array_intersect(array_column($records_in_request, 'index'), array_column($voucher_Recordss, 'index'));
         foreach ($recordsToUpdate as $record) {
