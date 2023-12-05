@@ -21,68 +21,7 @@ trait  VoucherRecordTrait
         return Voucher::find(1)->records;
     }
 
-//  public function saveVoucherRecords(VoucherRequest $request, $voucher_id)
-//  {
-//    $voucher = Voucher::find($voucher_id);
-//    $voucher_Recordss = $voucher->records->toArray();
-//    $records_in_request = $request->records;
-//    $recordsToCreate = array_diff(array_column($records_in_request, 'id2'), array_column($voucher_Recordss, 'id2'));
-//    foreach ($recordsToCreate as $record) {
-//      $recordData = $request->records[array_search($record, array_column($request->records, 'id2'))];
-//      VoucherRecord::create([
-//        'account_id' => $recordData['account_id'],
-//        'debit' => $recordData['debit'],
-//        'index' => abs($recordData['index']),
-//        'relative_debit' => $recordData['debit'],
-//        'relative_credit' => $recordData['credit'],
-//        'debit_total' => $recordData['debit_total'],
-//        'credit_total' => $recordData['credit_total'],
-//        'credit' => $recordData['credit'],
-//        'notes' => $recordData['notes'],
-//        'cost_center_id' => $recordData['cost_center_id'],
-//        'currency_id' => $recordData['currency_id'],
-//        'parity' => $recordData['parity'],
-//        'equivalent' => $recordData['equivalent'],
-//        'contra_account_id' => $recordData['contra_account_id'],
-//        'current_balance' => $recordData['current_balance'],
-//        'final_balance' => $recordData['final_balance'],
-//        'id2' => $recordData['id'],
-//        'voucher_id' => $voucher_id,
-//      ]);
-//    }
-//    $recordsToDelete = array_diff(array_column($voucher_Recordss, 'id2'), array_column($records_in_request, 'id2'));
-//    foreach ($recordsToDelete as $record) {
-//      $record = VoucherRecord::where('voucher_id', $voucher_id)->where('id2', $record)->first();
-//      $record->delete();
-//    }
-//    $recordsToUpdate = array_intersect(array_column($records_in_request, 'id2'), array_column($voucher_Recordss, 'id2'));
-//    foreach ($recordsToUpdate as $record) {
-//      $recordData = $request->records[array_search($record, array_column($request->records, 'id2'))];
-//      $record = VoucherRecord::where('voucher_id', $voucher_id)->where('id2', $record)->first();
-//      $record->update($request->all()
-////          [
-////        'account_id' => $recordData['account_id'],
-////        'debit' => $recordData['debit'],
-////        'index' => abs($recordData['index']),
-////        'relative_debit' => $recordData['debit'],
-////        'relative_credit' => $recordData['credit'],
-////        'debit_total' => $recordData['debit_total'],
-////        'credit_total' => $recordData['credit_total'],
-////        'credit' => $recordData['credit'],
-////        'notes' => $recordData['notes'],
-////        'id2' => $recordData['id2'],
-////        'cost_center_id' => $recordData['cost_center_id'],
-////        'currency_id' => $recordData['currency_id'],
-////        'parity' => $recordData['parity'],
-////        'equivalent' => $recordData['equivalent'],
-////        'contra_account_id' => $recordData['contra_account_id'],
-////        'current_balance' => $recordData['current_balance'],
-////        'final_balance' => $recordData['final_balance'],
-////        'voucher_id' => $voucher_id,
-////      ]
-//      );
-//    }
-//  }
+
     public function saveVoucherRecords(VoucherRequest $request, $voucher_id)
     {
         $voucher = Voucher::find($voucher_id);

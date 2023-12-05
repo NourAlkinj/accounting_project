@@ -20,7 +20,29 @@ trait  JournalEntryRecordTrait
     return JournalEntry::find(1)->records;
   }
 
-
+    public function updateJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
+    {
+        $journal_entry = JournalEntry::find($journal_entry_id);
+        $journal_entry_records = $journal_entry->records->toArray();
+        $records_in_request = $request->records;
+        $recordsToCreate = array_diff(array_column($records_in_request, 'index'), array_column($journal_entry_records, 'index'));
+        foreach ($recordsToCreate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $recordData['journal_entry_id'] = $journal_entry_id;
+            JournalEntryRecord::create($recordData);
+        }
+        $recordsToDelete = array_diff(array_column($journal_entry_records, 'index'), array_column($records_in_request, 'index'));
+        foreach ($recordsToDelete as $record) {
+            $record = JournalEntryRecord::where('journal_entry_id', $journal_entry_id)->where('index', $record)->first();
+            $record->forceDelete();
+        }
+        $recordsToUpdate = array_intersect(array_column($records_in_request, 'index'), array_column($journal_entry_records, 'index'));
+        foreach ($recordsToUpdate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $record = JournalEntryRecord::where('journal_entry_id', $journal_entry_id)->where('index', $record)->first();
+            $record->update($recordData);
+        }
+    }
   public function saveJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
   {
     $JournalEntry_Records = JournalEntry::find($journal_entry_id)->records;

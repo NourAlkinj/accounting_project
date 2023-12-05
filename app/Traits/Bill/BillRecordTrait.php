@@ -45,6 +45,39 @@ trait  BillRecordTrait
     return DB::table('quantities')->where('item_id', $item_id)->sum('quantity');
   }
 
+
+
+
+
+    public function updateBillRecord(BillRequest $request, $bill_id)
+    {
+        $bill = Bill::find($bill_id);
+        $bill_Recordss = $bill->records->toArray();
+        $records_in_request = $request->records;
+        $recordsToCreate = array_diff(array_column($records_in_request, 'index'), array_column($bill_Recordss, 'index'));
+        foreach ($recordsToCreate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $recordData['bill_id'] = $bill_id;
+            BillRecord::create($recordData);
+        }
+        $recordsToDelete = array_diff(array_column($bill_Recordss, 'index'), array_column($records_in_request, 'index'));
+        foreach ($recordsToDelete as $record) {
+            $record = BillRecord::where('bill_id', $bill_id)->where('index', $record)->first();
+            $record->forceDelete();
+        }
+        $recordsToUpdate = array_intersect(array_column($records_in_request, 'index'), array_column($bill_Recordss, 'index'));
+        foreach ($recordsToUpdate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $record = BillRecord::where('bill_id', $bill_id)->where('index', $record)->first();
+            $record->update($recordData);
+        }
+    }
+  
+  
+  
+  
+  
+  
   public function saveBillRecord(BillRequest $request, $bill_id)
   {
     $bill_records = Bill::find($bill_id)->records;

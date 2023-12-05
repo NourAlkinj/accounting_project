@@ -671,6 +671,33 @@ trait  CommonTrait
         return $TotalCredit;
     }
 
+
+//    public function getCredit($dealCurrencies, $requiredCurrencyId)
+//    {
+//
+//        $sql = <<<EOT
+//    SELECT
+//        SUM(
+//            CASE
+//                WHEN $dealCurrencies.currency_id = $requiredCurrencyId THEN $dealCurrencies.credit
+//                WHEN $requiredCurrencyId.is_default THEN $dealCurrencies.credit * $dealCurrencies.parity
+//                ELSE ($dealCurrencies.credit * $dealCurrencies.parity) / logParity($requiredCurrencyId, $dealCurrencies.date)
+//            END
+//        ) AS TotalCredit
+//    FROM
+//        $dealCurrencies
+//    WHERE
+//        -- Add necessary conditions for filtering
+//        -- For instance:
+//        -- date >= '2023-01-01' AND date <= '2023-12-31'
+//    EOT;
+//
+//        DB::statement($sql);
+//    }
+
+
+
+
     // for calculating debit
     public function getDebit($dealCurrencies, $requiredCurrencyId)
     {

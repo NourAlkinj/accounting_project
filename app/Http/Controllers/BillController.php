@@ -147,7 +147,8 @@ class BillController extends Controller
         try {
             $this->reverseBillAffect($bill->records, $request->storing_type);
             $bill->update($request->all());
-            $this->saveBillRecord($request, $bill->id);
+//            $this->saveBillRecord($request, $bill->id);
+            $this->updateBillRecord($request, $bill->id);
             $this->saveBillAdditionAndDiscount($request, $bill->id);
 
             $result = $this->activityParameters($lang, 'update', 'bill', $bill, $old_data);

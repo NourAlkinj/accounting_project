@@ -105,7 +105,8 @@ class JournalEntryController extends Controller
        $request->all()
 
       );
-      $this->saveJournalEntryRecord($request, $journalEntry->id);
+//      $this->saveJournalEntryRecord($request, $journalEntry->id);
+      $this->updateJournalEntryRecord($request, $journalEntry->id);
 
       $result = $this->activityParameters($lang, 'update', 'journalEntry', $journalEntry,     $old_data);
       $parameters = $result['parameters'];

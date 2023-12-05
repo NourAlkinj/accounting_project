@@ -49,6 +49,13 @@ class VoucherController extends Controller
             $voucher = Voucher::create($request->all());
             $this->saveVoucherRecord($request, $voucher->id);
 
+
+//            foreach ($request->records as $record) {
+//                $savedRecord = $voucher->records()->create($record);
+//
+//            }
+
+
 //      $this->generateJournalEntry($request, $voucher->id, $voucher->voucher_template_id);
             $this->generateJournalEntryFromVoucher($request, $voucher->id, $voucher->voucher_template_id);
 
