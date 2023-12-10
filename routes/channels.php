@@ -21,6 +21,22 @@ Broadcast::channel('public.user', function ($user) {
   return true;
 });
 
+
+
+Broadcast::channel('public.branchesGuide', function ($branches) {
+    return true;
+});
+
+
+
+
+Broadcast::channel('public.categoriesGuide', function ($categories) {
+    return true;
+});
+
+
+
+
 Broadcast::channel('public.item', function ($item) {
   return true;
 });

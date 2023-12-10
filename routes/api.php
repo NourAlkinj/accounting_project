@@ -93,6 +93,7 @@ Route::get('getAllConnectedPrinters', [Controller::class, 'getAllConnectedPrinte
 Route::group(['namespace' => 'Branch', 'prefix' => 'branch', 'auth'], function () {
 
   Route::get('index', [BranchController::class, 'index'])->name('branch.index');
+  Route::get('branches-guide', [BranchController::class, 'branchesGuide'])->name('branch.guide');
   Route::get('all', [BranchController::class, 'all'])->name('branch.all');
 
   Route::post('store', [BranchController::class, 'store'])->name('branch.store');
@@ -224,6 +225,7 @@ Route::group(['namespace' => 'CompanyInformation', 'prefix' => 'company_informat
 
 Route::group(['namespace' => 'Category', 'prefix' => 'category', 'auth'], function () {
   Route::get('index', [CategoryController::class, 'index'])->name('category.index');
+  Route::get('categories-guide', [CategoryController::class, 'categoriesGuide'])->name('category.guide');
   Route::get('all', [CategoryController::class, 'all'])->name('category.all');
   Route::post('store', [CategoryController::class, 'store'])->name('category.store');
   Route::get('show/{id}', [CategoryController::class, 'show'])->name('category.show');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CategoriesGuideUpdated;
 use App\Events\CategoriesUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreCategoryRequest;
@@ -34,6 +35,11 @@ class CategoryController extends Controller
         $categoryWithItems = Category::whereNull('category_id')->with('children', 'items.units.barcodes')->get();;
 
         return response()->json($categoryWithItems, 200);
+    }
+
+    public function categoriesGuide()
+    {
+        event(new CategoriesGuideUpdated([...Category::with('items.units')->get()]));
     }
 
     public function all()
