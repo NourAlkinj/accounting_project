@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('voucher_permission_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->index('user_id');
             $table->json('show_setting')->nullable();
             $table->json('print_setting')->nullable();
             $table->unsignedBigInteger('voucher_template_id');

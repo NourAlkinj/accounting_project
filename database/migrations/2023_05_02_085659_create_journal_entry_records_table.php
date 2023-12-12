@@ -25,21 +25,16 @@ return new class extends Migration {
       $table->integer('equivalent')->nullable();
       $table->unsignedBigInteger('contra_account_id')->nullable();
       $table->unsignedBigInteger('journal_entry_id')->nullable();
+      $table->index('currency_id');
       $table->double('current_balance')->nullable();
       $table->double('final_balance')->nullable();
       $table->boolean('is_post_to_account')->nullable();
       $table->string('post_to_account_date')->nullable();
-
       $table->integer('relative_final_balance')->nullable();
       $table->integer('relative_current_balance')->nullable();
       $table->string('source_name')->nullable();
       $table->integer('source_template_id')->nullable();
       $table->integer('source_id')->nullable();
-
-
-
-
-
       $table->integer('branch_id')->nullable()->default(null);
       $table->integer('user_id')->nullable()->default(null);
       $table->integer('client_id')->nullable()->default(null);

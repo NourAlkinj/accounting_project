@@ -8,11 +8,11 @@ return new class extends Migration {
 
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('task_states', function (Blueprint $table) {
             $table->id();
-            $table->json('settings')->nullable();
-            $table->integer('user_id')->nullable();
-            $table->index('user_id');
+            $table->string('name')->nullable();
+            $table->string('color')->nullable();
+            $table->string('pattern')->nullable();
             $table->timestamps();
         });
     }
@@ -20,6 +20,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('task_states');
     }
 };

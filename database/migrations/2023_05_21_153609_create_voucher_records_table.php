@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->integer('index')->nullable();
             $table->unsignedBigInteger('account_id')->nullable();
+            $table->index('account_id');
             $table->double('credit')->nullable();
             $table->double('debit')->nullable();
             $table->double('relative_debit')->nullable();

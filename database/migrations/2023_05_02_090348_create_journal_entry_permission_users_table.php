@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::create('journal_entry_permission_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->index('user_id');
             $table->json('show_setting')->nullable();
             $table->json('print_setting')->nullable();
             $table->timestamps();

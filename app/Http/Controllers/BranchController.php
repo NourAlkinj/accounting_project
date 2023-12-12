@@ -14,6 +14,7 @@ use App\Models\Branch;
 use App\Models\Department;
 use App\Models\JournalEntry;
 use App\Models\JournalEntryRecord;
+use App\Models\ReportTemplate;
 use App\Models\User;
 use App\Models\Voucher;
 use App\Models\VoucherTemplate;
@@ -41,10 +42,14 @@ class BranchController extends Controller
 
     public function index()
     {
+//        $BranchesAndUsersTree = Branch::whereNull('branch_id')->with('children', 'users')->get();
+////        $BranchesAndUsersTree = JournalEntryRecord::all();
+//        return $BranchesAndUsersTree;
 
+//        $posts = DB::select('SELECT settings FROM report_templates');
+        $posts = ReportTemplate::find(2);
 
-        $BranchesAndUsersTree = Branch::whereNull('branch_id')->with('children', 'users')->get();
-        return $BranchesAndUsersTree;
+        return var_dump($posts->settings);
     }
 
     public function branchesGuide()

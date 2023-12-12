@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('chemical_composition')->nullable()->default(null);
             $table->string('foreign_name')->nullable()->default(null);
             $table->unsignedBigInteger('category_id');
+            $table->index('category_id');
             $table->string('weight')->nullable()->default(null);
             $table->string('size')->nullable()->default(null);
             $table->string('item_type');

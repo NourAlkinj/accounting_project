@@ -20,7 +20,8 @@ return new class extends Migration {
             $table->string('ip')->nullable();
             $table->string('pc_name')->nullable();
             $table->unsignedBigInteger('user_id')->nullable()->default(null);
-            $table->integer('branch_id')->nullable()->default(null);
+            $table->unsignedBigInteger('branch_id')->nullable()->default(null);
+            $table->index('user_id');
             $table->unsignedBigInteger('table_id')->nullable()->default(null);
             $table->json('old_data')->nullable()->default(null);
             $table->timestamps();

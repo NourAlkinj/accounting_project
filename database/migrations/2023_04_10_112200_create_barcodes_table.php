@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('barcode_name')->unique();
             $table->integer('item_id')->nullable();
             $table->unsignedBigInteger('unit_id')->nullable();
+            $table->index('unit_id');
             $table->string('notes')->default(null)->nullable();
             $table->timestamps();
         });
