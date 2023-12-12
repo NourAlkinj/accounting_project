@@ -38,6 +38,12 @@ return new class extends Migration
             $table->boolean('production_date')->nullable()->default(null);
             $table->boolean('should_alert')->nullable()->default(null);
             $table->double('days_before_alert')->nullable()->default(null);
+
+
+
+            $table->json('unit')->nullable();
+
+
             $table->timestamps();
         });
     }
