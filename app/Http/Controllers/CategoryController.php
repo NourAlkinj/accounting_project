@@ -6,6 +6,7 @@ use App\Events\CategoriesUpdated;
 use App\Http\Exceptions\CustomException;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Barcode;
 use App\Models\BillRecord;
 use App\Models\Category;
 use App\Models\Item;
@@ -133,7 +134,7 @@ class CategoryController extends Controller
         }
 
         if($this->isUseCategory($id)) {
-            $errors = ['store' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+            $errors = ['category' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);
       }
       $category->delete();
@@ -212,6 +213,10 @@ class CategoryController extends Controller
         return false;
 
     }
+
+
+
+
 
 
 

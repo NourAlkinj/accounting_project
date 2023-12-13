@@ -6,6 +6,7 @@ use App\Events\CurrenciesUpdated;
 use App\Http\Requests\StoreCurrencyRequest;
 use App\Http\Requests\UpdateCurrencyRequest;
 use App\Models\Account;
+use App\Models\AppSetting;
 use App\Models\Bill;
 use App\Models\BillAdditionAndDiscount;
 use App\Models\BillRecord;
@@ -58,23 +59,25 @@ class CurrencyController extends Controller
   {
     $lang = $request->header('lang');
     $currency = Currency::create($request->all());
-    if ($currency->is_default) {
-      CurrencyActivity::create([
-        'currency_id' => $currency->id,
-        'parity' => 1,
-        'last_update_date' => $request->created_at
-      ]);
 
-    } else {
-      CurrencyActivity::create([
-        'currency_id' => $currency->id,
-        'parity' => $request->parity,
-        'last_update_date' => $request->created_at
-      ]);
-    }
+//    if ($currency->is_default) {
+//      CurrencyActivity::create([
+//        'currency_id' => $currency->id,
+//        'parity' => 1,
+//        'last_update_date' => $request->created_at
+//      ]);
+//
+//    } else {
+//      CurrencyActivity::create([
+//        'currency_id' => $currency->id,
+//        'parity' => $request->parity,
+//        'last_update_date' => $request->created_at
+//      ]);
+//    }
     if ($this->getCountRawsInModel(Currency::class) == 1)
       $this->updateValueInDB($currency->id, Currency::class, 'is_default', true);
-    $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->created_at, $request);
+
+    $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity);
 
     $result = $this->activityParameters($lang, 'store', 'currency', $currency,     null);
     $parameters = $result['parameters'];

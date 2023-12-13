@@ -665,7 +665,7 @@ trait  CommonTrait
     return $TotalCredit;
   }
 
-  // for calculating debit
+//   for calculating debit
   public function getDebit($dealCurrencies, $requiredCurrencyId)
   {
     // dealCurrency :there is in journalEntryRecord

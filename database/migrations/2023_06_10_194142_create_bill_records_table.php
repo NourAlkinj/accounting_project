@@ -10,45 +10,45 @@ return new class extends Migration {
   {
     Schema::create('bill_records', function (Blueprint $table) {
       $table->id();
-      $table->integer('index')->nullable();
-      $table->double('total')->nullable();
+      $table->integer('index')->nullable()->default(null);
+      $table->double('total')->nullable()->default(null);
 
-      $table->double('unit_price')->nullable();
-      $table->unsignedBigInteger('category_id')->nullable();
-      $table->unsignedBigInteger('item_id')->nullable();
-      $table->double('gift_price')->nullable();
-      $table->double('bill_price')->nullable();
-      $table->unsignedBigInteger('cost_center_id')->nullable();
-      $table->unsignedBigInteger('bill_id');
+      $table->double('unit_price')->nullable()->default(null);
+      $table->unsignedBigInteger('category_id')->nullable()->default(null);
+      $table->unsignedBigInteger('item_id')->nullable()->default(null);
+      $table->double('gift_price')->nullable()->default(null);
+      $table->double('bill_price')->nullable()->default(null);
+      $table->unsignedBigInteger('cost_center_id')->nullable()->default(null);
+      $table->unsignedBigInteger('bill_id')->default(null)->nullable();
 
-      $table->unsignedBigInteger('currency_id')->nullable();
-      $table->string('date')->nullable();
-      $table->double('parity', 200, 7)->nullable();
-      $table->integer('security_level')->nullable();
+      $table->unsignedBigInteger('currency_id')->nullable()->default(null);
+      $table->string('date')->nullable()->default(null);
+      $table->double('parity', 200, 7)->nullable()->default(null);
+      $table->integer('security_level')->nullable()->default(null);
 
 
-      $table->string('storing_type')->nullable();
+      $table->string('storing_type')->nullable()->default(null);
       $table->boolean('is_affects_cost_price')->default(true)->nullable();
       $table->boolean('is_discounts_affects_cost_price')->default(true)->nullable();
       $table->boolean('is_additions_affects_cost_price')->default(true)->nullable();
-      $table->double('general_discount')->nullable();
-      $table->double('general_addition')->nullable();
+      $table->double('general_discount')->nullable()->default(null);
+      $table->double('general_addition')->nullable()->default(null);
 
 
-      $table->string('gift')->nullable();
-      $table->string('gift_unit_id')->nullable();
-      $table->double('gift_conversion_factor')->nullable();
+      $table->string('gift')->nullable()->default(null);
+      $table->string('gift_unit_id')->nullable()->default(null);
+      $table->double('gift_conversion_factor')->nullable()->default(null);
 
-      $table->unsignedBigInteger('store_id')->nullable();
-      $table->unsignedBigInteger('input_store_id')->nullable();
+      $table->unsignedBigInteger('store_id')->nullable()->default(null);
+      $table->unsignedBigInteger('input_store_id')->nullable()->default(null);
 
 
-      $table->double('quantity')->nullable();
-      $table->double('net')->nullable();
-      $table->double('net_without_tax')->nullable();
-      $table->double('item_discount')->nullable();
-      $table->double('item_discount_ratio')->nullable();
-      $table->double('item_addition')->nullable();
+      $table->double('quantity')->nullable()->default(null);
+      $table->double('net')->nullable()->default(null);
+      $table->double('net_without_tax')->nullable()->default(null);
+      $table->double('item_discount')->nullable()->default(null);
+      $table->double('item_discount_ratio')->nullable()->default(null);
+      $table->double('item_addition')->nullable()->default(null);
       $table->double('item_addition_ratio')->nullable();
       $table->double('tax')->nullable();
       $table->double('tax_ratio')->nullable();

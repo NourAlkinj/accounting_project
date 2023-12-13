@@ -314,5 +314,26 @@ class ItemController extends Controller
 
     }
 
+    public function isUseUnit($unit_id)
+    {
+        //unit related to barcode
+        $barcode = Barcode::where(function ($query) use ($unit_id) {
+            $query->where('unit_id', $unit_id);})->first();
+        if ($barcode != null)
+            return true;
+//      return ['barcodeId' => $barcode->id, 'table' => 'barcodes'];
+
+        //unit related to billRecord
+        $billRecord = BillRecord::where(function ($query) use ($unit_id) {
+            $query->where('unit_id', $unit_id);})->first();
+        if ($billRecord != null)
+            return true;
+//      return ['billRecordId' => $billRecord->id, 'table' => 'bill_records'];
+
+
+//    return ['id' => null, 'table' => null];
+        return false;
+
+    }
 
 }

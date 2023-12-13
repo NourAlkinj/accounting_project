@@ -11,7 +11,7 @@ class CurrencyActivity extends Model
   protected $fillable = [
     'currency_id',
     'parity',
-    'last_update_date'
+    'date'
   ];
 
   protected $hidden = ['created_at', 'updated_at'];

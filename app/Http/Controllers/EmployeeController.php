@@ -9,6 +9,10 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\EmployeeTask;
+use App\Models\JournalEntryRecord;
+use App\Models\Notification;
+use App\Models\TaskActivity;
 use App\Models\User;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
@@ -129,7 +133,13 @@ class EmployeeController extends Controller
       $lang = app('request')->header('lang');
 
       $employee = Employee::find($id);
-      $employee->delete();
+
+        if($this->isUseEmployee($id)) {
+            $errors = ['employee' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        return response()->json(['errors' => $errors], 400);
+      }
+
+        $employee->delete();
       $result = $this->activityParameters($lang, 'delete', 'employee', $employee,     null);
       $parameters = $result['parameters'];
       $table = $result['table'];
@@ -153,5 +163,51 @@ class EmployeeController extends Controller
   }
 
 
+    public function isUseEmployee($employee_id)
+    {
+        //employee related to employee
+        $employee = Employee::where(function ($query) use ($employee_id) {
+            $query->where('employee_id', $employee_id);
+        })->first();
+        if ($employee != null)
+            return true;
+//      return ['employeeId' => $employee->id, 'table' => 'employees'];
 
+        //account related to employeeTask
+        $employeeTask = EmployeeTask::where(function ($query) use ($employee_id) {
+            $query->where('employee_id', $employee_id);
+        })->first();
+        if ($employeeTask != null)
+            return true;
+//      return ['employeeTaskId' => $employeeTask->id, 'table' => 'employee_tasks'];
+
+        //account related to journalEntryRecord
+        $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($employee_id) {
+            $query->where('employee_id', $employee_id);
+        })->first();
+        if ($journalEntryRecord != null)
+            return true;
+//      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
+
+        //account related to notification
+        $notification = Notification::where(function ($query) use ($employee_id) {
+            $query->where('to_employee_id', $employee_id);
+        })->first();
+        if ($notification != null)
+            return true;
+//      return ['notificationId' => $notification->id, 'table' => 'notifications'];
+
+        //account related to taskActivity
+        $taskActivity = TaskActivity::where(function ($query) use ($employee_id) {
+            $query->where('old_employee_ids', $employee_id)->orWhere('new_employee_ids', $employee_id);
+        })->first();
+        if ($taskActivity != null)
+            return true;
+//      return ['taskActivityId' => $taskActivity->id, 'table' => 'task_activities'];
+
+//    return ['id' => null, 'table' => null];
+        return false;
+    }
 }
+
+

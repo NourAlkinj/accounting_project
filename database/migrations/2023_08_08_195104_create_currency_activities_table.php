@@ -13,7 +13,7 @@ return new class extends Migration
           $table->id();
           $table->unsignedBigInteger('currency_id')->default(null)->nullable();
           $table->float('parity',20,10)->nullable();
-          $table->date('last_update_date')->default(null)->nullable();
+          $table->date('date')->default(null)->nullable();
           $table->timestamps();
 
 //          $table->foreign('currency_id')->references('id')->on('currencies');

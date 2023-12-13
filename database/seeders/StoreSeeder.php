@@ -218,6 +218,9 @@ class StoreSeeder extends Seeder
         //     ])
         // )->create();
 
+        Store::truncate();
+        Store::factory(15000)->create();
+
     }
 
 }

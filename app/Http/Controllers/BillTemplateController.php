@@ -115,6 +115,7 @@ class BillTemplateController extends Controller
       $lang  =   app('request')->header('lang');;
 
       $billTemplate = BillTemplate::find($id);
+
       if($this->isUseBillTemplate($id)) {
         $errors = ['billTemplate' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);

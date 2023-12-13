@@ -168,125 +168,128 @@ class BillRecordSeeder extends Seeder
 //        ]);
 
 
-    $BillRecord1 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 5000,
-      'bill_id' => 1,
-      'item_id' => 1,
-      'currency_id' => 1,
-      'parity' => 1,
-      'store_id' =>1,
-      'date' =>  '2020-1-1',
-      'security_level'=> 1,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
+//    $BillRecord1 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 5000,
+//      'bill_id' => 1,
+//      'item_id' => 1,
+//      'currency_id' => 1,
+//      'parity' => 1,
+//      'store_id' =>1,
+//      'date' =>  '2020-1-1',
+//      'security_level'=> 1,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//
+//    ]);
+//    $BillRecord2 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 5000,
+//      'bill_id' => 2,
+//      'item_id' => 1,
+//      'currency_id' => 1,
+//      'parity' => 1,
+//      'store_id' =>1,
+//      'date' =>  '2020-1-2',
+//      'security_level'=> 1,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord3 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 5,
+//      'bill_id' => 3,
+//      'item_id' => 1,
+//      'store_id' =>1,
+//      'currency_id' => 2,
+//      'parity' => 7000,
+//      'date' =>  '2020-1-3',
+//      'security_level'=> 1,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord4 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 10000,
+//      'bill_id' => 4,
+//      'item_id' => 1,
+//      'currency_id' => 1,
+//      'store_id' =>1,
+//      'parity' => 1,
+//      'date' =>  '2020-1-3',
+//      'security_level'=> 1,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord5 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 10,
+//      'bill_id' => 9,
+//      'item_id' => 1,
+//      'store_id' =>1,
+//      'currency_id' => 2,
+//      'parity' => 10000,
+//      'date' =>  '2020-1-4',
+//      'security_level'=> 3,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord6 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 10,
+//      'bill_id' => 9,
+//      'item_id' => 1,
+//      'currency_id' => 2,
+//      'store_id' =>1,
+//      'parity' => 12000,
+//      'date' =>  '2020-1-5',
+//      'security_level'=> 3,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord7 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 55,
+//      'bill_id' => 9,
+//      'item_id' => 1,
+//      'currency_id' => 2,
+//      'store_id' =>1,
+//      'parity' => 13000,
+//      'date' =>  '2020-1-6',
+//      'security_level'=> 3,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//
+//    $BillRecord8 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 110,
+//      'bill_id' => 4,
+//      'item_id' => 1,
+//      'currency_id' => 2,
+//      'store_id' =>1,
+//      'parity' => 12000,
+//      'date' =>  '2020-1-8',
+//
+//      'security_level'=> 3,
+//      'storing_type' => 'IN' ,
+//      'conversion_factor' =>1,
+//    ]);
+//    $BillRecord9 = BillRecord::create([
+//      'quantity' => 1,
+//      'unit_price' => 7,
+//      'bill_id' => 3,
+//      'item_id' => 1,
+//      'conversion_factor' =>1,
+//      'store_id' =>1,
+//      'currency_id' => 3,
+//      'parity' => 10000,
+//      'date' =>  '2020-1-9',
+//      'security_level'=> 3,
+//      'storing_type' => 'IN' ,
+//    ]);
 
-    ]);
-    $BillRecord2 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 5000,
-      'bill_id' => 2,
-      'item_id' => 1,
-      'currency_id' => 1,
-      'parity' => 1,
-      'store_id' =>1,
-      'date' =>  '2020-1-2',
-      'security_level'=> 1,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord3 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 5,
-      'bill_id' => 3,
-      'item_id' => 1,
-      'store_id' =>1,
-      'currency_id' => 2,
-      'parity' => 7000,
-      'date' =>  '2020-1-3',
-      'security_level'=> 1,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord4 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 10000,
-      'bill_id' => 4,
-      'item_id' => 1,
-      'currency_id' => 1,
-      'store_id' =>1,
-      'parity' => 1,
-      'date' =>  '2020-1-3',
-      'security_level'=> 1,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord5 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 10,
-      'bill_id' => 9,
-      'item_id' => 1,
-      'store_id' =>1,
-      'currency_id' => 2,
-      'parity' => 10000,
-      'date' =>  '2020-1-4',
-      'security_level'=> 3,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord6 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 10,
-      'bill_id' => 9,
-      'item_id' => 1,
-      'currency_id' => 2,
-      'store_id' =>1,
-      'parity' => 12000,
-      'date' =>  '2020-1-5',
-      'security_level'=> 3,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord7 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 55,
-      'bill_id' => 9,
-      'item_id' => 1,
-      'currency_id' => 2,
-      'store_id' =>1,
-      'parity' => 13000,
-      'date' =>  '2020-1-6',
-      'security_level'=> 3,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-
-    $BillRecord8 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 110,
-      'bill_id' => 4,
-      'item_id' => 1,
-      'currency_id' => 2,
-      'store_id' =>1,
-      'parity' => 12000,
-      'date' =>  '2020-1-8',
-
-      'security_level'=> 3,
-      'storing_type' => 'IN' ,
-      'conversion_factor' =>1,
-    ]);
-    $BillRecord9 = BillRecord::create([
-      'quantity' => 1,
-      'unit_price' => 7,
-      'bill_id' => 3,
-      'item_id' => 1,
-      'conversion_factor' =>1,
-      'store_id' =>1,
-      'currency_id' => 3,
-      'parity' => 10000,
-      'date' =>  '2020-1-9',
-      'security_level'=> 3,
-      'storing_type' => 'IN' ,
-    ]);
+      BillRecord::truncate();
+      BillRecord::factory(20000)->create();
   }
 }

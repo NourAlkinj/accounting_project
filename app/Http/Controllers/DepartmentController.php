@@ -122,6 +122,12 @@ class DepartmentController extends Controller
       ]];
       return response()->json(['errors' => $errors], 400);
     }
+
+        if($this->isUseDepartment($id)) {
+            $errors = ['department' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        return response()->json(['errors' => $errors], 400);
+      }
+
       $department->delete();
       $result = $this->activityParameters($lang, 'delete', 'department', $department,     null);
       $parameters = $result['parameters'];
@@ -149,6 +155,28 @@ class DepartmentController extends Controller
   {
     return $this->generateCodes($id, Department::class, Department::class, 'department_id');
   }
+
+    public function isUseDepartment($department_id)
+    {
+        //department related to department
+        $department = Department::where(function ($query) use ($department_id) {
+            $query->where('department_id', $department_id);})->first();
+        if ($department != null)
+            return true;
+//      return ['departmentId' => $department->id, 'table' => 'departments'];
+
+        //department related to employee
+        $employee = Employee::where(function ($query) use ($department_id) {
+            $query->where('department_id', $department_id);})->first();
+        if ($employee != null)
+            return true;
+//      return ['employeeId' => $employee->id, 'table' => 'employees'];
+
+
+//    return ['id' => null, 'table' => null];
+        return false;
+
+    }
 
 
 }

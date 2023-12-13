@@ -232,6 +232,8 @@ Route::group(['namespace' => 'Category', 'prefix' => 'category', 'auth'], functi
   Route::get('call-generate-codes/{id}', [CategoryController::class, 'callGenerateCodes'])->name('category.callGenerateCodes');
   Route::get('call-auto-complete/{id}', [CategoryController::class, 'callAutoComplete'])->name('category.callAutoComplete');
   Route::get('call-get-all-codes-and-names', [CategoryController::class, 'callGetAllCodesAndNames'])->name('category.callGetAllCodesAndNames');
+  Route::get('is-use-category/{id}', [CategoryController::class, 'isUseCategory'])->name('category.isUseCategory');
+
 });
 
 //-------Item------//
@@ -273,6 +275,8 @@ Route::group(['namespace' => 'Unit', 'prefix' => 'unit', 'auth'], function () {
   Route::post('updateUnitBarcodes/{id}', [ItemController::class, 'updateUnitBarcodes'])->name('unit.updateUnitBarcodes');
   Route::post('store', [ItemController::class, 'store'])->name('unit.store');
   Route::post('update', [ItemController::class, 'updae'])->name('unit.update');
+  Route::get('is-use-unit/{id}', [ItemController::class, 'isUseUnit'])->name('unit.isUseUnit');
+
 });
 
 //-------Journal Entry------//
@@ -385,6 +389,8 @@ Route::group(['namespace' => 'Department', 'prefix' => 'department'], function (
   Route::get('delete/{id}', [DepartmentController::class, 'delete'])->name('department.delete');
   Route::get('call-generate-codes/{id}', [DepartmentController::class, 'callGenerateCodes'])->name('department.callGenerateCodes');
   Route::get('call-auto-complete/{id}', [DepartmentController::class, 'callAutoComplete'])->name('department.callAutoComplete');
+  Route::get('is-use-department/{id}', [DepartmentController::class, 'isUseDepartment'])->name('department.isUseDepartment');
+
 });
 
 //------- Employee ------//
@@ -397,6 +403,8 @@ Route::group(['namespace' => 'Employee', 'prefix' => 'employee'], function () {
   Route::post('update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
   Route::get('delete/{id}', [EmployeeController::class, 'delete'])->name('employee.delete');
   Route::get('call-generate-codes/{id}', [EmployeeController::class, 'callGenerateCodes'])->name('employee.callGenerateCodes');
+  Route::get('is-use-employee/{id}', [EmployeeController::class, 'isUseEmployee'])->name('employee.isUseEmployee');
+
 });
 //------- Tasks ------//
 
