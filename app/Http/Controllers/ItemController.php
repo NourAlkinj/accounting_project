@@ -71,53 +71,16 @@ class ItemController extends Controller
     public function store(StoreRequest $request)
     {
         $lang = $request->header('lang');
-
         DB::beginTransaction();
         try {
-            $item = Item::create([
-                'code' => $request['code'],
-                'name' => $request['name'],
-                'foreign_name' => $request['foreign_name'],
-                'category_id' => $request['category_id'],
-                'location' => $request['location'],
-                'manuf_company' => $request['manuf_company'],
-                'country_of_origin' => $request['country_of_origin'],
-                'source' => $request['source'],
-                'caliber' => $request['caliber'],
-                'chemical_composition' => $request['chemical_composition'],
-                'weight' => $request['weight'],
-                'size' => $request['size'],
-                'item_type' => $request['item_type'],
-                'photo' => $request['photo'],
-                'notes' => $request['notes'],
-                'currency_id' => $request['currency_id'],
-                'parity' => $request['parity'],
-                'total_items' => $request['total_items'],
-                'auto_discount_on_salse' => $request['auto_discount_on_salse'],
-                'added_value_tax' => $request['added_value_tax'],
-                'auto_counting_for_prices' => $request['auto_counting_for_prices'],
-                'expired_date' => $request['expired_date'],
-                'serial_number' => $request['serial_number'],
-                'production_date' => $request['production_date'],
-                'should_alert' => $request['should_alert'],
-                'days_before_alert' => $request['days_before_alert'],
-
-
-            ]);
-
+            $item = Item::create($request->all());
             $this->saveImage($request, 'photo', 'items', 'upload_image', $item->id, 'App\Models\Item');
             $this->saveUnit($request, $item->id);
-
-
-            $item->unit = $item->units()->get()->toArray();
-            $item->save();
-
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
             $errorCode = $e->errorInfo[1];
             if ($errorCode === 1062) {
-
                 $errors = ['message' => [$this->itemMessage->t(ItemWordsEnum::barcode_name_is_unique->name, $lang)]] ;
         return response()->json(["errors" => $errors], 400);
       }
@@ -133,12 +96,9 @@ class ItemController extends Controller
         $parameters = $result['parameters'];
         $table = $result['table'];
         $this->callActivityMethod('store', $table, $parameters);
-
         event(new CategoriesUpdated([...Category::with('items.units')->get()]));
         event(new ItemsUpdated([...Item::with('units')->get()]));
-
         return response()->json([
-
             'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
       'id' => $item->id,
       'category_id' => $item->category_id
@@ -148,26 +108,16 @@ class ItemController extends Controller
 
     public function show($id)
     {
-
         $item = Item::with('units')->find($id);
-
         return response()->json($item, 200);
-
-
-//        return  DB::select('Select * from items  ');
-//        return  Item::all();
     }
 
     public function update(UpdateRequest $request, $id)
     {
-
         $lang = $request->header('lang');
         $old_data = Item::find($id)->toJson();
-
         $item = Item::find($id);
-
         if (!$request->units[0]["unit_name"]) {
-
             $errors = ["message" => [$this->itemMessage->t(ItemWordsEnum::first_unit_is_required->name, $lang)]];
       return response()->json(["errors" => $errors], 400);
     }

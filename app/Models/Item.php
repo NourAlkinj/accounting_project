@@ -41,7 +41,7 @@ class Item extends Model
         'should_alert',
         'days_before_alert',
 
-        'unit'
+//        'unit'
     ];
 
     public function setUnitsAttribute($value)
@@ -88,6 +88,6 @@ class Item extends Model
         'serial_number' => 'boolean',
         'production_date' => 'boolean',
         'should_alert' => 'boolean',
-        'unit' => 'array',
+//        'unit' => 'json',
     ];
 }

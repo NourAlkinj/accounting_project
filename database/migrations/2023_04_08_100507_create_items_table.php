@@ -41,7 +41,7 @@ return new class extends Migration
 
 
 
-            $table->json('unit')->nullable();
+//            $table->json('unit')->default(json_encode([]));
 
 
             $table->timestamps();
