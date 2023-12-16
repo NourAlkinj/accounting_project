@@ -68,25 +68,17 @@ class BranchController extends Controller
         $lang = $request->header('lang');
         DB::beginTransaction();
         try {
-
             $branch = Branch::create($request->all());
-
             if ($this->getCountRawsInModel(Branch::class) == 1) {
                 $this->updateValueInDB($branch->id, Branch::class, 'is_root', true);
             }
-
-
             $result = $this->activityParameters($lang, 'store', 'branch', $branch, null);
             $parameters = $result['parameters'];
             $table = $result['table'];
             $this->callActivityMethod('store', $table, $parameters);
-
-
             event(new BranchesUpdated([...Branch::with('users')->get()]));
             $lang = $request->header('lang');
-
             DB::commit();
-
             return response()->json([
                 'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
         'id' => $branch->id,

@@ -54,17 +54,13 @@ class ItemController extends Controller
 
     public function index()
     {
-
         $items = Item::with('units')->select('name', 'code', 'flag', 'id', 'category_id')->get();
-
         return response()->json($items, 200);
     }
 
     public function all()
     {
-
         $items = Item::with('units')->get();
-
         return response()->json($items, 200);
     }
 
@@ -163,17 +159,13 @@ class ItemController extends Controller
     public function delete($id)
     {
         $lang = app('request')->header('lang');
-
         DB::beginTransaction();
         try {
             $item = Item::find($id);
             $itemUnits = $item->units;
-
             foreach ($itemUnits as $itemUnit) {
                 foreach ($itemUnits as $itemUnit) {
                     $barcodes = $itemUnit['barcodes'];
-
-
                     foreach ($barcodes as $barcode) {
                         $barcode->delete();
                     }
