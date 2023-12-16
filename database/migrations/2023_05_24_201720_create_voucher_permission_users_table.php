@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->index('user_id');
             $table->json('show_setting')->nullable();
-            $table->json('print_setting')->nullable();
+//            $table->json('print_setting')->nullable();
             $table->unsignedBigInteger('voucher_template_id');
             $table->timestamps();
         });

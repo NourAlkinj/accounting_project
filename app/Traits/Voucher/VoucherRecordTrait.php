@@ -222,7 +222,7 @@ trait  VoucherRecordTrait
             ],
 
         ];
-        $print_setting = [];
+//        $print_setting = [];
 
 
         $users = User::all();
@@ -231,7 +231,7 @@ trait  VoucherRecordTrait
                 [
 
                     'show_setting' => $show_setting,
-                    'print_setting' => $print_setting,
+//                    'print_setting' => $print_setting,
                     'user_id' => $user->id,
                     'voucher_template_id' => $voucher_template_id
                 ]

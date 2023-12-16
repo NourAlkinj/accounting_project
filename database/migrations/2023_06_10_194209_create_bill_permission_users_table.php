@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->json('show_setting');
-            $table->json('print_setting');
+//            $table->json('print_setting');
             $table->unsignedBigInteger('bill_template_id');
             $table->timestamps();
         });

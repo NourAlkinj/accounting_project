@@ -195,7 +195,7 @@ trait  BillRecordTrait
   public function setBillPermissionUser($bill_template_id)
   {
     $show_setting = [];
-    $print_setting = [];
+//    $print_setting = [];
 
 
     $users = User::all();
@@ -203,7 +203,7 @@ trait  BillRecordTrait
       BillPermissionUser::create(
         [
           'show_setting' => $show_setting,
-          'print_setting' => $print_setting,
+//          'print_setting' => $print_setting,
           'user_id' => $user->id,
           'bill_template_id' => $bill_template_id
         ]

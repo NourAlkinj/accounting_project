@@ -11,12 +11,12 @@ class VoucherPermissionUser extends Model
     protected $fillable=[
         'user_id',
         'show_setting',
-        'print_setting',
+//        'print_setting',
         'voucher_template_id'
      ];
     protected $casts = [
         'show_setting' => 'array',
-        'print_setting' => 'array',
+//        'print_setting' => 'array',
     ];
 
    
