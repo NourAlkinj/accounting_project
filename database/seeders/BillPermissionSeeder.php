@@ -46,6 +46,14 @@ class BillPermissionSeeder extends Seeder
             ]);
 
         }
+        if (!$this->isExist('print')) {
+            $delete = BillPermission::create([
+                'name' => 'print',
+                'caption_ar' => 'طباعة',
+                'caption_en' => 'Print',
+            ]);
+
+        }
 
 
     }

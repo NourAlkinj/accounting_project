@@ -45,6 +45,14 @@ class VoucherPermissionSeeder extends Seeder
             ]);
 
         }
+        if (!$this->isExist('print')) {
+            $delete = VoucherPermission::create([
+                'name' => 'print',
+                'caption_ar' => 'طباعة',
+                'caption_en' => 'Print',
+            ]);
+
+        }
 
 
     }

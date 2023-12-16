@@ -12,8 +12,8 @@ return new class extends Migration
         Schema::create('bill_template_permission_users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('voucher_permission_id');
-            $table->unsignedBigInteger('voucher_template_id');
+            $table->unsignedBigInteger('bill_permission_id');
+            $table->unsignedBigInteger('bill_template_id');
             $table->timestamps();
         });
     }

@@ -75,6 +75,8 @@ trait  JournalEntryRecordTrait
       $JournalEntryRecord['source_template_id'] = $request['source']['source_template_id'];
       $JournalEntryRecord['source_id'] = $request['source']['source_id'];
       $JournalEntryRecord['branch_id'] = $request['branch_id'];
+      $JournalEntryRecord['is_post_to_account'] = $request['is_post_to_account'];
+      $JournalEntryRecord['post_to_account_date'] = $request['post_to_account_date'];
       $JournalEntryRecord['date'] = $request['date'];
       $JournalEntryRecord['time'] = $request['time'];
       $JournalEntryRecord['index'] = abs($JournalEntryRecord['index']);

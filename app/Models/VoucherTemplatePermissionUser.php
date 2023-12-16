@@ -14,4 +14,20 @@ class VoucherTemplatePermissionUser extends Model
         'voucher_template_id',
 
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function voucherTemplate()
+    {
+        return $this->belongsTo(VoucherTemplate::class, 'voucher_template_id');
+    }
+
+    public function voucherPermission()
+    {
+        return $this->belongsTo(VoucherPermission::class, 'voucher_permission_id');
+    }
+
 }

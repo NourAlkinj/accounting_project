@@ -13,4 +13,9 @@ class BillPermission extends Model
         'caption_ar',
         'caption_en'
     ];
+
+    public function billTemplatePermissionUser()
+    {
+        return $this->hasMany(BillTemplatePermissionUser::class, 'bill_template_id');
+    }
 }

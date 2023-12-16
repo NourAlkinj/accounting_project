@@ -62,7 +62,10 @@ class DatabaseSeeder extends Seeder
 //        LanguageSeeder::class,
 //        CostCenterSeeder::class,
             BillPermissionSeeder::class,
-            VoucherPermissionSeeder::class
+            VoucherPermissionSeeder::class,
+            VoucherTemplatePermissionSeeder::class,
+            BillTemplatePermissionSeeder::class,
+
 
 
         ]);
