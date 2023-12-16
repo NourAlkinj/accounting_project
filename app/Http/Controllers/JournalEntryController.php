@@ -61,6 +61,10 @@ class JournalEntryController extends Controller
          $request->all()
 
       );
+      if (!$request['is_post_to_account']){
+          $journalEntry['post_to_account_date'] = null;
+          $journalEntry->save();
+      }
       $this->saveJournalEntryRecord($request, $journalEntry->id);
 
       $result = $this->activityParameters($lang, 'store', 'journalEntry', $journalEntry,     null);

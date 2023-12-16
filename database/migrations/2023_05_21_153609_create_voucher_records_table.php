@@ -23,9 +23,9 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('cost_center_id')->nullable();
             $table->unsignedBigInteger('currency_id')->nullable()->default(null);
-            $table->integer('parity')->nullable()->default(null);
+            $table->double('parity')->nullable()->default(null);
             $table->integer('today_parity')->nullable();
-            $table->integer('equivalent')->nullable();
+            $table->double('equivalent')->nullable();
             $table->double('contra_account_id')->nullable();
             $table->double('current_balance')->nullable();
             $table->string('final_balance')->nullable();

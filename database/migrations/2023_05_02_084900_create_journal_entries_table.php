@@ -15,10 +15,11 @@ return new class extends Migration {
       $table->string('receipt_number')->nullable();
       $table->unsignedBigInteger('currency_id')->nullable();
       $table->index('currency_id') ;
-      $table->integer('parity')->nullable();
+      $table->double('parity')->nullable();
       $table->integer('security_level')->nullable();
       $table->string('debit_total')->nullable();
       $table->boolean('is_post_to_account')->nullable();
+      $table->boolean( 'is_exchange')->default(false);
       $table->string('post_to_account_date')->nullable();
       $table->string('credit_total')->nullable();
       $table->unsignedBigInteger('branch_id');
