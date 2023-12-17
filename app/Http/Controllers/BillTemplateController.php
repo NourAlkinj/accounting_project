@@ -59,7 +59,7 @@ class BillTemplateController extends Controller
         $billTemplate = BillTemplate::create($request->all());
         $parameters = ['request' => $request, 'id' => $billTemplate->id];
         $this->validateBillType($billTemplate->id, BillTemplate::class, $request);
-        $this->setBillPermissionUser($billTemplate->id);
+//        $this->setBillPermissionUser($billTemplate->id);
 
 
         $result = $this->activityParameters($lang, 'store', 'bill_template', $billTemplate, null);
