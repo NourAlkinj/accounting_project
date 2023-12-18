@@ -107,7 +107,7 @@ class BillController extends Controller
             return response()->json([
                 'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
       'id' => $bill->id
-    ], 200)
+    ], 200);
   } catch (NotFoundException $exc) {
             return response()->json(
                 [
@@ -171,7 +171,7 @@ class BillController extends Controller
 
                 'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
       'id' => $bill->id,
-    ], 200)
+    ], 200);
   } catch (CustomException $exc) {
             return response()->json(['message' => $exc->message,], $exc->code);
         }
@@ -191,7 +191,7 @@ class BillController extends Controller
                 $errors = [
 
                     'message' => $this->commonMessage->t(CommonWordsEnum::bill_not_found->name, $lang)
-        ]
+        ];
       return response()->json(['errors' => $errors], 404);
     }
             $returnedBills = $bill->bills;
@@ -212,7 +212,7 @@ class BillController extends Controller
             return response()->json([
 
                 'message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
-       ], 200)
+       ], 200);
   } catch (CustomException $exc) {
             return response()->json(['message' => $exc->message,], $exc->code);
         }
@@ -231,7 +231,7 @@ class BillController extends Controller
             if (!$bill) {
                 $errors = [
                     'message' => $this->commonMessage->t(CommonWordsEnum::bill_not_found->name, $lang)
-        ]
+        ];
       return response()->json(['errors' => $errors], 404);
     }
             $returnedBills = $bill->returnedBills;
@@ -248,7 +248,7 @@ class BillController extends Controller
 
             return response()->json([
 
-                'message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang) ], 200)
+                'message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang) ], 200);
   } catch (CustomException $exc) {
             return response()->json(['message' => $exc->message,], $exc->code);
         }
@@ -265,12 +265,12 @@ class BillController extends Controller
             $bill_Records->restore();
             return response()->json([
 
-                'message' => $this->commonMessage->t(CommonWordsEnum::RESTORE->name, $lang)  ], 200)
+                'message' => $this->commonMessage->t(CommonWordsEnum::RESTORE->name, $lang)  ], 200);
     } else {
             return response()->json([
 
                 'message' => $this->commonMessage->t(CommonWordsEnum::ERROR_RESTORE->name, $lang),
-      ], 404)
+      ], 404);
     }
     }
 
