@@ -9,7 +9,6 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
-use App\Models\User;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use Lang\Locales\CommonWords;
@@ -19,130 +18,136 @@ use Lang\Translate;
 class EmployeeController extends Controller
 {
 
-  use CommonTrait, ActivityLog;
+    use CommonTrait, ActivityLog;
 
-  public $commonMessage;
+    public $commonMessage;
 
-  function __construct()
-  {
-    $this->commonMessage = new Translate(new CommonWords());
-  }
+    function __construct()
+    {
+        $this->commonMessage = new Translate(new CommonWords());
+    }
 
-  public function index()
-  {
-    $parameters = ['id' => null];
-    $employees = Employee::all();
-    $this->callActivityMethod('employees', 'index', $parameters);
-    return response()->json($employees, 200);
-  }
+    public function index()
+    {
 
-
-  public function all()
-  {
-    $parameters = ['id' => null];
-    $employees = Employee::all();
-    $this->callActivityMethod('employees', 'allEmployees', $parameters);
-    return response()->json($employees, 200);
-  }
+        $employees = Employee::all();
+        return response()->json($employees, 200);
+    }
 
 
-  public function store(StoreEmployeeRequest $request)
-  {
-    try {
-      $lang = $request->header('lang');
+    public function all()
+    {
 
-      if ($request['department_id'] == null || !Department::find($request['department_id'])) {
-        throw new NotFoundException('Department ');
-      }
+        $employees = Employee::all();
 
-      $employee = Employee::create($request->all());
-      $parameters = ['request' => $request, 'id' => $employee->id];
-      $this->callActivityMethod('employees', 'store', $parameters);
-      event(new EmployeesUpdated([...Employee::all()]));
-      return response()->json([
-        'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
+        return response()->json($employees, 200);
+    }
+
+
+    public function store(StoreEmployeeRequest $request)
+    {
+        try {
+            $lang = $request->header('lang');
+
+            if ($request['department_id'] == null || !Department::find($request['department_id'])) {
+                throw new NotFoundException('Department ');
+            }
+
+            $employee = Employee::create($request->all());
+            $result = $this->activityParameters($lang, 'store', 'employee', $employee, null);
+            $parameters = $result['parameters'];
+            $table = $result['table'];
+            $this->callActivityMethod('store', $table, $parameters);
+
+            event(new EmployeesUpdated([...Employee::all()]));
+            return response()->json([
+                'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
 
             'id' => $employee->id,
             'department_id' => $employee->department_id,
         ], 200);
     } catch (NotFoundException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors'=> $errors], $exc->code);
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        } catch (CustomException $exc) {
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        }
     }
-    catch (CustomException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors'=> $errors], $exc->code);
+
+
+    public function show($id)
+    {
+
+        $employee = Employee::find($id);
+
+        return response()->json($employee, 200);
     }
-  }
 
 
-  public function show($id)
-  {
-    $parameters = ['id' => $id];
-    $employee = Employee::find($id);
-    $this->callActivityMethod('employees', 'show', $parameters);
-    return response()->json($employee, 200);
-  }
+    public function update(UpdateEmployeeRequest $request, $id)
+    {
+        try {
+            $lang = $request->header('lang');
+            $old_data = Employee::find($id)->toJson();
 
+            $employee = Employee::find($id);
 
-  public function update(UpdateEmployeeRequest $request, $id)
-  {
-    try {
-      $lang = $request->header('lang');
-      $old_data = Employee::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
-      $employee = Employee::find($id);
+            if ($request['department_id'] == null || !Department::find($request['department_id'])) {
+                throw new NotFoundException('Department');
+            }
 
-      if ($request['department_id'] == null || !Department::find($request['department_id'])) {
-        throw new NotFoundException('Department');
-      }
+            $employee->update($request->all());
+            $result = $this->activityParameters($lang, 'update', 'employee', $employee, $old_data);
+            $parameters = $result['parameters'];
+            $table = $result['table'];
+            $this->callActivityMethod('update', $table, $parameters);
 
-      $employee->update($request->all());
-      $this->callActivityMethod('employees', 'update', $parameters);
-      event(new EmployeesUpdated([...Employee::all()]));
-      $data = $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang);
+            event(new EmployeesUpdated([...Employee::all()]));
+            $data = $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang);
 
         return response()->json([
-          'message' => $data,
-          'id' => $employee->id,
-          'department_id' => $employee->department_id,
+            'message' => $data,
+            'id' => $employee->id,
+            'department_id' => $employee->department_id,
         ], 200);
     } catch (NotFoundException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors'=> $errors], $exc->code);
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        } catch (CustomException $exc) {
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        }
     }
-    catch (CustomException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors'=> $errors], $exc->code);
-    }
-  }
 
-  public function delete($id)
-  {
-    try {
-      $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
-      $employee = Employee::find($id);
-      $employee->delete();
-      $this->callActivityMethod('employees', 'delete', $parameters);
-      event(new EmployeesUpdated([...Employee::all()]));
+    public function delete($id)
+    {
+        try {
+            $lang = app('request')->header('lang');
 
-      return response()->json(['message' =>
+            $employee = Employee::find($id);
+            $employee->delete();
+            $result = $this->activityParameters($lang, 'delete', 'employee', $employee, null);
+            $parameters = $result['parameters'];
+            $table = $result['table'];
+            $this->callActivityMethod('delete', $table, $parameters);
+            event(new EmployeesUpdated([...Employee::all()]));
 
-        $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
+            return response()->json(['message' =>
+
+                $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
         ], 200);
     } catch (CustomException $exc) {
 
-      return response()->json(['message' => $exc->message,], $exc->code);
+            return response()->json(['message' => $exc->message,], $exc->code);
+        }
     }
-  }
 
 
-  public function callGenerateCodes($id)
-  {
-    return $this->generateCodes($id, Department::class, Employee::class, 'department_id');
-  }
-
+    public function callGenerateCodes($id)
+    {
+        return $this->generateCodes($id, Department::class, Employee::class, 'department_id');
+    }
 
 
 }

@@ -79,6 +79,13 @@ class VoucherTemplate extends Model
     return $this->hasMany(Voucher::class, 'voucher_template_id');
   }
 
+
+    public function voucherTemplatePermissionUser()
+    {
+        return $this->hasMany(VoucherTemplatePermissionUser::class, 'voucher_template_id');
+    }
+
+
   // public function voucherPermissions()
   // {
   //     return $this->hasMany(VoucherPermissionUser::class, 'voucher_template_id');

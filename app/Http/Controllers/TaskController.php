@@ -35,17 +35,13 @@ class TaskController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
     $tasksWithEmployees = Task::with('employees', 'status')->get();
-    $this->callActivityMethod('tasks', 'index', $parameters);
     return response()->json($tasksWithEmployees, 200);
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
     $tasksWithEmployees = Task::with('employees', 'status')->get();
-    $this->callActivityMethod('tasks', 'allTasks', $parameters);
     return response()->json($tasksWithEmployees, 200);
   }
 
@@ -114,7 +110,7 @@ class TaskController extends Controller
             'attachment' => $task->attachment ? $attachment_details : '',
           ]
         );
-//        return $task_notification->attachment;
+        return $task_notification->attachment;
         event(new NotificationCreated($task_notification));
 
       }
@@ -127,11 +123,13 @@ class TaskController extends Controller
         'new_task_status_id' => null,
       ];
 
-      $parameters = ['request' => $request, 'id' => $task->id];
 
       event(new TasksUpdated([...Task::all()]));
 
-      $this->callActivityMethod('tasks', 'store', $parameters);
+      $result = $this->activityParameters($lang, 'store', 'task', $task,     null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);
       $this->callTaskActivityMethod('store', $taskParameters);
 
       return response()->json([
@@ -161,9 +159,9 @@ class TaskController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $task = Task::with('status', 'employees', 'attachment')->find($id);
-    $this->callActivityMethod('tasks', 'show', $parameters);
+
     return response()->json($task, 200);
   }
 
@@ -174,21 +172,8 @@ class TaskController extends Controller
     try {
 
       $old_data = Task::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
       $task = Task::find($id);
-
-//      if ($request->has('attachments') && $task->attachment) {
-//        if ($task->attachment->type === 'file') {
-//          $disk = 'upload_file';
-//        }
-//        if ($task->attachment->type === 'Image') {
-//          $disk = 'upload_image';
-//        }
-//        $this->deleteAttachment($disk, 'tasks/' . $task->attachment->file_name, $task->id);
-//        $this->uploadAttachment($request, 'attachments', 'tasks', 'App\Models\Task', $task->id);
-//
-//      }
-
 
       EmployeeTask::where('task_id', $id)->delete();
       $employeesIds = $request->employees_ids;
@@ -202,11 +187,6 @@ class TaskController extends Controller
         if (!Employee::find($employeeId)) {
           throw new NotFoundException('Employee');
         }
-
-//        if (!Employee::find($employeeId)->first()->toArray()['user_id']) {
-//          throw new CustomException('Related User Not Found', 404);
-//        }
-
 
         $tasAttachments = [];
         if ($task->attachment) {
@@ -277,7 +257,10 @@ class TaskController extends Controller
       $task->update($request->all());
 
 
-      $this->callActivityMethod('tsaks', 'update', $parameters);
+      $result = $this->activityParameters($lang, 'update', 'task', $task,     $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
       $this->callTaskActivityMethod('update', $taskParameters);
 
       $data = $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang);
@@ -335,7 +318,10 @@ class TaskController extends Controller
         }
       }
       $task->delete();
-      $this->callActivityMethod('tasks', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'task', $task,     null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
       event(new TasksUpdated([...Task::all()]));
       return response()->json(['message' =>
 

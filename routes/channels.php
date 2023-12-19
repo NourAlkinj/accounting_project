@@ -21,6 +21,22 @@ Broadcast::channel('public.user', function ($user) {
   return true;
 });
 
+
+
+Broadcast::channel('public.branchesGuide', function ($branches) {
+    return true;
+});
+
+
+
+
+Broadcast::channel('public.categoriesGuide', function ($categories) {
+    return true;
+});
+
+
+
+
 Broadcast::channel('public.item', function ($item) {
   return true;
 });
@@ -38,8 +54,18 @@ Broadcast::channel('public.branch', function ($branch) {
   return true;
 });
 
+Broadcast::channel('public.bill_template', function ($bill_templates) {
+  return true;
+});
 
-Broadcast::channel('public.category', function ($category) {
+
+Broadcast::channel('public.category', function ($categories) {
+  return true;
+});
+
+
+
+Broadcast::channel('public.client', function ($clients) {
   return true;
 });
 

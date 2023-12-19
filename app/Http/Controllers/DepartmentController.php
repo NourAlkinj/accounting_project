@@ -29,17 +29,17 @@ class DepartmentController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
     $DepartmentsAndEmployeesTree = Department::whereNull('department_id')->with('children', 'employees')->get();
-    $this->callActivityMethod('departments', 'Main Tree', $parameters);
+
     return response()->json($DepartmentsAndEmployeesTree, 200);
   }
 
   public function all()
   {
-    $parameters = ['id' => null];
+
     $departments = Department::with('employees')->get();
-    $this->callActivityMethod('departments', 'all', $parameters);
+
     return response()->json($departments, 200);
   }
 
@@ -52,12 +52,14 @@ class DepartmentController extends Controller
       if ($this->getCountRawsInModel(Department::class) == 1) {
         $this->updateValueInDB($department->id, Department::class, 'is_root', true);
       }
-      $parameters = ['request' => $request, 'id' => $department->id];
-      $this->callActivityMethod('departments', 'store', $parameters);
-      event(new DepartmentUpdated([...Department::all()]));
+
+      $result = $this->activityParameters($lang, 'store', 'department', $department,     null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('store', $table, $parameters);      event(new DepartmentUpdated([...Department::all()]));
 
       return response()->json([
-//      'message' => __('common.store'),
+
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
       'id' => $department->id,
       'department_id' => $department->department_id,
@@ -69,9 +71,9 @@ class DepartmentController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $department = Department::with('employees.tasks')->find($id);
-    $this->callActivityMethod('departments', 'show', $parameters);
+
     return response()->json($department, 200);
   }
 
@@ -80,11 +82,16 @@ class DepartmentController extends Controller
     try {
       $lang = $request->header('lang');
       $old_data = Department::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
       $department = Department::find($id);
 
       $department->update($request->all());
-      $this->callActivityMethod('departments', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'department', $department,     $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);      event(new DepartmentUpdated([...Department::all()]));
+
       event(new DepartmentUpdated([...Department::all()]));
       return response()->json([
          'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
@@ -101,7 +108,7 @@ class DepartmentController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
+
       $department = Department::find($id);
       if ($department->is_root == true) {
         $errors = ['message' => [
@@ -116,7 +123,12 @@ class DepartmentController extends Controller
       return response()->json(['errors' => $errors], 400);
     }
       $department->delete();
-      $this->callActivityMethod('departments', 'delete', $parameters);
+      $result = $this->activityParameters($lang, 'delete', 'department', $department,     null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+//      event(new DepartmentUpdated([...Department::all()]));
+
       event(new DepartmentUpdated([...Department::all()]));
       return response()->json([
 

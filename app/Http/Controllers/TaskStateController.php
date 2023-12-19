@@ -27,9 +27,7 @@ class TaskStateController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
     $taskStates = TaskState::with('tasks')->get();;
-    $this->callActivityMethod('task-states', 'index', $parameters);
     return response()->json($taskStates, 200);
   }
 
@@ -118,10 +116,7 @@ class TaskStateController extends Controller
     try {
       $lang = $request->header('lang');
       $taskState = TaskState::create($request->all());
-      $parameters = ['request' => $request, 'id' => $taskState->id];
-      $this->callActivityMethod('tasks-state', 'store', $parameters);
       return response()->json([
-//      'message' => __('common.store'),
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
       'id' => $taskState->id,
     ], 200);
@@ -133,9 +128,7 @@ class TaskStateController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
     $taskState = TaskState::with('tasks')->find($id);
-    $this->callActivityMethod('task-states', 'show', $parameters);
     return response()->json($taskState, 200);
   }
 
@@ -144,12 +137,8 @@ class TaskStateController extends Controller
   {
     try {
       $lang = $request->header('lang');
-      $old_data = TaskState::find($id)->toJson();
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
       $taskState = TaskState::find($id);
       $taskState->update($request->all());
-      $this->callActivityMethod('tsaks', 'update', $parameters);
-//    $data = __('common.update');
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang),
       'id' => $taskState->id
@@ -163,15 +152,12 @@ class TaskStateController extends Controller
   {
     try {
       $lang = app('request')->header('lang');
-      $parameters = ['id' => $id];
       $taskState = TaskState::find($id);
       if ($taskState == 'In Progress' || $taskState == 'Finished') {
         return __('task.task_state_can_not_be_deleted');
       }
       $taskState->delete();
-      $this->callActivityMethod('task-states', 'delete', $parameters);
       return response()->json(['message' =>
-//      __('common.delete')
         $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
     ], 200);
   } catch (CustomException $exc) {

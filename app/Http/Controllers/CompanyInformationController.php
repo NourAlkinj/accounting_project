@@ -48,9 +48,12 @@ class CompanyInformationController extends Controller
       $company_information = CompanyInformation::create($request->all());
 
       $this->saveImage($request, 'photo', 'Company_Information', 'upload_image', $company_information->id, 'App\Models\CompanyInformation');
-      $parameters = ['request' => $request, 'id' => $company_information->id];
 
-      $this->callActivityMethod('users', 'store', $parameters);
+      $result = $this->activityParameters($lang, 'store', 'company_information', $company_information,      null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
+
 
       DB::commit();
       return [
@@ -73,11 +76,11 @@ class CompanyInformationController extends Controller
   public function show($id)
   {
 
-    $parameters = ['id' => $id];
+
     $company_information = CompanyInformation::find($id);
 
     if ($company_information) {
-      $this->callActivityMethod('users', 'show', $parameters);
+
 
       return response([
         'company_information' => $company_information
@@ -110,9 +113,14 @@ class CompanyInformationController extends Controller
       $this->saveImage($request, 'photo', 'Company_Information', 'upload_image', $company_information->id, 'App\Models\CompanyInformation');
 
       $company_information->update($request->all());
-      $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
 
-      $this->callActivityMethod('company_information', 'update', $parameters);
+
+      $result = $this->activityParameters($lang, 'update', 'company_information', $company_information,      $old_data);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('update', $table, $parameters);
+
+
       DB::commit();
       return [
         'company_information' => $company_information,
@@ -142,7 +150,7 @@ class CompanyInformationController extends Controller
   public function delete($id)
   {
     $lang = app('request')->header('lang');
-    $parameters = ['id' => $id];
+
     $company_information = CompanyInformation::find($id);
 
 
@@ -152,7 +160,11 @@ class CompanyInformationController extends Controller
         $this->deleteImage('upload_image', 'Company_Information/' . $company_information->image->file_name, $company_information->id);
       }
       $company_information->delete();
-      $this->callActivityMethod('company_information', 'delete', $parameters);
+
+      $result = $this->activityParameters($lang, 'delete', 'company_information', $company_information,      null);
+      $parameters = $result['parameters'];
+      $table = $result['table'];
+      $this->callActivityMethod('delete', $table, $parameters);
 
 
       return response()->json([

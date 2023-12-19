@@ -75,8 +75,12 @@ class CurrencyController extends Controller
     if ($this->getCountRawsInModel(Currency::class) == 1)
       $this->updateValueInDB($currency->id, Currency::class, 'is_default', true);
     $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->created_at, $request);
-    $parameters = ['request' => $request, 'id' => $currency->id];
-    $this->callActivityMethod('currencies', 'store', $parameters);
+
+    $result = $this->activityParameters($lang, 'store', 'currency', $currency,     null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('store', $table, $parameters);
+
     event(new CurrenciesUpdated([...Currency::all()]));
     return response()->json(['message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang)], 200);
 
@@ -84,9 +88,9 @@ class CurrencyController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $currency = Currency::where('id', $id)->get();
-    $this->callActivityMethod('currencies', 'show', $parameters);
+
     return response()->json($currency, 200);
   }
 
@@ -94,13 +98,18 @@ class CurrencyController extends Controller
   {
     $lang = $request->header('lang');
     $old_data = Currency::find($id)->toJson();
-    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
     $currency = Currency::find($id);
     $currencyBeforUpdate = $currency->parity;
     $currency->update($request->all());
     if ($currencyBeforUpdate != $currency->parity)
       $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->updated_at, $request);
-    $this->callActivityMethod('currencies', 'update', $parameters);
+
+    $result = $this->activityParameters($lang, 'update', 'currency', $currency,     $old_data);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('update', $table, $parameters);
+
     event(new CurrenciesUpdated([...Currency::all()]));
     $data = $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang);
         return response()->json(['message' => $data], 200);
@@ -109,14 +118,17 @@ class CurrencyController extends Controller
   public function delete($id)
   {
     $lang = app('request')->header('lang');
-    $parameters = ['id' => $id];
+
     $currency = Currency::find($id);
-    if($this->isUseCurrency($id)) {
+    if ($this->isUseCurrency($id)) {
       $errors = ['currency' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
       return response()->json(['errors' => $errors], 400);
     }
     $currency->delete();
-    $this->callActivityMethod('currencies', 'delete', $parameters);
+    $result = $this->activityParameters($lang, 'delete', 'currency', $currency,     null);
+    $parameters = $result['parameters'];
+    $table = $result['table'];
+    $this->callActivityMethod('delete', $table, $parameters);
     event(new CurrenciesUpdated([...Currency::all()]));
     $data = $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
         return response()->json(['message' => $data], 200);
@@ -134,7 +146,7 @@ class CurrencyController extends Controller
       $query->where('currency_id', $currency_id);
     })->first();
     if ($account != null)
-            return true;
+      return true;
 //      return ['accountId' => $account->id, 'table' => 'accounts'];
 
     //currency related to bill
@@ -142,7 +154,7 @@ class CurrencyController extends Controller
       $query->where('currency_id', $currency_id);
     })->first();
     if ($bill != null)
-        return true;
+      return true;
 //      return ['billId' => $bill->id, 'table' => 'bills'];
 
     //currency related to bill addition and discount
@@ -161,7 +173,7 @@ class CurrencyController extends Controller
       return true;
 //      return ['billRecordId' => $billRecord->id, 'table' => 'bill_records'];
 
-   //currency related to bill template
+    //currency related to bill template
     $billTemplate = BillTemplate::where(function ($query) use ($currency_id) {
       $query->where('currency_id', $currency_id);
     })->first();
@@ -236,8 +248,6 @@ class CurrencyController extends Controller
 //    return ['id' => null, 'table' => null];
     return false;
   }
-
-
 
 
 }

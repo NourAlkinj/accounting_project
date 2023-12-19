@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClientsUpdated;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Account;
@@ -12,112 +13,129 @@ use App\Models\JournalEntryRecord;
 use App\Traits\ActivityLog\ActivityLog;
 use App\Traits\Common\CommonTrait;
 use Lang\Locales\CommonWords;
-use Lang\Translate;
 use Lang\Locales\CommonWordsEnum;
+use Lang\Translate;
 
 class ClientController extends Controller
 {
     use ActivityLog, CommonTrait;
-  public  $commonMessage;
 
-  function __construct()
-  {
-    $this->commonMessage = new Translate(new CommonWords());
-  }
+    public $commonMessage;
+
+    function __construct()
+    {
+        $this->commonMessage = new Translate(new CommonWords());
+    }
 
     public function index()//done
     {
-        $parameters = ['id' => null];
+
         $allClients = Client::all();
-        $this->callActivityMethod('clients', 'index', $parameters);
+
         return response()->json($allClients, 200);
     }
 
-    public function store( $request,$account_id)//done
+    public function store($request, $account_id)//done
     {
+        $lang = app('request')->header('lang');
         $client = Client::create($request->all());
-        $this->updateValueInDB($client->id,Client::class, 'account_id',$account_id);
-        $parameters = ['request' => $request, 'id' => $client->id];
-        $this->callActivityMethod('clients', 'store', $parameters);
+        $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
+
+        $result = $this->activityParameters($lang, 'store', 'category', $client, null);
+        $parameters = $result['parameters'];
+        $table = $result['table'];
+        $this->callActivityMethod('store', $table, $parameters);
+        event(new ClientsUpdated([...Client::all()]));
+
+//      $this->callActivityMethod('clients', 'store', $parameters);
     }
 
     public function show($accountId)//done
     {
-        $client=Client::where('account_id', $accountId)->first();
-        $parameters = ['id' => $client->id];
-        $client= Client::find($client->id);
-        $this->callActivityMethod('clients', 'show', $parameters);
-        return response()->json( $client, 200);
+        $client = Client::where('account_id', $accountId)->first();
+
+        $client = Client::find($client->id);
+
+        return response()->json($client, 200);
     }
 
 
-    public function update($request ,$id,$account_id)//done
+    public function update($request, $id, $account_id)//done
     {
+        $lang = app('request')->header('lang');
         $old_data = Client::find($id)->toJson();
-        $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+//    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
         $client = Client::find($id);
         $client->update($request->all());
-       $this->updateValueInDB($client->id,Client::class, 'account_id',$account_id);
-       $this->callActivityMethod('clients', 'update', $parameters);
+        $this->updateValueInDB($client->id, Client::class, 'account_id', $account_id);
+
+        $result = $this->activityParameters($lang, 'update', 'client', $client, $old_data);
+        $parameters = $result['parameters'];
+        $table = $result['table'];
+        $this->callActivityMethod('update', $table, $parameters);
+        event(new ClientsUpdated([...Client::all()]));
     }
 
     public function delete($accountId)//done
     {
-      $lang  =   app('request')->header('lang');;
-      $client=Client::where('account_id', $accountId)->first();
-        $parameters = ['id' => $client->id];
+        $lang = app('request')->header('lang');;
+        $client = Client::where('account_id', $accountId)->first();
 
-      if($this->isUseClient($client->id)) {
-        $errors = ['client' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
+        if ($this->isUseClient($client->id)) {
+            $errors = ['client' => [$this->commonMessage->t(CommonWordsEnum::DELETE_ERROR->name, $lang)]];
         return response()->json(['errors' => $errors], 400);
       }
 
         $client->delete();
-        $this->updateValueInDB($accountId,Account::class,'is_client',false);
-        $this->callActivityMethod('clients', 'delete', $parameters);
-        $data= $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
+        $this->updateValueInDB($accountId, Account::class, 'is_client', false);
+
+        $result = $this->activityParameters($lang, 'delete', 'client', $client, null);
+        $parameters = $result['parameters'];
+        $table = $result['table'];
+        $this->callActivityMethod('delete', $table, $parameters);
+
+        event(new ClientsUpdated([...Client::all()]));
+        $data = $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang);
         return response()->json(['message' => $data], 200);
     }
 
-  public function all()
-  {
-    $parameters = ['id' => null];
-    $this->callActivityMethod('clients', 'allClients', $parameters);
-    $clients = Client::all();
-    return $clients;
-  }
+    public function all()
+    {
 
-  public function isUseClient($client_id)
-  {
-    //client related to bill
-    $bill = Bill::where(function ($query) use ($client_id) {
-      $query->where('client_id', $client_id);
-    })->first();
-    if ($bill != null)
-      return true;
+        $clients = Client::all();
+        return $clients;
+    }
+
+    public function isUseClient($client_id)
+    {
+        //client related to bill
+        $bill = Bill::where(function ($query) use ($client_id) {
+            $query->where('client_id', $client_id);
+        })->first();
+        if ($bill != null)
+            return true;
 //      return ['billId' => $bill->id, 'table' => 'bills'];
 
-    //client related to bill template
-    $billTemplate = BillTemplate::where(function ($query) use ($client_id) {
-      $query->where('client_id', $client_id);
-    })->first();
-    if ($billTemplate != null)
-      return true;
+        //client related to bill template
+        $billTemplate = BillTemplate::where(function ($query) use ($client_id) {
+            $query->where('client_id', $client_id);
+        })->first();
+        if ($billTemplate != null)
+            return true;
 //      return ['billTemplateId' => $billTemplate->id, 'table' => 'bill_templates'];
 
-    //client related to journal entry record
-    $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($client_id) {
-      $query->where('client_id', $client_id);
-    })->first();
-    if ($journalEntryRecord != null)
-      return true;
+        //client related to journal entry record
+        $journalEntryRecord = JournalEntryRecord::where(function ($query) use ($client_id) {
+            $query->where('client_id', $client_id);
+        })->first();
+        if ($journalEntryRecord != null)
+            return true;
 //      return ['journalEntryRecordId' => $journalEntryRecord->id, 'table' => 'journal_entry_records'];
 
 
 //    return ['id' => null, 'table' => null];
-    return false;
-  }
-
+        return false;
+    }
 
 
 }

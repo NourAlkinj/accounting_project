@@ -6,19 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
 
-  public function up()
-  {
-    Schema::create('user_settings', function (Blueprint $table) {
-      $table->id();
-      $table->integer('user_id')->nullable();
-      $table->integer('setting_id')->nullable();
-      $table->timestamps();
-    });
-  }
+    public function up()
+    {
+        Schema::create('user_settings', function (Blueprint $table) {
+            $table->id();
+            $table->integer('user_id')->nullable();
+            $table->integer('setting_id')->nullable();
+            $table->index('user_id');
+            $table->timestamps();
+        });
+    }
 
 
-  public function down()
-  {
-    Schema::dropIfExists('user_settings');
-  }
+    public function down()
+    {
+        Schema::dropIfExists('user_settings');
+    }
 };

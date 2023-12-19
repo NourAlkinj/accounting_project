@@ -23,10 +23,10 @@ class BarcodeController extends Controller
 
   public function index()
   {
-    $parameters = ['id' => null];
+
 
     $barcodes = Barcode::whereNull('category_id')->with('children', 'items')->select('id', 'name', 'code', 'category_id', 'flag')->get();;
-    $this->callActivityMethod('barcodes', 'index', $parameters);
+
 
     return response()->json($barcodes, 200);
   }
@@ -39,10 +39,9 @@ class BarcodeController extends Controller
 
     try {
       $barcode = Barcode::create($request->all());
-      $parameters = ['request' => $request, 'id' => $barcode->id];
-      $this->callActivityMethod('barcodes', 'store', $parameters);
+
       return response()->json([
-//      'message' => __('common.store'),
+
         'message' => $this->commonMessage->t(CommonWordsEnum::STORE->name, $lang),
 
       'id' => $barcode->id,
@@ -57,9 +56,9 @@ class BarcodeController extends Controller
 
   public function show($id)
   {
-    $parameters = ['id' => $id];
+
     $barcode = Barcode::find($id);
-    $this->callActivityMethod('barcodes', 'show', $parameters);
+
     return response()->json($barcode, 200);
   }
 
@@ -67,8 +66,8 @@ class BarcodeController extends Controller
   public function update(UpdateRequest $request, $id)
   {
     $lang = $request->header('lang');
-    $old_data = Barcode::find($id)->toJson();
-    $parameters = ['request' => $request, 'id' => $id, 'old_data' => $old_data];
+
+
     $barcode = Barcode::find($id);
     if ($result = $this->validateCode($request->code, $lang))
       return $result;
@@ -76,7 +75,7 @@ class BarcodeController extends Controller
       return $result;
     try {
       $barcode->update($request->all());
-      $this->callActivityMethod('barcodes', 'update', $parameters);
+
 
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang)
@@ -91,7 +90,7 @@ class BarcodeController extends Controller
   {
     $lang = app('request')->header('lang');
 
-    $parameters = ['id' => $id];
+
     $barcode = Barcode::find($id);
     if ($this->numOfSubChilds(Barcode::class, $id, 'barcode_id') > 0) {
       $errors = ['store' => [
@@ -102,7 +101,7 @@ class BarcodeController extends Controller
     try {
 
       $barcode->delete();
-      $this->callActivityMethod('barcodes', 'delete', $parameters);
+
 
       return response()->json([
         'message' => $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)  ], 200);

@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Lang\Locales\CommonWords;
 use Lang\Locales\CommonWordsEnum;
 use Lang\Translate;
-use PDO;
 
 class DatabaseController extends Controller
 {
@@ -20,6 +19,37 @@ class DatabaseController extends Controller
     function __construct()
     {
         $this->commonMessage = new Translate(new CommonWords());
+    }
+
+    public function selectDatabase($newDatabaseName)
+    {
+        DB::disconnect();
+        Config::set('database.mysql.database', $newDatabaseName);
+        DB::reconnect();
+        Config::set('database.connections.' . $newDatabaseName . '.driver', 'mysql');
+        Config::set('database.connections.' . $newDatabaseName . '.host', 'localhost');
+        Config::set('database.connections.' . $newDatabaseName . '.username', 'root');
+        Config::set('database.connections.' . $newDatabaseName . '.password', '');
+        Config::set('database.connections.' . $newDatabaseName . '.collation', 'utf8_general_ci');
+        Config::set('database.connections.' . $newDatabaseName . '.charset', 'utf8');
+        Config::set('database.connections.' . $newDatabaseName . '.dump', [
+            'dump_binary_path' => 'C:\\xampp\\mysql\\bin',
+            'use_single_transaction',
+            'timeout' => 60 * 5,
+        ]);
+        Config::set('database.connections.' . $newDatabaseName . '.database', $newDatabaseName);
+        Config::set('database.default', $newDatabaseName);
+        DB::reconnect($newDatabaseName);
+        $envPath = base_path('.env');
+        $envContents = file_get_contents($envPath);
+        $envContents = preg_replace(
+            '/^DB_DATABASE=.*/m',
+            'DB_DATABASE=' . $newDatabaseName,
+            $envContents
+        );
+        file_put_contents($envPath, $envContents);
+
+
     }
 
     public function create($databaseName)
@@ -51,6 +81,7 @@ class DatabaseController extends Controller
         DB::statement('CREATE DATABASE IF NOT EXISTS settings');
         config(['database.connections.mysql.database' => 'settings']);
         DB::reconnect('mysql');
+//    DB::reconnect('settings');
         DB::statement('
           CREATE TABLE IF NOT EXISTS connections (
           id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,10 +104,10 @@ class DatabaseController extends Controller
 
     public function switchDatabase($newDatabaseName)
     {
-      $lang = app('request')->header('lang');
-      if ($newDatabaseName == env('DB_DATABASE') ){
-        return [
-          'message' => $this->commonMessage->t(CommonWordsEnum::already_in_database->name, $lang) .''.$newDatabaseName
+        $lang = app('request')->header('lang');
+        if ($newDatabaseName == env('DB_DATABASE')) {
+            return [
+                'message' => $this->commonMessage->t(CommonWordsEnum::already_in_database->name, $lang) .'' . $newDatabaseName
       ];
       }
 
@@ -99,18 +130,18 @@ class DatabaseController extends Controller
         Config::set('database.default', $newDatabaseName);
         DB::reconnect($newDatabaseName);
         $envDatabaseName = env('DB_DATABASE');
-        if ($envDatabaseName !== $newDatabaseName) {
-            $envPath = base_path('.env');
-            $envContents = file_get_contents($envPath);
-            $envContents = preg_replace(
-                '/^DB_DATABASE=.*/m',
-                'DB_DATABASE=' . $newDatabaseName,
-                $envContents
-            );
-            file_put_contents($envPath, $envContents);
-        } else {
-            echo env('DB_DATABASE');
-        }
+//    if ($envDatabaseName !== $newDatabaseName) {
+        $envPath = base_path('.env');
+        $envContents = file_get_contents($envPath);
+        $envContents = preg_replace(
+            '/^DB_DATABASE=.*/m',
+            'DB_DATABASE=' . $newDatabaseName,
+            $envContents
+        );
+        file_put_contents($envPath, $envContents);
+//    } else {
+//      echo env('DB_DATABASE');
+//    }
         $currentConnectionInformation = new Collection(DB::connection('mysql')->getConfig());
         DB::connection('settings')->table('connections')->insert([
             'database_information' => $currentConnectionInformation,
@@ -150,20 +181,10 @@ class DatabaseController extends Controller
     public function backupDatabase(Request $request)
     {
         $lang = app('request')->header('lang');
-
         $databaseName = $request->input('database_name');
-        if ($databaseName){
-          $this->switchDatabase($databaseName);
-        }
         $backupPath = $request->input('backup_path');
-
-
         $outputPath = $backupPath . '\backup_' . $databaseName . '_' . date('Y-m-d_H-i-s') . '.sql';
-
-          exec("mysqldump -u ". env('DB_USERNAME') . " ".$databaseName." > {$outputPath}"); // true
-
-
-
+        $command = exec("mysqldump -u " . env('DB_USERNAME') . " " . $databaseName . " > {$outputPath}");
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::backup_database->name, $lang)
       ];
@@ -171,11 +192,13 @@ class DatabaseController extends Controller
 
     public function restore(Request $request)
     {
+        $databaseName = $request->databaseName;
+        $backupPath = $request->backupPath;
         $lang = app('request')->header('lang');
-        $fileName = $request->input('file_name');
-        Artisan::call('backup:restore', [
-            '--filename' => $fileName,
-        ]);
+        DB::statement("DROP DATABASE IF EXISTS $databaseName");
+        DB::statement("CREATE DATABASE $databaseName");
+        DB::statement("USE $databaseName");
+        exec("mysql -u " . env('DB_USERNAME') . " " . $databaseName . " < {$backupPath}");
         return [
             'message' => $this->commonMessage->t(CommonWordsEnum::restore_database->name, $lang)
       ];

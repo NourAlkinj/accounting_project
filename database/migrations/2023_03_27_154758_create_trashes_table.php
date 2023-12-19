@@ -11,9 +11,10 @@ return new class extends Migration
     {
         Schema::create('trashes', function (Blueprint $table) {
             $table->id();
-            $table->string("table")->nullable();
-            $table->integer("table_id")->nullable();
-            $table->integer("user_id")->nullable();
+            $table->string('table')->nullable();
+            $table->integer('table_id')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->index('user_id');
             $table->timestamps();
         });
     }

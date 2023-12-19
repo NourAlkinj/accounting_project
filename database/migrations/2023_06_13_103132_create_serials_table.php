@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->nullable();
             $table->unsignedBigInteger('item_id')->nullable();
+            $table->index('item_id');
             $table->string('manufacture_year')->nullable();
             $table->string('color')->nullable();
             $table->integer('serial_index')->nullable();

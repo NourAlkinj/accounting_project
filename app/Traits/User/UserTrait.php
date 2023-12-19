@@ -13,7 +13,6 @@ use App\Traits\Branch\BranchTrait;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -378,4 +377,32 @@ trait  UserTrait
 //    }
 //    return $admin->permissions;
   }
+
+
+
+
+//  public function userDevice()
+//  {
+//    $agent = new \Jenssegers\Agent\Agent;
+//
+//    //  $platform = $agent->platform(); // operating system
+//
+//
+//    if ($agent->isMobile()) {    // Mobile State
+//      return 'Mobile';
+//    } elseif ($agent->isDesktop()) {   //Desktop State  : Windows or Linux
+//      if ($agent->is('Windows')) {
+//        return 'Windows';
+//      } elseif ($agent->is('Linux')) {
+//        return 'Linux';
+//      } else {
+//        return '';
+//      }
+//    } else {
+//      return 'Tablet';  // Other State : for example  Tablet
+//    }
+//
+//
+//  }
+
 }

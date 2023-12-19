@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('foreign_name')->nullable()->default(null);
             $table->unsignedBigInteger('branch_id')->nullable()->default(null);
+            $table->index('branch_id');
             $table->string('responsibility')->nullable()->default(null);
             $table->string('address')->nullable()->default(null);
             $table->string('website')->nullable()->default(null);

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->integer('index')->nullable();
             $table->unsignedBigInteger('account_id')->nullable();
+            $table->index('account_id');
             $table->double('credit')->nullable();
             $table->double('debit')->nullable();
             $table->double('relative_debit')->nullable();
@@ -22,9 +23,9 @@ return new class extends Migration
             $table->string('notes')->nullable();
             $table->unsignedBigInteger('cost_center_id')->nullable();
             $table->unsignedBigInteger('currency_id')->nullable()->default(null);
-            $table->integer('parity')->nullable()->default(null);
+            $table->double('parity')->nullable()->default(null);
             $table->integer('today_parity')->nullable();
-            $table->integer('equivalent')->nullable();
+            $table->double('equivalent')->nullable();
             $table->double('contra_account_id')->nullable();
             $table->double('current_balance')->nullable();
             $table->string('final_balance')->nullable();

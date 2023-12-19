@@ -22,7 +22,15 @@ class LedgerFilters {
         public $created_between,
         public $posted_between,
         public $not_posted_between,
-        public $sources
+        public $sources,
+        public $debit_only,
+        public $credit_only,
+        public $all,
+        public $show_posted_balance,
+        public $show_not_posted_balance,
+
+
+
     ) {
     }
 

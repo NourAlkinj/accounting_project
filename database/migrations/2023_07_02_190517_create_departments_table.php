@@ -15,13 +15,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('foreign_name')->default(null)->nullable();
             $table->unsignedBigInteger('department_id')->default(null)->nullable();
+            $table->index('department_id');
             $table->unsignedBigInteger('branch_id')->default(null)->nullable();
             $table->string('flag')->nullable()->default('department');
             $table->boolean('is_root')->default(false);
-
             $table->string('notes')->default(null)->nullable();
             $table->timestamps();
-
             $table->foreign('department_id')->references('id')->on('departments');
             $table->foreign('branch_id')->references('id')->on('branches');
         });
