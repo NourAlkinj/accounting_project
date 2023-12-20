@@ -3,7 +3,8 @@
 /public/hot
 /public/storage
 /storage/*.key
-
+/vendor
+.env
 .env.backup
 .env.production
 .phpunit.result.cache
@@ -16,9 +17,5 @@ yarn-error.log
 /.idea
 /.vscode
 /.scribe
-<<<<<<< HEAD
 .idea
 
-=======
-.idea
->>>>>>> b4f2c3ae10bd6c237682859ec37dc29f28023488
