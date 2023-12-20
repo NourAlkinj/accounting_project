@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('foreign_name')->nullable()->default(null);
             $table->string('flag')->nullable()->default('category');
             $table->unsignedBigInteger('category_id')->nullable()->default(null);
+            $table->index('category_id') ;
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories');
         });

@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Traits\Common\CommonTrait;
-use App\Traits\DefaultPrice\DefaultPriceTrait;
 use App\Traits\ActivityLog\ActivityLog;
-use Illuminate\Support\Facades\Config;
+use App\Traits\DefaultPrice\DefaultPriceTrait;
 
 class DefaultPriceController extends Controller
 {

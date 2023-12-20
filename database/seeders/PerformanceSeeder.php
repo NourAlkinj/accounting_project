@@ -18,7 +18,7 @@ class PerformanceSeeder extends Seeder
 
     Store::factory()->count(1000)->create();
 
-    Branch::factory()->count(1000)->create();
+    Branch::factory()->count(3000)->create();
 
     User::factory()->count(1000)->for(
         Branch::factory()

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('foreign_name')->nullable();
             $table->unsignedBigInteger('department_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->index('user_id');
 
             //first tab personal information
             //general

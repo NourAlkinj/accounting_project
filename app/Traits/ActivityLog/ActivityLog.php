@@ -5,6 +5,7 @@ namespace App\Traits\ActivityLog;
 
 use App\Models\Activity;
 use App\Models\Trash;
+use Illuminate\Foundation\Auth\User;
 
 trait  ActivityLog
 {
@@ -21,6 +22,7 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+        'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
         'old_data' => $activity['parameters']['old_data'],
         'branch_id' => auth('sanctum')->user()->branch_id,
@@ -43,13 +45,14 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+          'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
       ]);
     } else
       Activity::create([
         'table' => $activity['table'],
         'user_id' => auth('sanctum')->user() ? auth('sanctum')->user()->id : $activity['parameters']['id'],
-        'branch_id' => auth('sanctum')->user() ? auth('sanctum')->user()->branch_id : null,
+        'branch_id' => auth('sanctum')->user() ? auth('sanctum')->user()->branch_id : User::find($activity['parameters']['id'])->branch_id,
         'table_id' => $activity['parameters']['id'],
         'description_ar' => $activity['parameters']['description_ar'],
         'description_en' => $activity['parameters']['description_en'],
@@ -57,6 +60,7 @@ trait  ActivityLog
         'operation_ar' => $activity['parameters']['operation_ar'],
         'operation_en' => $activity['parameters']['operation_en'],
         'mac' => $activity['parameters']['mac'],
+          'ip' => $activity['parameters']['ip'],
         'pc_name' => $activity['parameters']['pc_name'],
 
       ]);
@@ -173,9 +177,9 @@ trait  ActivityLog
   {
     $code = $element->code ? $element->code : null;
     $name = $element->name ? $element->name : null;
-    $number = $element->number ? $element->number : null;
+    $number = $element->receipt_number ? $element->receipt_number : null;
     $table = $this->getTable('ar', $model);
-    $discription = $operation_ar . ' ' . $table . ' ' . $name . ' ' . $code . ' ' . ' بنجاح ';
+    $discription = trim($operation_ar . ' ' . $table . ' ' . $name . ' ' . $code .$number ). ' بنجاح ';
     return $discription;
   }
 

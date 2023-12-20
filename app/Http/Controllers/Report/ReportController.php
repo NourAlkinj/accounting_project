@@ -642,8 +642,8 @@ class ReportController extends Controller
         $request->created_between,
         ),
       [],
-      [
         $request->user_id ? ['name' => 'user_filter', 'affects_final_result' => true] : [],
+      [
         $request->branch_id ? ['name' => 'branch_filter', 'affects_final_result' => true] : [],
         $request->created_between ? ['name' => 'date_range_filter', 'affects_final_result' => true] : [],
       ]

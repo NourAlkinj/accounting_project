@@ -12,12 +12,12 @@ class BillPermissionUser extends Model
     protected $fillable = [
         'user_id',
         'show_setting',
-        'print_setting',
+//        'print_setting',
         'bill_template_id'
     ];
     protected $casts = [
         'show_setting' => 'json',
-        'print_setting' => 'json',
+//        'print_setting' => 'json',
     ];
 
 

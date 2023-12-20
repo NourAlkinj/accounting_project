@@ -306,4 +306,11 @@ class BillTemplate extends Model
         'is_item_value' => 'boolean',
         'is_both' => 'boolean',
     ];
+
+
+
+    public function billTemplatePermissionUser()
+    {
+        return $this->hasMany(BillTemplatePermissionUser::class, 'bill_template_id');
+    }
 }

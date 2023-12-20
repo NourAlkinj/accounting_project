@@ -110,7 +110,7 @@ class TaskController extends Controller
             'attachment' => $task->attachment ? $attachment_details : '',
           ]
         );
-//        return $task_notification->attachment;
+        return $task_notification->attachment;
         event(new NotificationCreated($task_notification));
 
       }

@@ -20,6 +20,47 @@ trait  JournalEntryRecordTrait
     return JournalEntry::find(1)->records;
   }
 
+    public function updateJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
+    {
+        $journal_entry = JournalEntry::find($journal_entry_id);
+        $journal_entry_records = $journal_entry->records->toArray();
+        $records_in_request = $request->records;
+        $recordsToCreate = array_diff(array_column($records_in_request, 'index'), array_column($journal_entry_records, 'index'));
+        foreach ($recordsToCreate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $recordData['journal_entry_id'] = $journal_entry_id;
+            $JournalEntryRecord = JournalEntryRecord::create($recordData);
+            $JournalEntryRecord['journal_entry_id'] = $journal_entry_id;
+            $JournalEntryRecord['source_name'] = $request['source']['source_name'];
+            $JournalEntryRecord['source_template_id'] = $request['source']['source_template_id'];
+            $JournalEntryRecord['source_id'] = $request['source']['source_id'];
+            $JournalEntryRecord['branch_id'] = $request['branch_id'];
+            $JournalEntryRecord['date'] = $request['date'];
+            $JournalEntryRecord['time'] = $request['time'];
+            $JournalEntryRecord['index'] = abs($recordData['index']);
+            $JournalEntryRecord->save();
+        }
+        $recordsToDelete = array_diff(array_column($journal_entry_records, 'index'), array_column($records_in_request, 'index'));
+        foreach ($recordsToDelete as $record) {
+            $record = JournalEntryRecord::where('journal_entry_id', $journal_entry_id)->where('index', $record)->first();
+            $record->forceDelete();
+        }
+        $recordsToUpdate = array_intersect(array_column($records_in_request, 'index'), array_column($journal_entry_records, 'index'));
+        foreach ($recordsToUpdate as $record) {
+            $recordData = $request->records[array_search($record, array_column($request->records, 'index'))];
+            $record = JournalEntryRecord::where('journal_entry_id', $journal_entry_id)->where('index', $record)->first();
+            $record->update($recordData);
+            $record['journal_entry_id'] = $journal_entry_id;
+            $record['source_name'] = $request['source']['source_name'];
+            $record['source_template_id'] = $request['source']['source_template_id'];
+            $record['source_id'] = $request['source']['source_id'];
+            $record['branch_id'] = $request['branch_id'];
+            $record['date'] = $request['date'];
+            $record['time'] = $request['time'];
+            $record['index'] = abs($recordData['index']);
+            $record->save();
+        }
+    }
 
   public function saveJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
   {
@@ -34,6 +75,10 @@ trait  JournalEntryRecordTrait
       $JournalEntryRecord['source_template_id'] = $request['source']['source_template_id'];
       $JournalEntryRecord['source_id'] = $request['source']['source_id'];
       $JournalEntryRecord['branch_id'] = $request['branch_id'];
+      $JournalEntryRecord['is_post_to_account'] = $request['is_post_to_account'];
+      $JournalEntryRecord['post_to_account_date'] = $request['post_to_account_date'];
+      $JournalEntryRecord['date'] = $request['date'];
+      $JournalEntryRecord['time'] = $request['time'];
       $JournalEntryRecord['index'] = abs($JournalEntryRecord['index']);
       $user_id = optional($JournalEntryRecord)->user_id;
       $client_id = optional($JournalEntryRecord)->client_id;
@@ -75,32 +120,32 @@ trait  JournalEntryRecordTrait
   }
 
 
-  public function updateJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
-  {
-    $JournalEntry_Records = JournalEntry::find($journal_entry_id)->records;
-    foreach ($JournalEntry_Records as $JournalEntry_Record) {
-      $JournalEntry_Record->delete();
-    }
-    $JournalEntryNewRecords = $request->records;
-    foreach ($JournalEntryNewRecords as $JournalEntryNewRecord) {
-      JournalEntryRecord::create([
-        'account_id' => $JournalEntryNewRecord['account_id'],
-        'debit' => $JournalEntryNewRecord['debit'],
-        'credit' => $JournalEntryNewRecord['credit'],
-        'notes' => $JournalEntryNewRecord['notes'],
-        'cost_center_id' => $JournalEntryNewRecord['cost_center_id'],
-        'currency_id' => $JournalEntryNewRecord['currency_id'],
-        'parity' => $JournalEntryNewRecord['parity'],
-        'equivalent' => $JournalEntryNewRecord['equivalent'],
-        'contra_account_id' => $JournalEntryNewRecord['contra_account_id'],
-        'current_balance' => $JournalEntryNewRecord['current_balance'],
-        'final_balance' => $JournalEntryNewRecord['final_balance'],
-        'journal_entry_id' => $journal_entry_id,
-        'is_post_to_account' => $JournalEntryNewRecord['is_post_to_account'],
-        'JournalEntryRecord' => $JournalEntryNewRecord['post_to_account_date'] 
-      ]);
-    }
-  }
+//  public function updateJournalEntryRecord(JournalEntriesRequest $request, $journal_entry_id)
+//  {
+//    $JournalEntry_Records = JournalEntry::find($journal_entry_id)->records;
+//    foreach ($JournalEntry_Records as $JournalEntry_Record) {
+//      $JournalEntry_Record->delete();
+//    }
+//    $JournalEntryNewRecords = $request->records;
+//    foreach ($JournalEntryNewRecords as $JournalEntryNewRecord) {
+//      JournalEntryRecord::create([
+//        'account_id' => $JournalEntryNewRecord['account_id'],
+//        'debit' => $JournalEntryNewRecord['debit'],
+//        'credit' => $JournalEntryNewRecord['credit'],
+//        'notes' => $JournalEntryNewRecord['notes'],
+//        'cost_center_id' => $JournalEntryNewRecord['cost_center_id'],
+//        'currency_id' => $JournalEntryNewRecord['currency_id'],
+//        'parity' => $JournalEntryNewRecord['parity'],
+//        'equivalent' => $JournalEntryNewRecord['equivalent'],
+//        'contra_account_id' => $JournalEntryNewRecord['contra_account_id'],
+//        'current_balance' => $JournalEntryNewRecord['current_balance'],
+//        'final_balance' => $JournalEntryNewRecord['final_balance'],
+//        'journal_entry_id' => $journal_entry_id,
+//        'is_post_to_account' => $JournalEntryNewRecord['is_post_to_account'],
+//        'JournalEntryRecord' => $JournalEntryNewRecord['post_to_account_date']
+//      ]);
+//    }
+//  }
 
   public function journalEntryRecordCostCenter($id)
   {

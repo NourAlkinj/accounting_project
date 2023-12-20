@@ -19,95 +19,95 @@ use Lang\Translate;
 class JournalEntryPermissionUserController extends Controller
 {
 
-  use CommonTrait, ActivityLog, JournalEntryRecordTrait;
+    use CommonTrait, ActivityLog, JournalEntryRecordTrait;
 
-  function __construct()
-  {
+    function __construct()
+    {
 
-    $this->commonMessage = new Translate(new CommonWords());
-  }
+        $this->commonMessage = new Translate(new CommonWords());
+    }
 
-  public function index()
-  {
+    public function index()
+    {
 
-    $journalEntryPermissionUser = JournalEntryPermissionUser::all();
+        $journalEntryPermissionUser = JournalEntryPermissionUser::all();
 
-    return response()->json($journalEntryPermissionUser, 200);
-  }
+        return response()->json($journalEntryPermissionUser, 200);
+    }
 
-  public function store(JournalEntriesRequest $request)
-  {
-    try {
-      $lang = $request->header('lang');
-      $id = auth('sanctum')->user()->id;
-      $oldJournalEntryPermissionsUser = User::find($id)->journalEntryPermissionUser;
-      if ($oldJournalEntryPermissionsUser) {
-        $oldJournalEntryPermissionsUser->forceDelete();
-      }
-      JournalEntryPermissionUser::create(
-        [
-          'print_setting' => $request['print_setting'],
-          'show_setting' => $request['show_setting'],
-          'user_id' => $id,
-        ]
-      );
-      return response()->json(['message' =>
+    public function store(JournalEntriesRequest $request)
+    {
+        try {
+            $lang = $request->header('lang');
+            $id = auth('sanctum')->user()->id;
+            $oldJournalEntryPermissionsUser = User::find($id)->journalEntryPermissionUser;
+            if ($oldJournalEntryPermissionsUser) {
+                $oldJournalEntryPermissionsUser->forceDelete();
+            }
+            JournalEntryPermissionUser::create(
+                [
+                    'print_setting' => $request['print_setting'],
+                    'show_setting' => $request['show_setting'],
+                    'user_id' => $id,
+                ]
+            );
+            return response()->json(['message' =>
 
-        $this->commonMessage->t(CommonWordsEnum::save->name, $lang)
+                $this->commonMessage->t(CommonWordsEnum::save->name, $lang)
 
       ], 200);
   } catch (CustomException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors' => $errors], $exc->code);
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        }
     }
-  }
 
-  public function show($id)
-  {
+    public function show($id)
+    {
 
-    $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+        $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
 
-    return response()->json($journalEntryPermissionUser, 200);
-  }
-
-
-  public function update(JournalEntriesRequest $request, $id)
-  {
-    try {
-      $lang = $request->header('lang');
-
-      $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
-      $journalEntryPermissionUser->update($request->all());
+        return response()->json($journalEntryPermissionUser, 200);
+    }
 
 
-      return response()->json(['message' =>
+    public function update(JournalEntriesRequest $request, $id)
+    {
+        try {
+            $lang = $request->header('lang');
 
-        $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang)
+            $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+            $journalEntryPermissionUser->update($request->all());
+
+
+            return response()->json(['message' =>
+
+                $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang)
 
     ], 200);
   } catch (CustomException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors' => $errors], $exc->code);
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        }
     }
-  }
 
 
-  public function delete($id)
-  {
-    try {
-      $lang = app('request')->header('lang');
+    public function delete($id)
+    {
+        try {
+            $lang = app('request')->header('lang');
 
-      $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
-      $journalEntryPermissionUser->delete();
+            $journalEntryPermissionUser = JournalEntryPermissionUser::find($id);
+            $journalEntryPermissionUser->delete();
 
-      return response()->json(['message' =>
+            return response()->json(['message' =>
 
-        $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
+                $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
 
     ], 200);
   } catch (CustomException $exc) {
-      $errors = ['message' => [$exc->message]];
-      return response()->json(['errors' => $errors], $exc->code);
+            $errors = ['message' => [$exc->message]];
+            return response()->json(['errors' => $errors], $exc->code);
+        }
     }
-  }
 }

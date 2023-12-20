@@ -17,184 +17,182 @@ use Lang\Translate;
 class SettingController extends Controller
 {
 
-  use ActivityLog, CommonTrait;
+    use ActivityLog, CommonTrait;
 
-  public $commonMessage;
+    public $commonMessage;
 
-  function __construct()
-  {
-    $this->commonMessage = new Translate(new CommonWords());
-  }
+    function __construct()
+    {
+        $this->commonMessage = new Translate(new CommonWords());
+    }
 
 
-  public function update(SettingRequest $request, $id)
-  {
-    try {
-      $user_id = auth('sanctum')->user()->id;
-      $lang = $request->header('lang');
-      UserSetting::where('setting_id', $id)->delete();
-      $setting = Setting::find($id);
-      $setting->update(
-        [
-          'settings' => $request['settings'],
-          'user_id' => $user_id,
-        ]
-      );
-      UserSetting::create(
-        [
-          'setting_id' => $setting->id,
-          'user_id' => $user_id
-        ]
-      );
-      return response()->json([
-        'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang) ,
+    public function update(SettingRequest $request, $id)
+    {
+        try {
+            $user_id = auth('sanctum')->user()->id;
+            $lang = $request->header('lang');
+            UserSetting::where('setting_id', $id)->delete();
+            $setting = Setting::find($id);
+            $setting->update(
+                [
+                    'settings' => $request['settings'],
+                    'user_id' => $user_id,
+                ]
+            );
+            UserSetting::create(
+                [
+                    'setting_id' => $setting->id,
+                    'user_id' => $user_id
+                ]
+            );
+            return response()->json([
+                'message' => $this->commonMessage->t(CommonWordsEnum::UPDATE->name, $lang) ,
     ], 200);
   } catch (CustomException $exc) {
-      return response()->json(
-        [
-          'errors' => ['message' => [$exc->message]]
-        ],
-        $exc->code
-      );
-    }
-  }
-
-  public function show($id)
-  {
-
-    $setting = Setting::find($id);
-
-    return response()->json($setting, 200);
-  }
-
-
-  public function store(SettingRequest $request)
-  {
-    try {
-      $lang = $request->header('lang');
-      $user = auth('sanctum')->user();
-      if ($user->homeSetting) {
-        foreach ($user->homeSetting as $homeSetting) {
-          $homeSetting->delete();
+            return response()->json(
+                [
+                    'errors' => ['message' => [$exc->message]]
+                ],
+                $exc->code
+            );
         }
-      }
+    }
 
-      $setting = Setting::create(
-        [
-          'settings' => $request->settings,
-          'user_id' => $user->id
-        ]
-      );
-      UserSetting::create(
-        [
-          'setting_id' => $setting->id,
-          'user_id' => $user->id
-        ]
-      );
+    public function show($id)
+    {
+
+        $setting = Setting::find($id);
+
+        return response()->json($setting, 200);
+    }
 
 
+    public function store(SettingRequest $request)
+    {
+        try {
+            $lang = $request->header('lang');
+            $user = auth('sanctum')->user();
+            if ($user->homeSetting) {
+                foreach ($user->homeSetting as $homeSetting) {
+                    $homeSetting->delete();
+                }
+            }
+
+            $setting = Setting::create(
+                [
+                    'settings' => $request->settings,
+                    'user_id' => $user->id
+                ]
+            );
+            UserSetting::create(
+                [
+                    'setting_id' => $setting->id,
+                    'user_id' => $user->id
+                ]
+            );
 
 
-      return response()->json([
-        'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
+            return response()->json([
+                'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
 
       'id' => $setting->id,
     ], 200);
   } catch (CustomException $exc) {
-      return response()->json(
-        [
-          'errors' => ['message' => [$exc->message]]
-        ],
-        $exc->code
-      );
+            return response()->json(
+                [
+                    'errors' => ['message' => [$exc->message]]
+                ],
+                $exc->code
+            );
+        }
     }
-  }
 
-  public function delete($id)
-  {
-    try {
-      $lang = app('request')->header('lang');
+    public function delete($id)
+    {
+        try {
+            $lang = app('request')->header('lang');
 
-      $setting = Setting::find($id);
-      $setting->delete();
+            $setting = Setting::find($id);
+            $setting->delete();
 
-      return response()->json(['message' =>
+            return response()->json(['message' =>
 
-        $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
+                $this->commonMessage->t(CommonWordsEnum::DELETE->name, $lang)
     ], 200);
   } catch (CustomException $exc) {
-      return response()->json(
-        [
-          'errors' => ['message' => [$exc->message]]
-        ],
-        $exc->code
-      );
-    }
-  }
-
-
-  // App Settings //
-  public function saveAppSettings(SettingRequest $request)
-  {
-    try {
-      $lang = $request->header('lang');
-      $user = auth('sanctum')->user();
-      if ($user->homeSetting) {
-        foreach ($user->homeSetting as $homeSetting) {
-          $homeSetting->delete();
+            return response()->json(
+                [
+                    'errors' => ['message' => [$exc->message]]
+                ],
+                $exc->code
+            );
         }
-      }
-      $setting = AppSetting::create(
-        [
-          'settings' => $request->settings,
-          'user_id' => $user->id
-        ]
-      );
+    }
 
-      return response()->json([
-        'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
+
+    // App Settings //
+    public function saveAppSettings(SettingRequest $request)
+    {
+        try {
+            $lang = $request->header('lang');
+            $user = auth('sanctum')->user();
+            if ($user->homeSetting) {
+                foreach ($user->homeSetting as $homeSetting) {
+                    $homeSetting->delete();
+                }
+            }
+            $setting = AppSetting::create(
+                [
+                    'settings' => $request->settings,
+                    'user_id' => $user->id
+                ]
+            );
+
+            return response()->json([
+                'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
         'id' => $setting->id,
     ], 200);
   } catch (CustomException $exc) {
-      return response()->json(
-        [
-          'errors' => ['message' => [$exc->message]]
-        ],
-        $exc->code
-      );
-    }
-  }
-
-  public function saveReportSettings(SettingRequest $request)
-  {
-    try {
-      $lang = $request->header('lang');
-      $user = auth('sanctum')->user();
-      if ($user->homeSetting) {
-        foreach ($user->homeSetting as $homeSetting) {
-          $homeSetting->delete();
+            return response()->json(
+                [
+                    'errors' => ['message' => [$exc->message]]
+                ],
+                $exc->code
+            );
         }
-      }
-      $setting = ReportSetting::create(
-        [
-          'settings' => $request->settings,
-          'user_id' => $user->id
-        ]
-      );
+    }
 
-      return response()->json([
-        'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
+    public function saveReportSettings(SettingRequest $request)
+    {
+        try {
+            $lang = $request->header('lang');
+            $user = auth('sanctum')->user();
+            if ($user->homeSetting) {
+                foreach ($user->homeSetting as $homeSetting) {
+                    $homeSetting->delete();
+                }
+            }
+            $setting = ReportSetting::create(
+                [
+                    'settings' => $request->settings,
+                    'user_id' => $user->id
+                ]
+            );
+
+            return response()->json([
+                'message' => $this->commonMessage->t(CommonWordsEnum::save->name, $lang),
         'id' => $setting->id,
     ], 200);
   } catch (CustomException $exc) {
-      return response()->json(
-        [
-          'errors' => ['message' => [$exc->message]]
-        ],
-        $exc->code
-      );
+            return response()->json(
+                [
+                    'errors' => ['message' => [$exc->message]]
+                ],
+                $exc->code
+            );
+        }
     }
-  }
 
 
 //  public function updateReportSetting(SettingRequest $request, $id)

@@ -33,7 +33,7 @@ class VoucherPermissionUserController extends Controller
     }
     VoucherPermissionUser::create(
       [
-        'print_setting' => $request['print_setting'],
+//        'print_setting' => $request['print_setting'],
         'show_setting' => $request['show_setting'],
         'user_id' => $id,
         'voucher_template_id' => $voucher_template_id

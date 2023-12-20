@@ -93,6 +93,7 @@ Route::get('getAllConnectedPrinters', [Controller::class, 'getAllConnectedPrinte
 Route::group(['namespace' => 'Branch', 'prefix' => 'branch', 'auth'], function () {
 
   Route::get('index', [BranchController::class, 'index'])->name('branch.index');
+  Route::get('branches-guide', [BranchController::class, 'branchesGuide'])->name('branch.guide');
   Route::get('all', [BranchController::class, 'all'])->name('branch.all');
 
   Route::post('store', [BranchController::class, 'store'])->name('branch.store');
@@ -224,6 +225,7 @@ Route::group(['namespace' => 'CompanyInformation', 'prefix' => 'company_informat
 
 Route::group(['namespace' => 'Category', 'prefix' => 'category', 'auth'], function () {
   Route::get('index', [CategoryController::class, 'index'])->name('category.index');
+  Route::get('categories-guide', [CategoryController::class, 'categoriesGuide'])->name('category.guide');
   Route::get('all', [CategoryController::class, 'all'])->name('category.all');
   Route::post('store', [CategoryController::class, 'store'])->name('category.store');
   Route::get('show/{id}', [CategoryController::class, 'show'])->name('category.show');
@@ -689,6 +691,7 @@ Route::group(['namespace' => 'Database', 'prefix' => 'database', 'auth'], functi
   Route::get('run_migration_fresh_seed', [DatabaseController::class, 'runMigrationFreshSeed']);
   Route::get('run_migration_fresh', [DatabaseController::class, 'runMigrationFresh']);
   Route::post('backup_database', [DatabaseController::class, 'backupDatabase']);
+  Route::post('restore', [DatabaseController::class, 'restore']);
   Route::get('get_current_database_information', [DatabaseController::class, 'getCurrentDatabaseInformation']);
   Route::get('settings-database', [DatabaseController::class, 'settingsDatabase']);
 
@@ -708,6 +711,7 @@ Route::post('uploadManyAttachments', [AttachmentController::class, 'uploadManyAt
 Route::post('change-items-price', [ReportController::class, 'changeItemsPrice']);
 
 Route::get('get-user-ip', [Controller::class, 'getUserIp']) ;
+Route::get('get-mac', [Controller::class, 'getMac']) ;
 Route::get('get-user-pc-name', [Controller::class, 'getUserPCname']) ;
 
 

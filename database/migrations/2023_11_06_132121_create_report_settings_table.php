@@ -6,19 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
 
-  public function up()
-  {
-    Schema::create('report_settings', function (Blueprint $table) {
-      $table->id();
-      $table->json('settings')->nullable();
-      $table->integer('user_id')->nullable();
-      $table->timestamps();
-    });
-  }
+    public function up()
+    {
+        Schema::create('report_settings', function (Blueprint $table) {
+            $table->id();
+            $table->json('settings')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->index('user_id');
+            $table->timestamps();
+        });
+    }
 
 
-  public function down()
-  {
-    Schema::dropIfExists('report_settings');
-  }
+    public function down()
+    {
+        Schema::dropIfExists('report_settings');
+    }
 };
