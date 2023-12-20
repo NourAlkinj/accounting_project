@@ -114,7 +114,6 @@ return new class extends Migration
             $table->integer('payment_type')->default(0)->nullable();
             $table->boolean('is_payment_type_lock')->default(0)->nullable();
             $table->boolean('is_payment_type_show')->default(0)->nullable();
-            $table->string('receipt_number')->default(null)->nullable();
             $table->boolean('is_receipt_number_show')->default(0)->nullable();
             $table->unsignedBigInteger('client_id')->default(null)->nullable();
             $table->boolean('is_client_lock')->default(0)->nullable();

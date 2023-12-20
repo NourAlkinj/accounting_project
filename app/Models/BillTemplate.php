@@ -128,7 +128,6 @@ class BillTemplate extends Model
         'payment_type', //cash=0 ,on_credit=1
         'is_payment_type_lock',
         'is_payment_type_show',
-        'receipt_number',
         'is_receipt_number_show',
         'client_id',
         'is_client_lock',

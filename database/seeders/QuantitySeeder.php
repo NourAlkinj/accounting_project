@@ -15,7 +15,7 @@ class QuantitySeeder extends Seeder
      */
     public function run()
     {
-        Quantity::truncate();
-        Quantity::factory(10000)->create();
+//        Quantity::truncate();
+//        Quantity::factory(10000)->create();
     }
 }

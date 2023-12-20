@@ -11,7 +11,7 @@ class BillTemplateSeeder extends Seeder
    
     public function run()
     {
-        BillTemplate::truncate();
-        BillTemplate::factory(5000)->create();
+//        BillTemplate::truncate();
+//        BillTemplate::factory(5000)->create();
     }
 }

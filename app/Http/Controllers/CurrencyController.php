@@ -60,24 +60,13 @@ class CurrencyController extends Controller
     $lang = $request->header('lang');
     $currency = Currency::create($request->all());
 
-//    if ($currency->is_default) {
-//      CurrencyActivity::create([
-//        'currency_id' => $currency->id,
-//        'parity' => 1,
-//        'last_update_date' => $request->created_at
-//      ]);
-//
-//    } else {
-//      CurrencyActivity::create([
-//        'currency_id' => $currency->id,
-//        'parity' => $request->parity,
-//        'last_update_date' => $request->created_at
-//      ]);
-//    }
     if ($this->getCountRawsInModel(Currency::class) == 1)
       $this->updateValueInDB($currency->id, Currency::class, 'is_default', true);
 
-    $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity);
+//      $appSetting = AppSetting::find(1);
+//      $start_fanancial_period = $appSetting->settings['start_fanancial_period'];
+      $start_fanancial_period = '2023-11-01';
+    $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity,$start_fanancial_period);
 
     $result = $this->activityParameters($lang, 'store', 'currency', $currency,     null);
     $parameters = $result['parameters'];
@@ -103,10 +92,8 @@ class CurrencyController extends Controller
     $old_data = Currency::find($id)->toJson();
 
     $currency = Currency::find($id);
-    $currencyBeforUpdate = $currency->parity;
     $currency->update($request->all());
-    if ($currencyBeforUpdate != $currency->parity)
-      $storeCurrencyActivity = (new CurrencyActivityController)->store($currency->id, $currency->parity, $currency->updated_at, $request);
+      $updateCurrencyActivity = (new CurrencyActivityController)->update($currency->id, $currency->parity, $currency->updated_at);
 
     $result = $this->activityParameters($lang, 'update', 'currency', $currency,     $old_data);
     $parameters = $result['parameters'];

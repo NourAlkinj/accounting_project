@@ -32,22 +32,9 @@ trait  CommonTrait
   {
     $journalAccordingDate = date('Y-m-d', strtotime($journalAccordingDate));
 
-    //3.1
-    $CurrencyAccordingSameDate = CurrencyActivity::where('currency_id', $requiredCurrencyId)->where('last_update_date', $journalAccordingDate)->latest()->get()->last();
+    $CurrencyAccordingSameDate = CurrencyActivity::where('currency_id', $requiredCurrencyId)->where('date', $journalAccordingDate)->latest()->get()->last();
     if ($CurrencyAccordingSameDate != null)
       return $CurrencyAccordingSameDate->parity;
-    //3.2
-    $CurrencyAccordingBeforeDate = CurrencyActivity::where('currency_id', $requiredCurrencyId)->where('last_update_date', '<', $journalAccordingDate)
-      ->orderBy('last_update_date', 'asc')
-      ->latest()->get()->last();
-    if ($CurrencyAccordingBeforeDate != null)
-      return $CurrencyAccordingBeforeDate->parity;
-    //3.3
-    $CurrencyAccordingAfterDate = CurrencyActivity::where('currency_id', $requiredCurrencyId)->where('last_update_date', '>', $journalAccordingDate)
-      ->orderBy('last_update_date', 'asc')
-      ->first();
-    if ($CurrencyAccordingAfterDate != null)
-      return $CurrencyAccordingAfterDate->parity;
   }
 
 

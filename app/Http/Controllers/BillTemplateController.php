@@ -150,13 +150,6 @@ class BillTemplateController extends Controller
       return true;
 //      return ['billId' => $bill->id, 'table' => 'bills'];
 
-    //bill template related to bill permission user
-    $billPermissionUser = BillPermissionUser::where(function ($query) use ($bill_template_id) {
-      $query->where('bill_template_id', $bill_template_id);
-    })->first();
-    if ($billPermissionUser != null)
-      return true;
-//      return ['billPermissionUserId' => $billPermissionUser->id, 'table' => 'bill_permission_users'];
 
 //    return ['id' => null, 'table' => null];
     return false;

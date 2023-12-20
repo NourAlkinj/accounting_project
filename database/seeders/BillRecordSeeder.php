@@ -289,7 +289,7 @@ class BillRecordSeeder extends Seeder
 //      'storing_type' => 'IN' ,
 //    ]);
 
-      BillRecord::truncate();
-      BillRecord::factory(20000)->create();
+//      BillRecord::truncate();
+//      BillRecord::factory(20000)->create();
   }
 }

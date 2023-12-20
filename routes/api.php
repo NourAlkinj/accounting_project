@@ -499,7 +499,7 @@ Route::group(['namespace' => 'Store', 'prefix' => 'store', 'auth'], function () 
 
 
 //------- Currency ------//
-Route::group(['namespace' => 'Currency', 'prefix' => 'currency', 'auth'], function () {
+Route::group(['namespace' => 'Currency', 'prefix' => 'currency'], function () {
   Route::get('index', [CurrencyController::class, 'index'])->name('currency.index');
   Route::get('all', [CurrencyController::class, 'all'])->name('currency.all');
   Route::post('store', [CurrencyController::class, 'store'])->name('currency.store');
